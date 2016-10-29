@@ -15,3 +15,5 @@
 /log/*
 !/log/.keep
 /tmp
+# Ignorar archivo de configuracion de BD
+/config/database.yml

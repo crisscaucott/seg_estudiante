@@ -21,13 +21,13 @@ ActiveRecord::Schema.define(version: 20161029182514) do
   end
 
   create_table "usuario", force: :cascade do |t|
-    t.string   "nombre",     null: false
-    t.string   "password",   null: false
-    t.string   "email",      null: false
-    t.string   "apellido",   null: false
+    t.string   "nombre",             null: false
+    t.string   "encrypted_password", null: false
+    t.string   "email",              null: false
+    t.string   "apellido",           null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "id_permiso", null: false
+    t.integer  "id_permiso",         null: false
   end
 
   add_foreign_key "usuario", "permisos_usuario", column: "id_permiso"

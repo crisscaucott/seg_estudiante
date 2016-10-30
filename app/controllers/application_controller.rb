@@ -4,5 +4,5 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   # Checkar que el usuario se encuentre logueado
-	before_action :authenticate_user!
+	before_action :authenticate_usuario!
 end

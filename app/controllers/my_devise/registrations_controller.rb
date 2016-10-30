@@ -1,17 +1,12 @@
 class MyDevise::RegistrationsController < Devise::RegistrationsController
 
 	def new
-		byebug
     super
   end
 
   def create
   	byebug
-  	super
+    res = Usuario.createUser(params[:usuario])
   end
-
-	def signUp
-		byebug
-	end
 
 end

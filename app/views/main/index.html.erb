@@ -1,0 +1,11 @@
+<% content_for :top_content do %>
+  <div class="jumbotron">
+    <div class="container">
+      <h1>Bienvenido</h1>
+      <p>Registrate para comenzar</p>
+      <p>
+        <%= link_to 'Registrarse', new_usuario_registration_path, class: 'btn btn-primary btn-lg' %>
+      </p>
+    </div>
+  </div>
+<% end %>

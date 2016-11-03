@@ -10,11 +10,16 @@ es:
               blank: "Nombre no puede estar en blanco."
             email: 
               blank: "Correo no puedo estar en blanco."
+              taken: "El correo ingresado ya está en uso."
             password:
               blank: "Contraseña no puede estar en blanco."
             last_name:
               blank: "Apellido no puede estar en blanco."
       messages:
+        record_invalid: "La validación falló: %{errors}"
+        restrict_dependent_destroy:
+          has_one: No se puede eliminar el registro porque existe un %{record} dependiente
+          has_many: No se puede eliminar el registro porque existen %{record} dependientes
         expired: "ha expirado, por favor pida uno nuevo"
         not_found: "no encontrado"
         already_confirmed: "ya está confirmada, por favor intente ingresar"

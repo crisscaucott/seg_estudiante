@@ -11,7 +11,6 @@ class MyDevises::RegistrationsController < Devise::RegistrationsController
     build_resource(sign_up_params)
 
     if resource.valid?
-
 	    if resource.save
 	      if resource.active_for_authentication?
 	        set_flash_message :notice, :signed_up if is_navigational_format?
@@ -29,11 +28,8 @@ class MyDevises::RegistrationsController < Devise::RegistrationsController
 
     else
     	# Usuario no valido, por sus campos.
-    	byebug
-
+    	return render json: {errors: resource.getFormatErrorMessages}, status: 422
     end
-
-
   end
 
   def sign_up_params

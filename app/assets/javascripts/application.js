@@ -16,3 +16,18 @@
 //= require bootstrap.min
 //= require Noty/jquery.noty.packaged.min
 
+function showNoty(options)
+{
+	noty({
+		layout: 'topRight',
+		theme: 'defaultTheme', // or 'relax'
+	  type: 'error',
+		text: options.text,
+		animation: {
+        open: 'animated fadeInRight',
+        close: 'animated fadeOutRight',
+        easing: 'swing',
+        speed: 250
+    },
+	});
+}

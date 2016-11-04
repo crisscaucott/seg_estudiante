@@ -12,12 +12,12 @@
   <div class="container-fluid">
     <nav>
       <div class="navbar-header">
-        <a href="/"> <i class="fa fa-map-marker fa-lg"></i> 
+        <a href="/" class="navbar-brand"> <i class="fa fa-map-marker fa-lg"></i> 
           <%= image_tag('central.png') %>
         </a>
       </div>
       <div class="col-sm-5 col-sm-offset-3" style="display: inline-block;">
-        <h2>Sistema de información UCEN22</h2>
+        <a href="/" class="navbar-link"><h2>Sistema de información UCEN22</h2></a>
       </div>
 
       <% if user_signed_in? %>

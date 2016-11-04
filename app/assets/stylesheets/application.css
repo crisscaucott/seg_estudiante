@@ -14,7 +14,9 @@
  *= require animate.css
  */
 
- div#main-navbar > div.container-fluid > nav > div > a > img{
- 	height: 43px;
- 	margin-top: 3px;
- }
+div#main-navbar > div.container-fluid > nav > div > a > img{
+	height: 40px;
+}
+div#main-navbar > div.container-fluid > nav a.navbar-link{
+	text-decoration: none;
+}

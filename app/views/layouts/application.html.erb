@@ -22,20 +22,30 @@
 
       <% if user_signed_in? %>
         <div class="nav pull-right" style="margin-top: 20px; display: flex;">
-          <p>Hola, <%= current_user.name %> | <%= link_to "Salir", destroy_user_session_path, class: 'navbar-link' %></p>
+          <p>Hola, <%= current_user.name %> | <%= link_to "Salir", destroy_user_session_path, class: 'navbar-link', method: 'delete' %></p>
         </div>
       <% end %>
     </nav>
   </div>
 </div>
-
-<div class="container">
-  <% flash.each do |key, value| %>
-    <div class="alert alert-<%= key %>">
-      <%= value %>
-    </div>
-  <% end %>
-</div>
+<% if user_signed_in? %>
+  <div class="container">
+    <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item <%= isActive(notas_path) %>">
+        <%= link_to('Notas', notas_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(reportes_path) %>">
+        <%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(observaciones_path) %>">
+        <%= link_to('Observaciones', observaciones_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(caracteristicas_path) %>">
+        <%= link_to('Caracteristicas est.', caracteristicas_path, class: 'nav-link') %>
+      </li>
+    </ul>
+  </div>
+<% end %>
 
 <div class="container">
   <%= yield %>

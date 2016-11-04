@@ -6,4 +6,8 @@ module ApplicationHelper
 	def windowLocation(path)
 		return "window.location.href='"+ path +"'"
 	end
+
+	def isActive(page_name)
+		return "active" if current_page?(page_name)
+	end
 end

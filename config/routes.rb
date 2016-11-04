@@ -10,4 +10,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'main#index'
 
+  get '/notas', to: 'main#notas', as: 'notas'
+  get '/reportes', to: 'main#reportes', as: 'reportes'
+  get '/observaciones', to: 'main#observaciones', as: 'observaciones'
+  get '/caracteristicas', to: 'main#caracteristicas', as: 'caracteristicas'
 end

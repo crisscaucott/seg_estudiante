@@ -1,16 +1,16 @@
 <div class="container">
 	<ul class="nav nav-tabs nav-justified">
 	  <li class="nav-item">
-	    <a class="nav-link active" href="#">Notas</a>
+	  	<%= link_to('Notas', notas_path, class: 'nav-link') %>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="#">Ver reportes</a>
+	  	<%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link" href="#">Observaciones</a>
+	  	<%= link_to('Observaciones', observaciones_path, class: 'nav-link') %>
 	  </li>
 	  <li class="nav-item">
-	    <a class="nav-link disabled" href="#">Caract. est</a>
+	  	<%= link_to('Caracteristicas est.', caracteristicas_path, class: 'nav-link') %>
 	  </li>
 	</ul>
 </div>

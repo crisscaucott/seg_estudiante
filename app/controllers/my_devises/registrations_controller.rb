@@ -7,8 +7,10 @@ class MyDevises::RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-
-    build_resource(sign_up_params)
+  	# Crear hash con los datos del usuario.
+  	user_params = sign_up_params
+  	user_params = user_params.merge(id_permission: UserPermission.getNormalUserId)
+    build_resource(user_params)
 
     if resource.valid?
     	# Campos de usuario validados.

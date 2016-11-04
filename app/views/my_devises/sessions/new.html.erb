@@ -1,26 +1,39 @@
-<h2><%= t('.sign_in') %></h2>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true  %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "off" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
-    </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit t('.sign_in') %>
-  </div>
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "sign_in", "data-turbolinks-track" => true  %>
 <% end %>
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3 form-box">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h3>Ingresar</h3>
+      </div>
+      <div class="form-top-right">
+        <i class="fa fa-lock"></i>
+      </div>
+    </div>
+    <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'login-form', id: 'sign_in_user'}) do |f| %>
+      <div class="form-group">
+        <%= f.label :email, class: 'sr-only' %><br />
+        <%= f.email_field :email, autofocus: true, class: 'form-username form-control', placeholder: 'Email' %>
+      </div>
+    
+      <div class="form-group">
+        <%= f.label :password, class: 'sr-only' %><br />
+        <%= f.password_field :password, autocomplete: "off", class: 'form-username form-control', placeholder: 'Contraseña' %>
+      </div>
+    
+      <% if devise_mapping.rememberable? %>
+        <div class="field">
+          <%= f.check_box :remember_me %>
+          <%= f.label :remember_me %>
+        </div>
+      <% end %>
+    
+      <div class="actions text-center">
+        <%= f.submit 'Ingresar', class: 'btn btn-primary' %>
+        <%= link_to "Registrarse", new_user_registration_path, class: 'btn btn-default' %>
+      </div>
 
-<%= render "devise/shared/links" %>
+    <% end %>
+  </div>
+</div>

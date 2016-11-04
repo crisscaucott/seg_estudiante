@@ -15,6 +15,7 @@
 //= require turbolinks
 //= require bootstrap.min
 //= require Noty/jquery.noty.packaged.min
+//= require bootstrap-filestyle.min
 
 function showNoty(options)
 {

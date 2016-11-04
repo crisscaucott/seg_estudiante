@@ -13,3 +13,8 @@
  *= require bootstrap.min.css
  *= require animate.css
  */
+
+ div#main-navbar > div.container-fluid > nav > div > a > img{
+ 	height: 43px;
+ 	margin-top: 3px;
+ }

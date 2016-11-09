@@ -1,11 +1,98 @@
-<% content_for :top_content do %>
-  <div class="jumbotron">
-    <div class="container">
-      <h1>Bienvenido</h1>
-      <p>Registrate para comenzar</p>
-      <p>
-        <%= link_to 'Registrarse', new_usuario_registration_path, class: 'btn btn-primary btn-lg' %>
-      </p>
-    </div>
-  </div>
-<% end %>
+<div class="container col-sm-12">
+	<div class="col-sm-3">
+		<h3 class="text-center">Filtros</h3>
+		<form id="convFilter" class="form-horizontal" action="/admin/conversations/filter">
+      <div class="form-group">
+        <label class="col-sm-4 control-label" for="keywords">Año ingreso</label>
+        <div class="col-sm-8">
+          <select name="" class="form-control">
+          	<option value="">2009</option>
+          	<option value="">2010</option>
+          	<option value="">2011</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label" for="dialogAct">Carrera</label>
+        <div class="col-sm-8">
+        	<select name="" class="form-control">
+          	<option value="">Ing. en Computación</option>
+          	<option value="">Ing. en Construcción</option>
+          	<option value="">Arquitectura</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-4 control-label" for="slot">Estado deserción</label>
+        <div class="col-sm-8">
+          <select name="" class="form-control">
+          	<option value="">Bueno</option>
+          	<option value="">Malo</option>
+          	<option value="">Critico</option>
+          </select>
+        </div>
+      </div>
+      <div class="text-center">
+      	<a href="#" class="btn btn-default">Filtrar</a>
+      </div>
+    </form>
+	</div>
+	<div class="col-sm-9">
+		<h3 class="text-center">Estudiantes</h3>
+		<table class="table table-bordered no-footer">
+			<thead>
+				<tr>
+					<th>#</th>
+					<th>Nombre</th>
+					<th>Año ingreso</th>
+					<th>Carrera</th>
+					<th>Estado deserción</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>1</td>
+					<td>Estudiante 1</td>
+					<td>Ing. en Computación</td>
+					<td>2010</td>
+					<td>Critico</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Estudiante 2</td>
+					<td>Ing. en Computación</td>
+					<td>2009</td>
+					<td>Critico</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Estudiante 3</td>
+					<td>Ing. en Computación</td>
+					<td>2011</td>
+					<td>Critico</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>Estudiante 4</td>
+					<td>Ing. en Computación</td>
+					<td>2004</td>
+					<td>Critico</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>Estudiante 5</td>
+					<td>Ing. en Computación</td>
+					<td>2013</td>
+					<td>Critico</td>
+				</tr>
+				<tr>
+					<td>6</td>
+					<td>Estudiante 6</td>
+					<td>Ing. en Computación</td>
+					<td>2000</td>
+					<td>Critico</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

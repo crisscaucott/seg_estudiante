@@ -3,25 +3,55 @@
 <head>
   <title>SegEstudiante</title>
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= yield :css %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<div class="container">
-  <% flash.each do |key, value| %>
-    <div class="alert alert-<%= key %>">
-      <%= value %>
-    </div>
-  <% end %>
+<div class="navbar navbar-default navbar-static-top" id="main-navbar">
+  <div class="container-fluid">
+    <nav>
+      <div class="navbar-header">
+        <a href="/" class="navbar-brand"> <i class="fa fa-map-marker fa-lg"></i> 
+          <%= image_tag('central.png') %>
+        </a>
+      </div>
+      <div class="col-sm-5 col-sm-offset-3" style="display: inline-block;">
+        <a href="/" class="navbar-link"><h2>Sistema de información UCEN22</h2></a>
+      </div>
+
+      <% if user_signed_in? %>
+        <div class="nav pull-right" style="margin-top: 20px; display: flex;">
+          <p>Hola, <%= current_user.name %> | <%= link_to "Salir", destroy_user_session_path, class: 'navbar-link', method: 'delete' %></p>
+        </div>
+      <% end %>
+    </nav>
+  </div>
 </div>
-
-<%= yield :top_content %>
+<% if user_signed_in? %>
+  <div class="container">
+    <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item <%= isActive(notas_path) %>">
+        <%= link_to('Notas', notas_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(reportes_path) %>">
+        <%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(observaciones_path) %>">
+        <%= link_to('Observaciones', observaciones_path, class: 'nav-link') %>
+      </li>
+      <li class="nav-item <%= isActive(caracteristicas_path) %>">
+        <%= link_to('Caracteristicas est.', caracteristicas_path, class: 'nav-link') %>
+      </li>
+    </ul>
+  </div>
+<% end %>
 
 <div class="container">
-    <h1><%= yield :header %></h1>
   <%= yield %>
 </div>
 
+<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+<%= yield :javascript %>
 </body>
 </html>

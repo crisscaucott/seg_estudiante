@@ -1,6 +1,23 @@
 class MainController < ApplicationController
 
 	def index
-		byebug
+
 	end
+
+	def notas
+		
+	end
+
+	def reportes
+		
+	end
+
+	def observaciones
+		
+	end
+
+	def caracteristicas
+		
+	end
+
 end

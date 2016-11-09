@@ -17,3 +17,5 @@
 /tmp
 # Ignorar archivo de configuracion de BD
 /config/database.yml
+# Ignorar archivo de byebug
+*.byebug_history

@@ -39,8 +39,10 @@ es:
       timeout: 'Tu sesión ha expirado, por favor ingresa nuevamente para continuar.'
       inactive: 'Tu cuenta aún no ha sido activada.'
     sessions:
-      signed_in: 'Ingreso exitoso.'
-      signed_out: 'Has salido del sistema.'
+      user:
+        invalid: 'Correo o contraseña inválidos.'
+        signed_in: 'Ingreso exitoso.'
+        signed_out: 'Has salido del sistema.'
     passwords:
       send_instructions: 'Recibirás un correo electrónico con instrucciones sobre cómo reiniciar tu contraseña en unos minutos.'
       updated: 'Tu contraseña fue cambiada exitosamente y has sido ingresado al sistema.'

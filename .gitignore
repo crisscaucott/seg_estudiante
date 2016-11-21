@@ -19,3 +19,5 @@
 /config/database.yml
 # Ignorar archivo de byebug
 /.byebug_history
+# Ignorar achivos excel subidos.
+/public/xls/*

@@ -11,10 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121032930) do
+ActiveRecord::Schema.define(version: 20161121040719) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "carreras", force: :cascade do |t|
+    t.integer  "duracion_formal",   null: false
+    t.string   "nombre",            null: false
+    t.string   "codigo",            null: false
+    t.datetime "fecha_eliminacion"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
 
   create_table "log_carga_masiva", force: :cascade do |t|
     t.integer  "usuario_id", null: false

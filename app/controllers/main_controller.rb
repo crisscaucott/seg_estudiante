@@ -10,14 +10,17 @@ class MainController < ApplicationController
 
 	def uploadXls
 		uploaded_io = params[:reporte][:nombre_reporte]
-		File.open(Rails.root.join('public', 'xls', uploaded_io.original_filename), 'wb') do |file|
+		excel_file = Rails.root.join('public', 'xls', uploaded_io.original_filename)
+		File.open(excel_file, 'wb') do |file|
 		  file.write(uploaded_io.read)
 		end
 
-		respond_to do |format|
-			@repo = Reporte.new({nombre_reporte: uploaded_io.original_filename, tipo_reporte: 'xls', usuario_id: current_user.id})
+		LogCargaMasiva.readExcelFile(excel_file)
 
-			@repo.save
+		respond_to do |format|
+			# @repo = Reporte.new({nombre_reporte: uploaded_io.original_filename, tipo_reporte: 'xls', usuario_id: current_user.id})
+
+			# @repo.save
 
 			format.html{
 				render template: notas_path

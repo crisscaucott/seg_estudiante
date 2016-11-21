@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121040719) do
+ActiveRecord::Schema.define(version: 20161121041552) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,21 @@ ActiveRecord::Schema.define(version: 20161121040719) do
     t.datetime "fecha_eliminacion"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+  end
+
+  create_table "estado_desercion", force: :cascade do |t|
+    t.string  "nombre_estado",                 null: false
+    t.boolean "notificar",     default: false
+  end
+
+  create_table "estudiante", force: :cascade do |t|
+    t.string   "nombre",              null: false
+    t.string   "apellido",            null: false
+    t.string   "rut",                 null: false
+    t.integer  "carrera_id",          null: false
+    t.integer  "estado_desercion_id", null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
   end
 
   create_table "log_carga_masiva", force: :cascade do |t|
@@ -66,6 +81,8 @@ ActiveRecord::Schema.define(version: 20161121040719) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "estudiante", "carrera"
+  add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"

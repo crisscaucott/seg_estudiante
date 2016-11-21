@@ -4,12 +4,12 @@ var progress_bar = wrapper.find('.progress-bar');
 
 $(":file").filestyle('buttonText', 'Subir archivo');
 $(":file").filestyle('buttonName', 'btn btn-primary');
-$(":file").filestyle('placeholder', '.xls | .csv');
+$(":file").filestyle('placeholder', '.xls');
 
 notas_form.fileupload({
 	dataType: 'json',
 	add: function (e, data) {
-    types = /(\.|\/)(torrent|jpe?g|png|bmp)$/i;
+    types = /(\.|\/)(xlsx?)$/i;
     file = data.files[0];
     if (types.test(file.type) || types.test(file.name)) {
       data.submit();

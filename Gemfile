@@ -37,6 +37,9 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 gem 'remotipart', '~> 1.2'
 gem 'jquery-fileupload-rails', github: 'Springest/jquery-fileupload-rails'
 
+# Leer excel
+gem 'roo'
+
 gem 'devise-i18n'
 
 group :development, :test do

@@ -10,7 +10,7 @@ class MainController < ApplicationController
 
 	def uploadXls
 		uploaded_io = params[:reporte][:nombre_reporte]
-		File.open(Rails.root.join('public', 'uploads', uploaded_io.original_filename), 'wb') do |file|
+		File.open(Rails.root.join('public', 'xls', uploaded_io.original_filename), 'wb') do |file|
 		  file.write(uploaded_io.read)
 		end
 

@@ -34,6 +34,9 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'remotipart', '~> 1.2'
+gem 'jquery-fileupload-rails', github: 'Springest/jquery-fileupload-rails'
+
 gem 'devise-i18n'
 
 group :development, :test do

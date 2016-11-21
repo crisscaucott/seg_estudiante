@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   # root 'main#index'
 
   get '/notas', to: 'main#notas', as: 'notas'
+  post '/notas/upload', to: 'main#uploadXls', as: 'upload_xls'
   get '/reportes', to: 'main#reportes', as: 'reportes'
   get '/observaciones', to: 'main#observaciones', as: 'observaciones'
   get '/caracteristicas', to: 'main#caracteristicas', as: 'caracteristicas'

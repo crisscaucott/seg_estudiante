@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20161121040719) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "carreras", force: :cascade do |t|
+  create_table "carrera", force: :cascade do |t|
     t.integer  "duracion_formal",   null: false
     t.string   "nombre",            null: false
     t.string   "codigo",            null: false

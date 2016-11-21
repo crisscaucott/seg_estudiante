@@ -1,6 +1,6 @@
 class CreateCarreras < ActiveRecord::Migration
   def change
-    create_table :carreras do |t|
+    create_table :carrera do |t|
     	t.integer :duracion_formal, null: false
     	t.string :nombre, null: false
     	t.string :codigo, null: false

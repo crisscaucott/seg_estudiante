@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161121043110) do
+ActiveRecord::Schema.define(version: 20161122013605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,17 @@ ActiveRecord::Schema.define(version: 20161121043110) do
   create_table "asignatura_carrera", force: :cascade do |t|
     t.integer "carrera_id"
     t.integer "asignatura_id"
+  end
+
+  create_table "calificacion", force: :cascade do |t|
+    t.integer  "estudiante_id",                               null: false
+    t.integer  "asignatura_id",                               null: false
+    t.decimal  "valor_calificacion",  precision: 5, scale: 2
+    t.string   "nombre_calificacion",                         null: false
+    t.integer  "ponderacion",                                 null: false
+    t.datetime "periodo_academico",                           null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
   create_table "carrera", force: :cascade do |t|
@@ -95,6 +106,8 @@ ActiveRecord::Schema.define(version: 20161121043110) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "calificacion", "asignatura"
+  add_foreign_key "calificacion", "estudiante"
   add_foreign_key "estudiante", "carrera"
   add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"

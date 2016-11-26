@@ -16,6 +16,8 @@
 //= require bootstrap.min
 //= require bootstrap-filestyle.min
 //= require bootstrap-notify.min
+//= require jquery.remotipart
+//= require jquery-fileupload/basic
 
 var notifications = [];
 var notifications_limit = 3;

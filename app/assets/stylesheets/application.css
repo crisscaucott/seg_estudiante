@@ -20,3 +20,6 @@ div#main-navbar > div.container-fluid > nav > div > a > img{
 div#main-navbar > div.container-fluid > nav a.navbar-link{
 	text-decoration: none;
 }
+.progress-wrapper {
+  margin-top: 10px;
+}

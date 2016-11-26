@@ -7,8 +7,9 @@ module MassLoadHelper
 			File.open(excel_file, 'wb') do |file|
 			  file.write(uploaded_io.read)
 			end
-			res[:file_path] = uploaded_io.original_filename
+			res[:file_path] = excel_file
 		rescue StandardError => e
+			byebug
 			res[:file_path] = nil
 		end
 		return res

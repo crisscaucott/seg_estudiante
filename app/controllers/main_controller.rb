@@ -4,8 +4,7 @@ class MainController < ApplicationController
 
 	end
 
-	def notas
-		@report = Reporte.new
+	def mass_load
 	end
 
 	def uploadXls
@@ -30,6 +29,10 @@ class MainController < ApplicationController
 				end
 			}
 		end
+	end
+
+	def uploadAssistance
+		
 	end
 
 	def reportes

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161122013605) do
+ActiveRecord::Schema.define(version: 20161126193846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,6 +28,15 @@ ActiveRecord::Schema.define(version: 20161122013605) do
   create_table "asignatura_carrera", force: :cascade do |t|
     t.integer "carrera_id"
     t.integer "asignatura_id"
+  end
+
+  create_table "asistencia", force: :cascade do |t|
+    t.integer  "asignatura_id",    null: false
+    t.integer  "estudiante_id",    null: false
+    t.datetime "fecha_asistida",   null: false
+    t.string   "valor_asistencia"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "calificacion", force: :cascade do |t|
@@ -69,10 +78,12 @@ ActiveRecord::Schema.define(version: 20161122013605) do
   end
 
   create_table "log_carga_masiva", force: :cascade do |t|
-    t.integer  "usuario_id", null: false
-    t.string   "tipo_carga", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "usuario_id",  null: false
+    t.string   "tipo_carga",  null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "url_archivo", null: false
+    t.json     "detalle"
   end
 
   create_table "reportes", force: :cascade do |t|
@@ -109,6 +120,8 @@ ActiveRecord::Schema.define(version: 20161122013605) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "asistencia", "asignatura"
+  add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "estudiante", "carrera"

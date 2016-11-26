@@ -10,8 +10,12 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   # root 'main#index'
 
-  get '/notas', to: 'main#notas', as: 'notas'
-  post '/notas/upload', to: 'main#uploadXls', as: 'upload_xls'
+  get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
+  get '/carga_masiva/notas', to: 'mass_load#notas', as: 'notas'
+  get '/carga_masiva/asistencia', to: 'mass_load#asistencia', as: 'asistencia'
+  get '/carga_masiva/alumnos', to: 'mass_load#alumnos', as: 'alumnos'
+  post '/carga_masiva/notas/upload_xls', to: 'main#uploadXls', as: 'upload_xls'
+  post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'
   get '/reportes', to: 'main#reportes', as: 'reportes'
   get '/observaciones', to: 'main#observaciones', as: 'observaciones'
   get '/caracteristicas', to: 'main#caracteristicas', as: 'caracteristicas'

@@ -20,4 +20,4 @@
 # Ignorar archivo de byebug
 /.byebug_history
 # Ignorar achivos excel subidos.
-/public/xls/*
+/public/uploaded/*

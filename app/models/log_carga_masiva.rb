@@ -112,6 +112,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		if !response[:error]
 			# Si no hay errores, se registra la carga masiva del usuario.
 			self.tipo_carga = 'asistencia'
+			self.detalle = assis_detail
 			self.save
 		end
 

@@ -39,6 +39,7 @@ gem 'jquery-fileupload-rails', github: 'Springest/jquery-fileupload-rails'
 
 # Leer excel
 gem 'roo'
+gem 'roo-xls'
 
 gem 'devise-i18n'
 

@@ -31,8 +31,8 @@
 <% if user_signed_in? %>
   <div class="container">
     <ul class="nav nav-tabs nav-justified">
-      <li class="nav-item <%= isActive(notas_path) %>">
-        <%= link_to('Notas', notas_path, class: 'nav-link') %>
+      <li class="nav-item <%= isActive(mass_load_path) %>">
+        <%= link_to('Carga masiva', mass_load_path, class: 'nav-link') %>
       </li>
       <li class="nav-item <%= isActive(reportes_path) %>">
         <%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
@@ -47,7 +47,7 @@
   </div>
 <% end %>
 
-<div class="container">
+<div class="container" id="content-container">
   <%= yield %>
 </div>
 

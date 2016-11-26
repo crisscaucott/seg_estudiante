@@ -1,0 +1,19 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "notas.js", "data-turbolinks-track" => true  %>
+<% end %>
+<h1>Subir notas</h1>
+
+<%= form_for(report, url: upload_xls_path(report), html: {id: 'notas_form'}) do |f| %>
+	<%= f.file_field(:nombre_reporte, class: 'filestyle', data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
+	<!-- <div class="pull-right">
+		<%= f.submit('Cargar', class: 'btn btn-danger text-center') %>
+	</div> -->
+
+	<div class="progress-wrapper">
+	  <div class="progress">
+	    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+	      0%
+	    </div>
+	  </div>
+	</div>
+<% end %>

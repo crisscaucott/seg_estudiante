@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 20161122013605) do
   create_table "calificacion", force: :cascade do |t|
     t.integer  "estudiante_id",                               null: false
     t.integer  "asignatura_id",                               null: false
-    t.decimal  "valor_calificacion",  precision: 5, scale: 2
+    t.decimal  "valor_calificacion",  precision: 5, scale: 2, null: false
     t.string   "nombre_calificacion",                         null: false
     t.integer  "ponderacion",                                 null: false
     t.datetime "periodo_academico",                           null: false
@@ -46,6 +46,7 @@ ActiveRecord::Schema.define(version: 20161122013605) do
     t.string   "nombre",            null: false
     t.string   "codigo",            null: false
     t.datetime "fecha_eliminacion"
+    t.string   "plan",              null: false
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
   end
@@ -61,6 +62,8 @@ ActiveRecord::Schema.define(version: 20161122013605) do
     t.string   "rut",                 null: false
     t.integer  "carrera_id",          null: false
     t.integer  "estado_desercion_id", null: false
+    t.datetime "fecha_eliminacion"
+    t.datetime "fecha_ingreso",       null: false
     t.datetime "created_at",          null: false
     t.datetime "updated_at",          null: false
   end

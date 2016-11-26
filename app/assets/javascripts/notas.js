@@ -37,18 +37,16 @@ notas_form.fileupload({
 	// Termina la subida del archivo
   done: function(e, data){
   	var res = data.jqXHR.responseJSON;
-  	console.log(e);
   	console.log(data);
   	showNotification({msg: res.msg, type: 'success', closeAll: true});
   },
   // Falla la subida.
   fail: function(e, data){
-  	console.log(e);
+    var error = data.jqXHR.responseJSON === undefined ? data.errorThrown : data.jqXHR.responseJSON.msg
   	console.log(data);
-  	showNotification({msg: data.errorThrown, type: 'danger', closeAll: true});
+  	showNotification({msg: error, type: 'danger', closeAll: true});
   },
   always: function(e, data){
-  	console.log(e);
   	console.log(data);
   }
 

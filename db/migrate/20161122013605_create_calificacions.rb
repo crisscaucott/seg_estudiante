@@ -3,7 +3,7 @@ class CreateCalificacions < ActiveRecord::Migration
     create_table :calificacion do |t|
     	t.integer :estudiante_id, null: false
     	t.integer :asignatura_id, null: false
-    	t.decimal :valor_calificacion, precision: 5, scale: 2
+    	t.decimal :valor_calificacion, precision: 5, scale: 2, null: false
     	t.string :nombre_calificacion, null: false
     	t.integer :ponderacion, null: false
     	t.datetime :periodo_academico, null: false

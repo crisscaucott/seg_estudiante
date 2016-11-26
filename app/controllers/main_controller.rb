@@ -15,19 +15,19 @@ class MainController < ApplicationController
 		  file.write(uploaded_io.read)
 		end
 
-		LogCargaMasiva.readExcelFile(excel_file)
+		res = LogCargaMasiva.readExcelFile(excel_file, current_user.id)
 
 		respond_to do |format|
-			# @repo = Reporte.new({nombre_reporte: uploaded_io.original_filename, tipo_reporte: 'xls', usuario_id: current_user.id})
-
-			# @repo.save
-
 			format.html{
 				render template: notas_path
 				
 			}
 			format.json{
-				render json: {msg: 'Archivo subido exitosamente.'}
+				if !res[:error]
+					render json: {msg: res[:msg]}
+				else
+					render json: {msg: res[:msg]}, status: :unprocessable_entity
+				end
 			}
 		end
 	end

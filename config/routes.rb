@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   devise_scope :user do
+    get '/admini/', to: 'super_user#index', as: 'admini'
   	root to: "main#index"
   end
 

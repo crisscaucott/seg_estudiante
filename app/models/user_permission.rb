@@ -1,6 +1,6 @@
 class UserPermission < ActiveRecord::Base
   self.table_name = 'user_permissions'
-  has_many :user
+  has_many :user, class_name: "User"
 
   # Retorna el id del tipo de usuario Administrador
   def self.getAdminId

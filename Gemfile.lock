@@ -136,6 +136,7 @@ GEM
       spreadsheet (> 0.9.0)
     ruby-ole (1.2.12)
     rubyzip (1.2.0)
+    rut_chileno (0.5)
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -192,6 +193,7 @@ DEPENDENCIES
   remotipart (~> 1.2)
   roo
   roo-xls
+  rut_chileno
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring

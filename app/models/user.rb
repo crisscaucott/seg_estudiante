@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: email_regexp
   validates_presence_of :rut
   validates_uniqueness_of :rut
+  validates_with RUTValidator # Valida el rut a traves de la clase RUTValidator
   attr_accessor :login
 
   def getFormatErrorMessages
@@ -48,7 +49,18 @@ class User < ActiveRecord::Base
     if login = conditions.delete(:login)
       where(conditions.to_hash).where(["rut = :value", { :value => login.downcase }]).first
     elsif conditions.has_key?(:rut)
+      conditions[:rut] = formatRut(conditions[:rut])
       where(conditions.to_hash).first
     end
+  end
+
+  def self.formatRut(rut)
+    return rut.gsub(/(\.|\-)/, '')
+  end
+
+  # Sobreescribir metodo de asignar el rut al objeto user,
+  # para quitar sus puntos y guiones
+  def rut=(new_rut)
+    self[:rut] = new_rut.gsub(/(\.|\-)/, '').strip
   end
 end

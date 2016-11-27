@@ -13,8 +13,8 @@
     </div>
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'login-form', id: 'sign_in_user'}) do |f| %>
       <div class="form-group">
-        <%= f.label :email, class: 'sr-only' %><br />
-        <%= f.email_field :email, autofocus: true, class: 'form-username form-control', placeholder: 'Email' %>
+        <%= f.label :rut, class: 'sr-only' %><br />
+        <%= f.text_field :rut, autofocus: true, class: 'form-username form-control', placeholder: 'Rut' %>
       </div>
     
       <div class="form-group">

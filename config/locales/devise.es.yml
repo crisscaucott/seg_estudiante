@@ -9,6 +9,7 @@ es:
             name:
               blank: "Nombre no puede estar en blanco."
             rut:
+              blank: "Rut no puede estar en blanco."
               taken: "El rut ingresado ya está en uso."
             email: 
               blank: "Correo no puedo estar en blanco."

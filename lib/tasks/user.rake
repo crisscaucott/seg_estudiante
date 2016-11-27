@@ -1,7 +1,7 @@
 namespace :user do
 	desc "Task para llenar la tabla de permisos de usuario, con sus tipos de permisos"
 	task :fill_permission_table => :environment do
-		permissions = ['Administrador', 'Usuario normal']
+		permissions = ['Decano', 'Usuario normal']
 
 		permissions.each do |p|
 			up = UserPermission.new(name: p)

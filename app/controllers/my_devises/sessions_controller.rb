@@ -11,8 +11,9 @@ class MyDevises::SessionsController < Devise::SessionsController
   end
 
   def create
-    user = User.find_for_database_authentication(email: params[:user][:email])
-    
+    user_sing_in = sign_in_params
+    user = User.find_for_database_authentication(rut: params[:user][:rut])
+
     return invalid_login_attempt unless user
 
     if user.valid_password?(params[:user][:password])
@@ -31,8 +32,8 @@ class MyDevises::SessionsController < Devise::SessionsController
       render json: flash[:alert], status: 401
     end
 
-  # def sign_in_params
-  # 	params.require(:user).permit(:name, :last_name, :email, :password, :password_confirmation)
-  # end
+    # def sign_in_params
+    # 	params.require(:user).permit(:rut, :password)
+    # end
 
 end

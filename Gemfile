@@ -41,6 +41,9 @@ gem 'jquery-fileupload-rails', github: 'Springest/jquery-fileupload-rails'
 gem 'roo'
 gem 'roo-xls'
 
+# Validador de rut
+gem 'rut_chileno'
+
 gem 'devise-i18n'
 
 group :development, :test do

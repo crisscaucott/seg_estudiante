@@ -21,3 +21,4 @@
 
 es:
   hello: "Hola mundo"
+  invalid_rut: "Rut no válido."

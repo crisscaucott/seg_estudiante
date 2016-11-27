@@ -8,9 +8,13 @@ es:
           attributes:
             name:
               blank: "Nombre no puede estar en blanco."
+            rut:
+              blank: "Rut no puede estar en blanco."
+              taken: "El rut ingresado ya está en uso."
             email: 
               blank: "Correo no puedo estar en blanco."
               taken: "El correo ingresado ya está en uso."
+              invalid: "El formato del correo ingresado es inválido."
             password:
               blank: "Contraseña no puede estar en blanco."
             last_name:
@@ -40,7 +44,7 @@ es:
       inactive: 'Tu cuenta aún no ha sido activada.'
     sessions:
       user:
-        invalid: 'Correo o contraseña inválidos.'
+        invalid: 'Rut o contraseña inválidos.'
         signed_in: 'Ingreso exitoso.'
         signed_out: 'Has salido del sistema.'
     passwords:

@@ -12,7 +12,24 @@ class SuperUserController < ApplicationController
 	end
 
 	def new_estado_desercion
-		render json: {}
+		ed_obj = EstadoDesercion.new(estado_desercion_params)
+
+		if ed_obj.valid?
+			# Guardar el nuevo estado de desercion a la BD.
+			if !ed_obj.getEstadoDesercion
+				ed_obj.save
+				render json: {msg: "El nuevo de deserción se ha agregado exitosamente."}
+
+			else
+				render json: {errors: "El estado de deserción ya se encuentra ingresado."}, status: 422
+			end
+
+		else
+			# Fallo en las validaciones del objeto de desercion.
+	  	render :json => {errors: ed_obj.getFormatErrorMessages}, status: 422
+			
+		end
+
 	end
 
 	def new_user
@@ -47,6 +64,10 @@ class SuperUserController < ApplicationController
 		if current_user.user_permission.name != "Decano"
 			redirect_to :root, :status => 301, :flash => { msg: 'Usted no tiene los permisos para estar en esta sección.', alert_type: 'warning'}
 		end		
+	end
+
+	def estado_desercion_params
+		params.require(:estado_desercion).permit(:nombre_estado, :notificar)
 	end
 
 	def sign_up_params

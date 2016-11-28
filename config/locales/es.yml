@@ -22,3 +22,11 @@
 es:
   hello: "Hola mundo"
   invalid_rut: "Rut no válido."
+
+  activerecord:
+    errors:
+      models:
+        estado_desercion:
+            attributes:
+              nombre_estado:
+                blank: "Este campo no puede estar vacío."

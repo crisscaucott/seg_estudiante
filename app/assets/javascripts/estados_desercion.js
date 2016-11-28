@@ -20,10 +20,11 @@ $( "form#estado_desercion_form" ).submit(function( event ) {
 			// console.log(data);
 			// console.log(textStatus);
 			console.log(jqXHR);
+			showNotification({msg: jqXHR.responseJSON.msg, type: 'success'})
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
 			console.log("fail");
-			showNotification({msg: jqXHR.responseText, type: 'danger'})
+			showNotification({msg: jqXHR.responseJSON.errors, type: 'danger'})
 
 			// console.log(jqXHR);
 			// console.log(textStatus);

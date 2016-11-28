@@ -20,6 +20,7 @@ $( "form#sign_up_user" ).submit(function( event ) {
 				btn.toggleClass('disabled');
 			}
 		}).done(function(data, textStatus, jqXHR) {
+				showNotification({msg: jqXHR.responseJSON.msg, type: 'success'})
 				// console.log("done");
 				// console.log(data);
 				// console.log(textStatus);

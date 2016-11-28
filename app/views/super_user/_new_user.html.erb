@@ -1,0 +1,62 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "sign_up", "data-turbolinks-track" => true  %>
+  <%= javascript_include_tag "validar_rut", "data-turbolinks-track" => true  %>
+<% end %>
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3 form-box">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h3>Agregar nuevo usuario</h3>
+      </div>
+      <div class="form-top-right">
+        <i class="fa fa-lock"></i>
+      </div>
+    </div>
+    <%= form_for(resource, url: new_user_new_path, html: {id: 'sign_up_user', format: :json}) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :nombre %><br />
+        <%= f.text_field :name, autofocus: true, class: 'form-username form-control', placeholder: 'Nombre' %>
+      </div>
+      
+      <div class="form-group">
+        <%= f.label :apellido %><br />
+        <%= f.text_field :last_name, autofocus: true, class: 'form-username form-control', placeholder: 'Apellido' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :email %><br />
+        <%= f.email_field :email, autofocus: true, class: 'form-username form-control', placeholder: 'Email' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :rut %><br />
+        <%= f.text_field :rut, autofocus: true, class: 'form-username form-control', placeholder: 'Rut' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :contraseña %>
+        <% if @minimum_password_length %>
+        <em>(<%= @minimum_password_length %> como mínimo)</em>
+        <% end %><br />
+        <%= f.password_field :password, autocomplete: "off", class: 'form-username form-control', placeholder: 'Contraseña' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :confirmar_contraseña %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "off", class: 'form-username form-control', placeholder: 'Confirmar contraseña' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :tipo_usuario %>
+        <%= f.collection_select(:id_permission, users_permissions, :id, :name, {}, {class: 'form-control'}) %>
+    
+      </div>
+    
+      <div class="actions text-center">
+        <%= f.submit 'Ingresar', class: 'btn btn-primary' %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

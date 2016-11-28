@@ -1,0 +1,9 @@
+<div class="col-sm-4 list-group">
+	<%= link_to('Notas', new_user_path, class: "list-group-item list-group-item-action") %>
+</div>
+
+<div class="col-sm-8">
+	<% if !local_assigns[:partial].nil? %>
+		<%= render partial: partial, locals: local_assigns %>
+	<% end %>
+</div>

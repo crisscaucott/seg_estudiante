@@ -1,7 +1,28 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "mass_load", "data-turbolinks-track" => true  %>
+<% end %>
 <div class="col-sm-4 list-group">
-	<%= link_to('Notas', notas_path, class: "list-group-item list-group-item-action") %>
-	<%= link_to('Asistencias', asistencia_path, class: "list-group-item list-group-item-action") %>
-	<%= link_to('Alumnos', alumnos_path, class: "list-group-item list-group-item-action") %>
+  <div id="MainMenu">
+  	<div class="list-group panel" id="option-list">
+  	  <a href="#notas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Notas</a>
+  	  <div class="collapse" id="notas">
+  				<%= link_to('Subir', mass_load_notas_path, class: "list-group-item list") %>
+  				<%= link_to('Ver', mass_load_get_notas_path, class: "list-group-item list") %>
+  	  </div>
+  	
+  	  <a href="#asistencia" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Asistencia</a>
+  	  <div class="collapse" id="asistencia">
+  				<%= link_to('Subir', mass_load_asistencia_path, class: "list-group-item list") %>
+  				<%= link_to('Ver', mass_load_get_asistencia_path, class: "list-group-item list") %>
+  	  </div>
+  	
+  	  <a href="#alumnos" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Alumnos</a>
+  	  <div class="collapse" id="alumnos">
+  				<%= link_to('Subir', mass_load_alumnos_path, class: "list-group-item list") %>
+  				<%= link_to('Ver', mass_load_get_alumnos_path, class: "list-group-item list") %>
+  	  </div>
+  	</div>
+  </div>
 </div>
 
 <div class="col-sm-8">

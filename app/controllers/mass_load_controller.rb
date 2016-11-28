@@ -18,6 +18,17 @@ class MassLoadController < ApplicationController
 	def index
 	end
 
+	def getNotas
+		
+	end
+
+	def getAlumnos
+		
+	end
+
+	def getAsistencia
+		
+	end
 
 	def uploadAssistance
 		uploaded_file = uploadFile(params[:reporte][:file])

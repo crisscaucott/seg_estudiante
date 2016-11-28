@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, authentication_keys: [:login]
 
-  belongs_to :user_permission
+  belongs_to :user_permission, class_name: "UserPermission", foreign_key: "id_permission"
   validates :name, :last_name, :email, presence: true
   validates_format_of :email, with: email_regexp
   validates_presence_of :rut

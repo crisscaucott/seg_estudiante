@@ -18,6 +18,8 @@
 //= require bootstrap-notify.min
 //= require jquery.remotipart
 //= require jquery-fileupload/basic
+//= require jquery.dataTables.min
+//= require dataTables.bootstrap.min
 
 var notifications = [];
 var notifications_limit = 3;
@@ -75,3 +77,13 @@ function checkNotifications(noti)
 	}
 	notifications.push(notif);
 }
+
+function initDataTable(data_table)
+{
+	data_table.dataTable({
+		"sDom": '<"top"l>rt<"bottom"ip>',
+		"order": [[1, 'asc']],
+		
+	});
+}
+

@@ -4,16 +4,26 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   devise_scope :user do
-  	root to: "main#index"
+    root to: "main#index"
   end
 
+  get '/admini/', to: 'super_user#index', as: 'admini'
+  get '/admini/nuevo_usuario', to: 'super_user#new_user', as: 'new_user'
+  post '/admini/nuevo_usuario/new', to: 'super_user#createUser', as: 'new_user_new'
+  get '/admini/estados_desercion', to: 'super_user#estados_desercion_index', as: 'estados_desercion'
+  post '/admini/estados_desercion/new', to: 'super_user#new_estado_desercion', as: 'new_estados_desercion'
   # You can have the root of your site routed with "root"
   # root 'main#index'
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
-  get '/carga_masiva/notas', to: 'mass_load#notas', as: 'notas'
-  get '/carga_masiva/asistencia', to: 'mass_load#asistencia', as: 'asistencia'
-  get '/carga_masiva/alumnos', to: 'mass_load#alumnos', as: 'alumnos'
+  get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
+  get '/carga_masiva/notas/ver', to: 'mass_load#getNotas', as: 'mass_load_get_notas'
+
+  get '/carga_masiva/asistencia/subir', to: 'mass_load#asistencia', as: 'mass_load_asistencia'
+  get '/carga_masiva/asistencia/ver', to: 'mass_load#getAsistencia', as: 'mass_load_get_asistencia'
+  get '/carga_masiva/alumnos/subir', to: 'mass_load#alumnos', as: 'mass_load_alumnos'
+  get '/carga_masiva/alumnos/ver', to: 'mass_load#getAlumnos', as: 'mass_load_get_alumnos'
+  
   post '/carga_masiva/notas/upload_xls', to: 'main#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'
   get '/reportes', to: 'main#reportes', as: 'reportes'

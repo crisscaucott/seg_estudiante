@@ -7,7 +7,12 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
+<% if flash[:msg] %>
+  <div class="alert alert-<%= flash[:alert_type] %> alert-dismissible"">
+    <strong><%= flash[:msg] %></strong>
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+  </div>
+<% end %>
 <div class="navbar navbar-default navbar-static-top" id="main-navbar">
   <div class="container-fluid">
     <nav>
@@ -22,7 +27,13 @@
 
       <% if user_signed_in? %>
         <div class="nav pull-right" style="margin-top: 20px; display: flex;">
-          <p>Hola, <%= current_user.name %> | <%= link_to "Salir", destroy_user_session_path, class: 'navbar-link', method: 'delete' %></p>
+          <p>Hola, 
+          <%= current_user.name %> | 
+          <% if current_user.user_permission.name == "Decano" %>
+            <%= link_to "Admin", admini_path, class: 'navbar-link' %>
+          | 
+          <% end %>
+          <%= link_to "Salir", destroy_user_session_path, class: 'navbar-link', method: 'delete' %></p>
         </div>
       <% end %>
     </nav>

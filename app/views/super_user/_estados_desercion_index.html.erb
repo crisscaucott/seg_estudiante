@@ -1,0 +1,66 @@
+<%= content_for :css do %>   
+  <%= stylesheet_link_tag 'estados_desercion', media: 'all', 'data-turbolinks-track' => true %>
+<% end %>
+<table id="estados_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre estado</th>
+            <th>Notifica</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% estados.each_with_index do |e, index| %>
+            <tr>
+                <td><%= index + 1 %></td>
+                <td><%= e.nombre_estado %></td>
+                <td><%= e.notificar ? "Si" : "No" %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<div class="row">
+  <div class="col-sm-8 form-box">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h3>Agregar nuevo estado de deserción</h3>
+      </div>
+      <div class="form-top-right">
+        <i class="fa fa-lock"></i>
+      </div>
+    </div>
+    <%= form_for(estado_desercion, url: new_estados_desercion_path, html: {id: 'estado_desercion_form', format: :json}) do |f| %>
+
+        <div class="form-group">
+            <%= f.label :nombre_estado %><br />
+            <%= f.text_field :nombre_estado, autofocus: true, class: 'form-username form-control', placeholder: 'Nombre estado' %>
+        </div>
+
+        <div class="form-group">
+        </div>
+
+        <div class="form-group">
+            <%= f.check_box :notificar, class: 'form-username form-control' %>
+            
+            <!-- <input type="checkbox" name="fancy-checkbox-default" id="fancy-checkbox-default" autocomplete="off" /> -->
+            <div class="[ btn-group ]">
+                <label for="fancy-checkbox-default" class="[ btn btn-info ]">
+                    <span class="[ glyphicon glyphicon-ok ]"></span>
+                    <span> </span>
+                </label>
+                <%= f.label :notificar, class: "[ btn btn-default active ]" %>
+
+                <!-- <label for="fancy-checkbox-default" class="[ btn btn-default active ]">
+                    Default Checkbox
+                </label> -->
+            </div>
+        </div>
+
+      <div class="actions text-center">
+        <%= f.submit 'Agregar', class: 'btn btn-primary' %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

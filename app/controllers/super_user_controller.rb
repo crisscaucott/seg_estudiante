@@ -7,8 +7,12 @@ class SuperUserController < ApplicationController
 	end
 
 	def estados_desercion_index
-		
-		render action: :index, locals: {partial: 'estados_desercion_index'}
+		# estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(nombre_estado: :asc)
+		render action: :index, locals: {partial: 'estados_desercion_index', estado_desercion: EstadoDesercion.new}
+	end
+
+	def new_estado_desercion
+		render json: {}
 	end
 
 	def new_user

@@ -77,3 +77,13 @@ function checkNotifications(noti)
 	}
 	notifications.push(notif);
 }
+
+function initDataTable(data_table)
+{
+	data_table.dataTable({
+		"sDom": '<"top"l>rt<"bottom"ip>',
+		"order": [[1, 'asc']],
+		
+	});
+}
+

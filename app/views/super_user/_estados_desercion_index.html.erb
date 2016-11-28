@@ -1,7 +1,7 @@
 <%= content_for :css do %>   
   <%= stylesheet_link_tag 'estados_desercion', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
-<table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+<table id="estados_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
         <tr>
             <th>#</th>
@@ -10,16 +10,13 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Bueno</td>
-            <td>Si</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Malo</td>
-            <td>Si</td>
-        </tr>
+        <% estados.each_with_index do |e, index| %>
+            <tr>
+                <td><%= index + 1 %></td>
+                <td><%= e.nombre_estado %></td>
+                <td><%= e.notificar ? "Si" : "No" %></td>
+            </tr>
+        <% end %>
     </tbody>
 </table>
 

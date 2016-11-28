@@ -8,7 +8,8 @@ class SuperUserController < ApplicationController
 
 	def estados_desercion_index
 		# estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(nombre_estado: :asc)
-		render action: :index, locals: {partial: 'estados_desercion_index', estado_desercion: EstadoDesercion.new}
+		estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(:nombre_estado => :asc)
+		render action: :index, locals: {partial: 'estados_desercion_index', estado_desercion: EstadoDesercion.new, estados: estados_desercion}
 	end
 
 	def new_estado_desercion
@@ -18,7 +19,7 @@ class SuperUserController < ApplicationController
 			# Guardar el nuevo estado de desercion a la BD.
 			if !ed_obj.getEstadoDesercion
 				ed_obj.save
-				render json: {msg: "El nuevo de deserción se ha agregado exitosamente."}
+				render json: {msg: "El nuevo de deserción se ha agregado exitosamente.", estado_obj: ed_obj}
 
 			else
 				render json: {errors: "El estado de deserción ya se encuentra ingresado."}, status: 422

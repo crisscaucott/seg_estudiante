@@ -6,6 +6,11 @@ class SuperUserController < ApplicationController
 		
 	end
 
+	def estados_desercion_index
+		
+		render action: :index, locals: {partial: 'estados_desercion_index'}
+	end
+
 	def new_user
 		users_permissions = UserPermission.select([:id, :name]).order(name: :asc)
 		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions}

@@ -1,5 +1,10 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "estados_desercion", "data-turbolinks-track" => true  %>
+<% end %>
 <div class="col-sm-4 list-group">
-	<%= link_to('Notas', new_user_path, class: "list-group-item list-group-item-action") %>
+	<%= link_to('Agregar usuario', new_user_path, class: "list-group-item list-group-item-action") %>
+	<%= link_to('Estados deserción', estados_desercion_path, class: "list-group-item list-group-item-action") %>
+
 </div>
 
 <div class="col-sm-8">

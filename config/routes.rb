@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get '/admini/', to: 'super_user#index', as: 'admini'
   get '/admini/nuevo_usuario', to: 'super_user#new_user', as: 'new_user'
   post '/admini/nuevo_usuario/new', to: 'super_user#createUser', as: 'new_user_new'
+  get '/admini/estados_desercion', to: 'super_user#estados_desercion_index', as: 'estados_desercion'
   # You can have the root of your site routed with "root"
   # root 'main#index'
 

@@ -18,6 +18,8 @@
 //= require bootstrap-notify.min
 //= require jquery.remotipart
 //= require jquery-fileupload/basic
+//= require jquery.dataTables.min
+//= require dataTables.bootstrap.min
 
 var notifications = [];
 var notifications_limit = 3;

@@ -18,8 +18,9 @@ class MassLoadController < ApplicationController
 	def index
 	end
 
-	def getNotas
-		
+	def get_notas
+
+		render action: :index, locals: {partial: 'ver_notas'}
 	end
 
 	def getAlumnos

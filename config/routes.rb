@@ -17,7 +17,7 @@ Rails.application.routes.draw do
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
-  get '/carga_masiva/notas/ver', to: 'mass_load#getNotas', as: 'mass_load_get_notas'
+  get '/carga_masiva/notas/ver', to: 'mass_load#get_notas', as: 'mass_load_get_notas'
 
   get '/carga_masiva/asistencia/subir', to: 'mass_load#asistencia', as: 'mass_load_asistencia'
   get '/carga_masiva/asistencia/ver', to: 'mass_load#getAsistencia', as: 'mass_load_get_asistencia'

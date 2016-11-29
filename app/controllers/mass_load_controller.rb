@@ -19,8 +19,28 @@ class MassLoadController < ApplicationController
 	end
 
 	def get_notas
-		calificaciones = Calificacion.includes(:asignatura, estudiante: [:carrera])
-		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones}
+		calificaciones = Calificacion.getCalificaciones
+		filtro_notas = {
+			carreras: Carrera.getCarreras,
+			asignaturas: Asignatura.getAsignaturas
+		}
+		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas}
+	end
+
+	def get_notas_filtering
+		filters = notas_filter_params
+		calificaciones = Calificacion.getCalificaciones(filters)
+
+		if calificaciones.size != 0
+			byebug
+			calificaciones.map{|c| c.periodo_academico = formatDateToSemesterPeriod(c.periodo_academico) }
+
+
+			render json: {msg: "Datos de calificaciones obtenidos exitosamente.", calificaciones: calificaciones}, include: [:asignatura, estudiante: {include: :carrera}]
+		else
+			render json: {msg: "No se han encontrado calificaciones con los filtrados definidos.", type: "warning"}, status: :unprocessable_entity
+		end
+
 	end
 
 	def getAlumnos
@@ -48,4 +68,7 @@ class MassLoadController < ApplicationController
 
 	end
 
+	def notas_filter_params
+		params.require(:filters).permit(:carrera, :asignatura)
+	end
 end

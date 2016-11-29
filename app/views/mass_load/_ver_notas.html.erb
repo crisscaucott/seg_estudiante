@@ -2,6 +2,32 @@
   <%= javascript_include_tag "ver_notas", "data-turbolinks-track" => true  %>
 <% end %>
 <h1>Ver notas</h1>
+
+<div class="col-sm-6 col-sm-offset-3 form-box">
+  <div class="form-top">
+    <div class="form-top-left">
+      <h4>Filtrar</h4>
+    </div>
+    <div class="form-top-right">
+      <i class="fa fa-lock"></i>
+    </div>
+  </div>
+  <%= form_for(:filters, url: filtering_notas_path, html: {id: 'filters_form', format: 'json'}) do |f| %>
+      <div class="form-group">
+        <%= f.label :carrera %><br />
+        <%= f.collection_select(:carrera, filtros[:carreras], :id, :nombre, {}, {class: 'form-control'}) %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :asignatura %><br />
+        <%= f.collection_select(:asignatura, filtros[:asignaturas], :id, :nombre, {}, {class: 'form-control'}) %>
+      </div>
+
+      <div class="actions text-center">
+        <%= f.submit 'Filtrar', class: 'btn btn-primary' %>
+      </div>
+  <% end %>
+</div>
 <table id="notas_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
         <tr>

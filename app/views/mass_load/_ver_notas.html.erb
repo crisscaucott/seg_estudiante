@@ -1,0 +1,32 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "ver_notas", "data-turbolinks-track" => true  %>
+<% end %>
+<h1>Ver notas</h1>
+<table id="notas_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Carrera</th>
+            <th>Asignatura</th>
+            <th>Tipo Nota</th>
+            <th>Nota</th>
+            <th>Periodo Academico</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% calificaciones.each_with_index do |c, index| %>
+        	<tr>
+        		<td><%= index + 1 %></td>
+        		<td><%= c.estudiante.nombre.capitalize %></td>
+        		<td><%= c.estudiante.apellido.capitalize %></td>
+        		<td><%= c.estudiante.carrera.nombre %></td>
+        		<td><%= c.asignatura.nombre.capitalize %></td>
+        		<td><%= c.nombre_calificacion %></td>
+        		<td><%= c.valor_calificacion %></td>
+        		<td><%= formatDateToSemesterPeriod(c.periodo_academico) %></td>
+        	</tr>
+        <% end %>
+    </tbody>
+</table>

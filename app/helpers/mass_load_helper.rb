@@ -14,4 +14,9 @@ module MassLoadHelper
 		end
 		return res
 	end
+
+	def formatDateToSemesterPeriod(date)
+		semester = date.month < 7 ? "1" : "2"
+		return "#{date.year} - #{semester}"
+	end
 end

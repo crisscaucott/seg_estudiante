@@ -19,8 +19,8 @@ class MassLoadController < ApplicationController
 	end
 
 	def get_notas
-
-		render action: :index, locals: {partial: 'ver_notas'}
+		calificaciones = Calificacion.includes(:asignatura, estudiante: [:carrera])
+		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones}
 	end
 
 	def getAlumnos

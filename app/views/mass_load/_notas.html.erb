@@ -4,7 +4,7 @@
 <h1>Subir notas</h1>
 
 <%= form_for(report, url: upload_xls_path(report), html: {id: 'notas_form'}) do |f| %>
-	<%= f.file_field(:nombre_reporte, class: 'filestyle', data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
+	<%= f.file_field(:nombre_reporte, data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
 	<!-- <div class="pull-right">
 		<%= f.submit('Cargar', class: 'btn btn-danger text-center') %>
 	</div> -->

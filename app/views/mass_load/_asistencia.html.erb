@@ -4,7 +4,7 @@
 <h1>Asistencia</h1>
 
 <%= form_for(report, url: upload_assis_path(report), html: {id: 'asistencia_form'}) do |f| %>
-	<%= f.file_field(:file, class: 'filestyle', data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
+	<%= f.file_field(:file, data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
 
 	<div class="progress-wrapper">
 	  <div class="progress">

@@ -20,6 +20,7 @@
 //= require jquery-fileupload/basic
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap.min
+//= require bootbox.min
 
 var notifications = [];
 var notifications_limit = 3;
@@ -92,7 +93,10 @@ function initDataTable(data_table, options)
 	else
 	  dom = options.dom;
 
+	created_row = options.created_row !== undefined ? options.created_row : null
+
 	data_table.dataTable({
+		"createdRow": created_row,
     "dom": dom,
 		"order": [[1, 'asc']],
 		"columns": options.columns,

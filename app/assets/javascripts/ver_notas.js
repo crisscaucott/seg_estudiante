@@ -16,7 +16,7 @@ var datatable_options = {
 initDataTable(table, datatable_options);
 
 $('form#filters_form').submit(function(event){
-  var data, btn, btn_text;
+  var data, btn, btn_text, noti_params = {msg: null, type: 'info'};
   event.preventDefault();
   data = $(event.target).serialize();
   btn = $(event.target).find('input[type=submit]');
@@ -37,6 +37,7 @@ $('form#filters_form').submit(function(event){
       dt.clear();
       for (var i = 0; i < jqXHR.responseJSON.calificaciones.length; i++)
       {
+        var pa = new Date(Date.parse(jqXHR.responseJSON.calificaciones[i].periodo_academico));
         dt.row.add({
           "num": i + 1,
           "est_nombre": jqXHR.responseJSON.calificaciones[i].estudiante.nombre,
@@ -45,26 +46,28 @@ $('form#filters_form').submit(function(event){
           "asignatura": jqXHR.responseJSON.calificaciones[i].asignatura.nombre,
           "tipo_calificacion": jqXHR.responseJSON.calificaciones[i].nombre_calificacion,
           "calificacion": jqXHR.responseJSON.calificaciones[i].valor_calificacion,
-          "periodo_academico": jqXHR.responseJSON.calificaciones[i].periodo_academico
+          "periodo_academico": formatDateToSemesterPeriod(pa)
         });
       }
       dt.draw();
-      
-      showNotification({msg: jqXHR.responseJSON.msg, type: 'success'})
+      noti_params.msg = jqXHR.responseJSON.msg;
+      noti_params.type = 'success';
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
-      showNotification({msg: jqXHR.responseJSON.msg, type: jqXHR.responseJSON.type})
 
-      // console.log(jqXHR);
-      // console.log(textStatus);
-      // console.log(errorThrown);
+      noti_params.msg = jqXHR.responseJSON.msg;
+      noti_params.type = 'danger';
+
+      if (jqXHR.responseJSON !== undefined)
+      {
+        noti_params.msg = jqXHR.responseJSON.msg;
+        noti_params.type = jqXHR.responseJSON.type;
+      }
+
   }).always(function(data, textStatus, errorThrown) {
       btn.toggleClass('disabled');
       btn.val(btn_text);
-      // console.log("always");
-      // console.log(data);
-      // console.log(textStatus);
-      // console.log(errorThrown);
+      showNotification({msg: noti_params.msg, type: noti_params.type})
   });
 
 });

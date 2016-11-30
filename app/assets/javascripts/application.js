@@ -68,6 +68,12 @@ function showNotification(options)
 	checkNotifications(notif);
 }
 
+function formatDateToSemesterPeriod(date)
+{
+	var semester = date.getUTCMonth() < 6 ? "1" : "2";
+	return String(date.getUTCFullYear()) + " - " + String(semester);
+}
+
 function checkNotifications(noti)
 {
 	if (notifications.length >= notifications_limit)

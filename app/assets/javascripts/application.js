@@ -20,6 +20,7 @@
 //= require jquery-fileupload/basic
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap.min
+//= require bootbox.min
 
 var notifications = [];
 var notifications_limit = 3;

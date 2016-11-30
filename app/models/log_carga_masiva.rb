@@ -24,8 +24,16 @@ class LogCargaMasiva < ActiveRecord::Base
 					end
 
 				else
-					# No encontro el codigo por regex
+					# No encontro el codigo por regex, se intentara buscar la asignatura por su nombre (caso no ideal).
+					asig_name = spreadsheet.row(ss_row)[1].gsub(/\-(.*)/, '').downcase.strip
+					req_data[:asignatura] = Asignatura.select(:id).where("lower(nombre) = ?", asig_name).first
 
+					if req_data[:asignatura].nil?
+						# Si no se encontro la asignatura, se deja de leer el excel.
+						response[:error] = true
+						response[:msg] = "Hubo problema en encontrar la asignatura del excel."
+						break
+					end
 				end					
 			end # END if curso
 
@@ -114,13 +122,15 @@ class LogCargaMasiva < ActiveRecord::Base
 			self.tipo_carga = 'asistencia'
 			self.detalle = assis_detail
 			self.save
+
+		  response[:msg] = "Asistencias subidas exitosamente."
 		end
 
 		return response
 	end
 
-	def self.readExcelFile(file, user_id)
-		spreadsheet = open_spreadsheet(file)
+	def uploadNotas()
+		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
 		response = {error: false, msg: nil}
 
 	  # BUSCAR LA ASIGNATURA EN LA BD.
@@ -274,8 +284,8 @@ class LogCargaMasiva < ActiveRecord::Base
 
 		if !response[:error]
 			# Si no hay errores, se registra la carga masiva del usuario.
-			carga_masiva_obj = self.new({usuario_id: user_id, tipo_carga: 'excel'})
-			carga_masiva_obj.save			
+			self.tipo_carga = 'excel'
+			self.save			
 		end
 
 		return response

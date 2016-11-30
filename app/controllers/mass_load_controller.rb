@@ -1,21 +1,12 @@
 class MassLoadController < ApplicationController
 	include MassLoadHelper
 
+	def index
+	end
+
 	def notas
 		report = Reporte.new
-		render action: :index, locals: {partial: 'notas',  report: report}
-	end
-
-	def asistencia
-		report = Reporte.new
-		render action: :index, locals: {partial: 'asistencia', report: report}
-	end
-
-	def alumnos
-		
-	end
-
-	def index
+		render action: :index, locals: {partial: 'notas',  report: report, context: 'notas'}
 	end
 
 	def get_notas
@@ -24,7 +15,26 @@ class MassLoadController < ApplicationController
 			carreras: Carrera.getCarreras,
 			asignaturas: Asignatura.getAsignaturas
 		}
-		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas}
+		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
+	end
+
+	def uploadXls
+		uploaded_file = uploadFile(params[:reporte][:nombre_reporte])
+
+		if !uploaded_file[:file_path].nil?
+			# Subir excel con las notas.
+			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+			
+			res = mass_load_obj.uploadNotas()
+			if !res[:error]
+				render json: {msg: res[:msg]}
+			else
+				render json: {msg: res[:msg]}, status: :unprocessable_entity
+			end
+		else
+			# Problema con guardar el fichero
+			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+		end
 	end
 
 	def get_notas_filtering
@@ -40,33 +50,49 @@ class MassLoadController < ApplicationController
 		else
 			render json: {msg: "No se han encontrado calificaciones con los filtrados definidos.", type: "warning"}, status: :unprocessable_entity
 		end
-
 	end
 
-	def getAlumnos
-		
+	def asistencia
+		report = Reporte.new
+		render action: :index, locals: {partial: 'asistencia', report: report, context: 'asistencia'}
 	end
 
-	def getAsistencia
-		
+	def get_asistencia
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia'}
 	end
 
 	def uploadAssistance
 		uploaded_file = uploadFile(params[:reporte][:file])
-
 
 		if !uploaded_file[:file_path].nil?
 			# Subir excel con asistencia.
 			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
 			
 			res = mass_load_obj.uploadAssistance()
-			render json: {msg: "Excel con asistencia subida exitosamente."}
+
+			if !res[:error]
+				render json: {msg: res[:msg]}
+			else
+				render json: {msg: res[:msg]}, status: :unprocessable_entity
+			end
+
 		else
 			# Problema con guardar el fichero
 			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
 		end
 
 	end
+
+	def alumnos
+		render action: :index, locals: {partial: 'alumnos', context: 'alumnos'}
+		
+	end
+
+	def get_alumnos
+		render action: :index, locals: {partial: 'get_alumnos', context: 'alumnos'}
+		
+	end
+
 
 	def notas_filter_params
 		params.require(:filters).permit(:carrera, :asignatura)

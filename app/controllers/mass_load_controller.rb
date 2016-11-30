@@ -60,7 +60,21 @@ class MassLoadController < ApplicationController
 	end
 
 	def get_asistencia
-		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia'}
+		asistencias = Asistencia.getAsistencias()
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias}
+	end
+
+	def get_asistencia_detail
+		asis_params = asistencia_detail_filter_params
+		asistencia_detail = Asistencia.getAsistenciaDetail(asis_params)
+
+		titulo = "Asistencia del alumno <b>'" + Estudiante.getEstudianteFullNameById(asis_params[:estudiante_id]) + "'</b>, en la asignatura de <b>'" + Asignatura.getAsignaturaNameById(asis_params[:asignatura_id]) + "'</b>."
+
+		if asistencia_detail.size != 0
+			render json: {msg: "Asistencia obtenidas exitosamente.", type: "success", title: titulo, table: render_to_string(partial: 'asistencia_detalle', formats: [:html], layout: false, locals: {asistencia: asistencia_detail})}
+		else
+			render json: {msg: "El alumno solicitado no presenta asistencias guardada en el sistema.", type: "warning"}, status: :unprocessable_entity
+		end
 	end
 
 	def uploadAssistance
@@ -98,5 +112,9 @@ class MassLoadController < ApplicationController
 
 	def notas_filter_params
 		params.require(:filters).permit(:carrera, :asignatura)
+	end
+
+	def asistencia_detail_filter_params
+		params.permit(:estudiante_id, :asignatura_id)
 	end
 end

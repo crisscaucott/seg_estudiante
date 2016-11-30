@@ -1,0 +1,25 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "ver_asistencias", "data-turbolinks-track" => true  %>
+<% end %>
+<h1>Ver asistencia</h1>
+
+<table id="asis_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Estudiante</th>
+            <th>Asignatura</th>
+            <th>Accion</th>
+        </tr>
+    </thead>
+    <tbody>
+      <% asistencias.each_with_index do |a, index| %>
+        <tr>
+          <td><%= index + 1 %></td>
+          <td data-estudiante-id="<%= a.estudiante_id %>"><%= a.estudiante.nombre %> <%= a.estudiante.apellido %></td>
+          <td data-asignatura-id="<%= a.asignatura_id %>"><%= a.asignatura.nombre %></td>
+          <td><%= button_tag "Ver", class: "btn btn-primary ver-detail" %></td>
+        </tr>
+      <% end %>
+    </tbody> 
+</table>

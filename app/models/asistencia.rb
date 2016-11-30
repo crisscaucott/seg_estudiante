@@ -3,7 +3,17 @@ class Asistencia < ActiveRecord::Base
 	belongs_to :asignatura, class_name: "Asignatura"
 
 	def self.getAsistencias(filters = {})
-		return self.includes(:asignatura, :estudiante).select([:estudiante_id, :asignatura_id]).group(:estudiante_id, :asignatura_id)
+		query = self.includes(:asignatura, :estudiante).select([:estudiante_id, :asignatura_id]).group(:estudiante_id, :asignatura_id)
+
+		# if !filters[:carrera].nil?
+		# 	query = query.where('carrera.id = ?', filters[:carrera]).references(:carrera)
+		# end
+
+		if !filters[:asignatura].nil?
+			query = query.where(asignatura_id: filters[:asignatura])
+		end
+
+		return query
 	end
 
 	def self.getAsistenciaDetail(filters)

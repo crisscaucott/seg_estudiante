@@ -1,5 +1,20 @@
 var table = $('table#asis_table');
 var datatable_options = {
+    created_row: function( row, data, dataIndex ) {
+      if (/\|/.test(data.estudiante)){
+        aux_est = data.estudiante.split("|")
+        $(row).find('td:eq(1)').html(aux_est[0]);
+        $(row).find('td:eq(1)').attr('data-estudiante-id', aux_est[1]);
+      }
+      if (/\|/.test(data.asignatura)) {
+        aux_asig = data.asignatura.split("|")
+        $(row).find('td:eq(2)').html(aux_asig[0]);
+        $(row).find('td:eq(2)').attr('data-asignatura-id', aux_asig[1]);
+      }
+      if (data.accion == null) {
+        $(row).find('td:eq(3)').html("<button name='button' type='submit' class='btn btn-primary ver-detail'>Ver</button>");
+      }
+    },
     dom: 'ftip',
     columns: [
       {"data": "num"}, 
@@ -36,24 +51,6 @@ table.on('click', 'button.ver-detail', function(event){
         btn.toggleClass('disabled');
       }
     }).done(function(data, textStatus, jqXHR) {
-        // Borrar los datos de la tabla.
-        // var dt = table.DataTable();
-        // dt.clear();
-        // for (var i = 0; i < jqXHR.responseJSON.calificaciones.length; i++)
-        // {
-        //   var pa = new Date(Date.parse(jqXHR.responseJSON.calificaciones[i].periodo_academico));
-        //   dt.row.add({
-        //     "num": i + 1,
-        //     "est_nombre": jqXHR.responseJSON.calificaciones[i].estudiante.nombre,
-        //     "est_apellido": jqXHR.responseJSON.calificaciones[i].estudiante.apellido,
-        //     "carrera": jqXHR.responseJSON.calificaciones[i].estudiante.carrera.nombre,
-        //     "asignatura": jqXHR.responseJSON.calificaciones[i].asignatura.nombre,
-        //     "tipo_calificacion": jqXHR.responseJSON.calificaciones[i].nombre_calificacion,
-        //     "calificacion": jqXHR.responseJSON.calificaciones[i].valor_calificacion,
-        //     "periodo_academico": formatDateToSemesterPeriod(pa)
-        //   });
-        // }
-        // dt.draw();
         noti_params.msg = jqXHR.responseJSON.msg;
         noti_params.type = jqXHR.responseJSON.type;
 
@@ -80,5 +77,59 @@ table.on('click', 'button.ver-detail', function(event){
         showNotification({msg: noti_params.msg, type: noti_params.type})
     }); 
   }
+});
+
+// Envio formulario con los filtros de las asistencias.
+$('form#filters_form').submit(function(event){
+  var data, btn, btn_text, noti_params = {msg: null, type: 'info'};
+  event.preventDefault();
+  data = $(event.target).serialize();
+  btn = $(event.target).find('input[type=submit]');
+  btn_text = btn.val();
+
+  $.ajax({
+    url: event.target.action,
+    data: data,
+    method: event.target.method,
+    beforeSend: function()
+    {
+      btn.val('Filtrando...');
+      btn.toggleClass('disabled');
+    }
+  }).done(function(data, textStatus, jqXHR) {
+      // Borrar los datos de la tabla.
+      console.log(jqXHR.responseJSON);
+      var dt = table.DataTable();
+      dt.clear();
+      for (var i = 0; i < jqXHR.responseJSON.asistencias.length; i++)
+      {
+        // var pa = new Date(Date.parse(jqXHR.responseJSON.calificaciones[i].periodo_academico));
+        dt.row.add({
+          "num": i + 1,
+          "estudiante": jqXHR.responseJSON.asistencias[i].estudiante.nombre + " " + jqXHR.responseJSON.asistencias[i].estudiante.apellido + "|" +jqXHR.responseJSON.asistencias[i].estudiante_id,
+          "asignatura": jqXHR.responseJSON.asistencias[i].asignatura.nombre + "|" +jqXHR.responseJSON.asistencias[i].asignatura_id,
+          "accion": null
+        });
+      }
+      dt.draw();
+      noti_params.msg = jqXHR.responseJSON.msg;
+      noti_params.type = 'success';
+
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+
+      noti_params.msg = errorThrown;
+      noti_params.type = 'danger';
+
+      if (jqXHR.responseJSON !== undefined)
+      {
+        noti_params.msg = jqXHR.responseJSON.msg;
+        noti_params.type = jqXHR.responseJSON.type;
+      }
+
+  }).always(function(data, textStatus, errorThrown) {
+      btn.toggleClass('disabled');
+      btn.val(btn_text);
+      showNotification({msg: noti_params.msg, type: noti_params.type})
+  });
 
 });

@@ -61,7 +61,24 @@ class MassLoadController < ApplicationController
 
 	def get_asistencia
 		asistencias = Asistencia.getAsistencias()
-		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias}
+		filtro_asistencia = {
+			carreras: Carrera.getCarreras,
+			asignaturas: Asignatura.getAsignaturas
+		}
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias, filtros: filtro_asistencia}
+	end
+
+	def get_asistencia_filtering
+		filter_params = asistencia_filter_params
+		asistencias = Asistencia.getAsistencias(filter_params)
+
+		if asistencias.present?
+			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
+
+		else
+			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: "warning"}, status: :unprocessable_entity			
+		end
+
 	end
 
 	def get_asistencia_detail
@@ -111,6 +128,10 @@ class MassLoadController < ApplicationController
 
 
 	def notas_filter_params
+		params.require(:filters).permit(:carrera, :asignatura)
+	end
+
+	def asistencia_filter_params
 		params.require(:filters).permit(:carrera, :asignatura)
 	end
 

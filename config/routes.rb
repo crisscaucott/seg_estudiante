@@ -17,12 +17,14 @@ Rails.application.routes.draw do
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
-  get '/carga_masiva/notas/ver', to: 'mass_load#getNotas', as: 'mass_load_get_notas'
+  get '/carga_masiva/notas/ver', to: 'mass_load#get_notas', as: 'mass_load_get_notas'
+  post '/carga_masiva/notas/filtering', to: 'mass_load#get_notas_filtering', as: 'filtering_notas'
 
   get '/carga_masiva/asistencia/subir', to: 'mass_load#asistencia', as: 'mass_load_asistencia'
   get '/carga_masiva/asistencia/ver', to: 'mass_load#getAsistencia', as: 'mass_load_get_asistencia'
   get '/carga_masiva/alumnos/subir', to: 'mass_load#alumnos', as: 'mass_load_alumnos'
   get '/carga_masiva/alumnos/ver', to: 'mass_load#getAlumnos', as: 'mass_load_get_alumnos'
+
   
   post '/carga_masiva/notas/upload_xls', to: 'main#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'

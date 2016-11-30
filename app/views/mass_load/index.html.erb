@@ -1,23 +1,23 @@
 <%= content_for :javascript do %>   
   <%= javascript_include_tag "mass_load", "data-turbolinks-track" => true  %>
 <% end %>
-<div class="col-sm-4 list-group">
+<div class="col-sm-3 list-group">
   <div id="MainMenu">
   	<div class="list-group panel" id="option-list">
   	  <a href="#notas" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Notas</a>
-  	  <div class="collapse" id="notas">
+  	  <div class="list-group-submenu collapse" id="notas">
   				<%= link_to('Subir', mass_load_notas_path, class: "list-group-item list") %>
   				<%= link_to('Ver', mass_load_get_notas_path, class: "list-group-item list") %>
   	  </div>
   	
   	  <a href="#asistencia" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Asistencia</a>
-  	  <div class="collapse" id="asistencia">
+  	  <div class="list-group-submenu collapse" id="asistencia">
   				<%= link_to('Subir', mass_load_asistencia_path, class: "list-group-item list") %>
   				<%= link_to('Ver', mass_load_get_asistencia_path, class: "list-group-item list") %>
   	  </div>
   	
   	  <a href="#alumnos" class="list-group-item list-group-item" data-toggle="collapse" data-parent="#MainMenu">Alumnos</a>
-  	  <div class="collapse" id="alumnos">
+  	  <div class="list-group-submenu collapse" id="alumnos">
   				<%= link_to('Subir', mass_load_alumnos_path, class: "list-group-item list") %>
   				<%= link_to('Ver', mass_load_get_alumnos_path, class: "list-group-item list") %>
   	  </div>
@@ -25,8 +25,8 @@
   </div>
 </div>
 
-<div class="col-sm-8">
+<div class="col-sm-9">
 	<% if !local_assigns[:partial].nil? %>
-		<%= render partial: partial, locals: {report: report} %>
+		<%= render partial: partial, locals: local_assigns %>
 	<% end %>
 </div>

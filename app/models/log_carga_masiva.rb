@@ -24,8 +24,16 @@ class LogCargaMasiva < ActiveRecord::Base
 					end
 
 				else
-					# No encontro el codigo por regex
+					# No encontro el codigo por regex, se intentara buscar la asignatura por su nombre (caso no ideal).
+					asig_name = spreadsheet.row(ss_row)[1].gsub(/\-(.*)/, '').downcase.strip
+					req_data[:asignatura] = Asignatura.select(:id).where("lower(nombre) = ?", asig_name).first
 
+					if req_data[:asignatura].nil?
+						# Si no se encontro la asignatura, se deja de leer el excel.
+						response[:error] = true
+						response[:msg] = "Hubo problema en encontrar la asignatura del excel."
+						break
+					end
 				end					
 			end # END if curso
 

@@ -28,7 +28,7 @@ Rails.application.routes.draw do
   get '/carga_masiva/alumnos/ver', to: 'mass_load#get_alumnos', as: 'mass_load_get_alumnos'
 
   
-  post '/carga_masiva/notas/upload_xls', to: 'main#uploadXls', as: 'upload_xls'
+  post '/carga_masiva/notas/upload_xls', to: 'mass_load#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'
   get '/reportes', to: 'main#reportes', as: 'reportes'
   get '/observaciones', to: 'main#observaciones', as: 'observaciones'

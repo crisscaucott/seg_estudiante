@@ -18,6 +18,25 @@ class MassLoadController < ApplicationController
 		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
 	end
 
+	def uploadXls
+		uploaded_file = uploadFile(params[:reporte][:nombre_reporte])
+
+		if !uploaded_file[:file_path].nil?
+			# Subir excel con las notas.
+			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+			
+			res = mass_load_obj.uploadNotas()
+			if !res[:error]
+				render json: {msg: res[:msg]}
+			else
+				render json: {msg: res[:msg]}, status: :unprocessable_entity
+			end
+		else
+			# Problema con guardar el fichero
+			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+		end
+	end
+
 	def get_notas_filtering
 		filters = notas_filter_params
 		calificaciones = Calificacion.getCalificaciones(filters)
@@ -42,6 +61,28 @@ class MassLoadController < ApplicationController
 		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia'}
 	end
 
+	def uploadAssistance
+		uploaded_file = uploadFile(params[:reporte][:file])
+
+		if !uploaded_file[:file_path].nil?
+			# Subir excel con asistencia.
+			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+			
+			res = mass_load_obj.uploadAssistance()
+
+			if !res[:error]
+				render json: {msg: res[:msg]}
+			else
+				render json: {msg: res[:msg]}, status: :unprocessable_entity
+			end
+
+		else
+			# Problema con guardar el fichero
+			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+		end
+
+	end
+
 	def alumnos
 		render action: :index, locals: {partial: 'alumnos', context: 'alumnos'}
 		
@@ -52,22 +93,6 @@ class MassLoadController < ApplicationController
 		
 	end
 
-	def uploadAssistance
-		uploaded_file = uploadFile(params[:reporte][:file])
-
-
-		if !uploaded_file[:file_path].nil?
-			# Subir excel con asistencia.
-			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
-			
-			res = mass_load_obj.uploadAssistance()
-			render json: {msg: "Excel con asistencia subida exitosamente."}
-		else
-			# Problema con guardar el fichero
-			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
-		end
-
-	end
 
 	def notas_filter_params
 		params.require(:filters).permit(:carrera, :asignatura)

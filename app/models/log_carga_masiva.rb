@@ -114,13 +114,15 @@ class LogCargaMasiva < ActiveRecord::Base
 			self.tipo_carga = 'asistencia'
 			self.detalle = assis_detail
 			self.save
+
+		  response[:msg] = "Asistencias subidas exitosamente."
 		end
 
 		return response
 	end
 
-	def self.readExcelFile(file, user_id)
-		spreadsheet = open_spreadsheet(file)
+	def uploadNotas()
+		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
 		response = {error: false, msg: nil}
 
 	  # BUSCAR LA ASIGNATURA EN LA BD.
@@ -274,8 +276,8 @@ class LogCargaMasiva < ActiveRecord::Base
 
 		if !response[:error]
 			# Si no hay errores, se registra la carga masiva del usuario.
-			carga_masiva_obj = self.new({usuario_id: user_id, tipo_carga: 'excel'})
-			carga_masiva_obj.save			
+			self.tipo_carga = 'excel'
+			self.save			
 		end
 
 		return response

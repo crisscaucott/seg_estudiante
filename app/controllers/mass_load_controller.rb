@@ -2,6 +2,8 @@ class MassLoadController < ApplicationController
 	include MassLoadHelper
 
 	def index
+
+		render action: :index, locals: {context: nil}
 	end
 
 	def notas

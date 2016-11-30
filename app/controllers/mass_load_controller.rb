@@ -1,5 +1,6 @@
 class MassLoadController < ApplicationController
 	include MassLoadHelper
+	ANIOS_ATRAS = 10
 
 	def index
 
@@ -63,8 +64,10 @@ class MassLoadController < ApplicationController
 		asistencias = Asistencia.getAsistencias()
 		filtro_asistencia = {
 			carreras: Carrera.getCarreras,
-			asignaturas: Asignatura.getAsignaturas
+			asignaturas: Asignatura.getAsignaturas,
+			periodos: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
+		
 		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias, filtros: filtro_asistencia}
 	end
 
@@ -132,7 +135,7 @@ class MassLoadController < ApplicationController
 	end
 
 	def asistencia_filter_params
-		params.require(:filters).permit(:carrera, :asignatura)
+		params.require(:filters).permit(:carrera, :asignatura, :periodo)
 	end
 
 	def asistencia_detail_filter_params

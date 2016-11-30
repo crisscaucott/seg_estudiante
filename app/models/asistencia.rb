@@ -9,6 +9,12 @@ class Asistencia < ActiveRecord::Base
 		# 	query = query.where('carrera.id = ?', filters[:carrera]).references(:carrera)
 		# end
 
+		if !filters[:periodo].nil?
+			since_date = "#{filters[:periodo]}-01-01"
+			until_date = "#{filters[:periodo].to_i + 1}-01-01"
+			query = query.where("(fecha_asistida >= ? AND fecha_asistida < ?)", since_date, until_date)
+		end
+
 		if !filters[:asignatura].nil?
 			query = query.where(asignatura_id: filters[:asignatura])
 		end

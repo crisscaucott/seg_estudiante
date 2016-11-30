@@ -1,21 +1,12 @@
 class MassLoadController < ApplicationController
 	include MassLoadHelper
 
+	def index
+	end
+
 	def notas
 		report = Reporte.new
-		render action: :index, locals: {partial: 'notas',  report: report}
-	end
-
-	def asistencia
-		report = Reporte.new
-		render action: :index, locals: {partial: 'asistencia', report: report}
-	end
-
-	def alumnos
-		
-	end
-
-	def index
+		render action: :index, locals: {partial: 'notas',  report: report, context: 'notas'}
 	end
 
 	def get_notas
@@ -24,7 +15,7 @@ class MassLoadController < ApplicationController
 			carreras: Carrera.getCarreras,
 			asignaturas: Asignatura.getAsignaturas
 		}
-		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas}
+		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
 	end
 
 	def get_notas_filtering
@@ -40,14 +31,24 @@ class MassLoadController < ApplicationController
 		else
 			render json: {msg: "No se han encontrado calificaciones con los filtrados definidos.", type: "warning"}, status: :unprocessable_entity
 		end
-
 	end
 
-	def getAlumnos
+	def asistencia
+		report = Reporte.new
+		render action: :index, locals: {partial: 'asistencia', report: report, context: 'asistencia'}
+	end
+
+	def get_asistencia
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia'}
+	end
+
+	def alumnos
+		render action: :index, locals: {partial: 'alumnos', context: 'alumnos'}
 		
 	end
 
-	def getAsistencia
+	def get_alumnos
+		render action: :index, locals: {partial: 'get_alumnos', context: 'alumnos'}
 		
 	end
 

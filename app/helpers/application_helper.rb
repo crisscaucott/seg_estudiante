@@ -7,7 +7,14 @@ module ApplicationHelper
 		return "window.location.href='"+ path +"'"
 	end
 
-	def isActive(page_name)
-		return "active" if current_page?(page_name)
+	def isActive(controller, action)
+		class_name = ""
+		begin
+			class_name = "active" if current_page?(controller: controller, action: action)
+			
+		rescue StandardError => e
+			
+		end
+		return class_name
 	end
 end

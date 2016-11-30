@@ -42,16 +42,16 @@
 <% if user_signed_in? %>
   <div class="container">
     <ul class="nav nav-tabs nav-justified">
-      <li class="nav-item <%= isActive(mass_load_path) %>">
+      <li class="nav-item <%= isActive("mass_load", action_name) %>">
         <%= link_to('Carga masiva', mass_load_path, class: 'nav-link') %>
       </li>
-      <li class="nav-item <%= isActive(reportes_path) %>">
+      <li class="nav-item <%= isActive("report", action_name) %>">
         <%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
       </li>
-      <li class="nav-item <%= isActive(observaciones_path) %>">
+      <li class="nav-item <%= isActive("observaciones", action_name) %>">
         <%= link_to('Observaciones', observaciones_path, class: 'nav-link') %>
       </li>
-      <li class="nav-item <%= isActive(caracteristicas_path) %>">
+      <li class="nav-item <%= isActive("caracteristicas", action_name) %>">
         <%= link_to('Caracteristicas est.', caracteristicas_path, class: 'nav-link') %>
       </li>
     </ul>

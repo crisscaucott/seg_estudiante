@@ -33,6 +33,30 @@ class SuperUserController < ApplicationController
 
 	end
 
+	def update_estado_desercion
+		estado_params = estado_desercion_params
+		ed_obj = EstadoDesercion.find_by(id: estado_params[:id])
+
+		if !ed_obj.nil?
+			ed_obj.nombre_estado = estado_params[:nombre_estado]
+			ed_obj.notificar = estado_params[:notificar]
+
+			# Verificar que el nombre nuevo del estado no exista en la BD.
+			if !ed_obj.getEstadoDesercion
+				if ed_obj.save
+					render json: {msg: "Estado de deserción actualizado exitosamente.", type: "success", estado_obj: ed_obj}
+
+				else
+					render json: {msg: ed_obj.getFormatErrorMessages, type: 'danger'}, status: 422
+				end
+			else
+				render json: {msg: "El estado de deserción ya se encuentra ingresado.", type: 'danger'}, status: 422
+			end
+		else
+			render json: {msg: "Ha ocurrido un problema con encontrar el estado de desercion en el sistema.", type: "danger"}, status: 422
+		end
+	end
+
 	def new_user
 		users_permissions = UserPermission.select([:id, :name]).order(name: :asc)
 		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions}
@@ -68,7 +92,7 @@ class SuperUserController < ApplicationController
 	end
 
 	def estado_desercion_params
-		params.require(:estado_desercion).permit(:nombre_estado, :notificar)
+		params.require(:estado_desercion).permit(:id, :nombre_estado, :notificar)
 	end
 
 	def sign_up_params

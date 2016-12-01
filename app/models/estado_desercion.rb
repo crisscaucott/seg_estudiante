@@ -4,6 +4,7 @@ class EstadoDesercion < ActiveRecord::Base
 	validates_presence_of :nombre_estado
 
 	def getEstadoDesercion
+		# byebug
 		return EstadoDesercion.exists?(nombre_estado: self.nombre_estado)
 	end
 

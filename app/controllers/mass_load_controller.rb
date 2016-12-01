@@ -1,7 +1,10 @@
 class MassLoadController < ApplicationController
 	include MassLoadHelper
+	ANIOS_ATRAS = 10
 
 	def index
+
+		render action: :index, locals: {context: nil}
 	end
 
 	def notas
@@ -58,7 +61,40 @@ class MassLoadController < ApplicationController
 	end
 
 	def get_asistencia
-		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia'}
+		asistencias = Asistencia.getAsistencias()
+		filtro_asistencia = {
+			carreras: Carrera.getCarreras,
+			asignaturas: Asignatura.getAsignaturas,
+			periodos: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
+		}
+		
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias, filtros: filtro_asistencia}
+	end
+
+	def get_asistencia_filtering
+		filter_params = asistencia_filter_params
+		asistencias = Asistencia.getAsistencias(filter_params)
+
+		if asistencias.present?
+			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
+
+		else
+			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: "warning"}, status: :unprocessable_entity			
+		end
+
+	end
+
+	def get_asistencia_detail
+		asis_params = asistencia_detail_filter_params
+		asistencia_detail = Asistencia.getAsistenciaDetail(asis_params)
+
+		titulo = "Asistencia del alumno <b>'" + Estudiante.getEstudianteFullNameById(asis_params[:estudiante_id]) + "'</b>, en la asignatura de <b>'" + Asignatura.getAsignaturaNameById(asis_params[:asignatura_id]) + "'</b>."
+
+		if asistencia_detail.size != 0
+			render json: {msg: "Asistencia obtenidas exitosamente.", type: "success", title: titulo, table: render_to_string(partial: 'asistencia_detalle', formats: [:html], layout: false, locals: {asistencia: asistencia_detail})}
+		else
+			render json: {msg: "El alumno solicitado no presenta asistencias guardada en el sistema.", type: "warning"}, status: :unprocessable_entity
+		end
 	end
 
 	def uploadAssistance
@@ -96,5 +132,13 @@ class MassLoadController < ApplicationController
 
 	def notas_filter_params
 		params.require(:filters).permit(:carrera, :asignatura)
+	end
+
+	def asistencia_filter_params
+		params.require(:filters).permit(:carrera, :asignatura, :periodo)
+	end
+
+	def asistencia_detail_filter_params
+		params.permit(:estudiante_id, :asignatura_id)
 	end
 end

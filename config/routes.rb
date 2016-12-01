@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post '/admini/nuevo_usuario/new', to: 'super_user#createUser', as: 'new_user_new'
   get '/admini/estados_desercion', to: 'super_user#estados_desercion_index', as: 'estados_desercion'
   post '/admini/estados_desercion/new', to: 'super_user#new_estado_desercion', as: 'new_estados_desercion'
+  post '/admini/estados_desercion/update', to: 'super_user#update_estado_desercion', as: 'update_estado_desercion'
   # You can have the root of your site routed with "root"
   # root 'main#index'
 
@@ -23,6 +24,8 @@ Rails.application.routes.draw do
 
   get '/carga_masiva/asistencia/subir', to: 'mass_load#asistencia', as: 'mass_load_asistencia'
   get '/carga_masiva/asistencia/ver', to: 'mass_load#get_asistencia', as: 'mass_load_get_asistencia'
+  post '/carga_masiva/asistencia/asistencia_detalle', to: 'mass_load#get_asistencia_detail', as: 'mass_load_asistencia_detail'
+  post '/carga_masiva/asistencia/filtering', to: 'mass_load#get_asistencia_filtering', as: 'filtering_asistencia'
 
   get '/carga_masiva/alumnos/subir', to: 'mass_load#alumnos', as: 'mass_load_alumnos'
   get '/carga_masiva/alumnos/ver', to: 'mass_load#get_alumnos', as: 'mass_load_get_alumnos'

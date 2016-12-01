@@ -6,4 +6,10 @@ class Estudiante < ActiveRecord::Base
 	def self.getIdEstudianteByCarreraAndRut(rut, carrera_id, fields = [:id])
 		return self.select(fields).where(rut: rut.to_s.strip).where(carrera_id: carrera_id).first
 	end
+
+	def self.getEstudianteFullNameById(id)
+		estudiante_obj = self.select([:nombre, :apellido]).where(id: id).first
+		full_name = estudiante_obj.nombre + " " + estudiante_obj.apellido
+		return full_name
+	end
 end

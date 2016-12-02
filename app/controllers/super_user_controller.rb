@@ -1,33 +1,38 @@
 class SuperUserController < ApplicationController
 	before_action :isDecano
 
-
 	def index
+		render action: :index, locals: {context: nil}
+	end
+
+	def new_estados_desercion
+		# estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(nombre_estado: :asc)
+		estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(:nombre_estado => :asc)
+		render action: :index, locals: {partial: 'new_estado_desercion', estado_desercion: EstadoDesercion.new, estados: estados_desercion, context: 'estado'}
+	end
+
+	def modify_estados_desercion
+		estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(:nombre_estado => :asc)
+		render action: :index, locals: {partial: 'modify_estado_desercion', context: 'estado', estados: estados_desercion}
 		
 	end
 
-	def estados_desercion_index
-		# estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(nombre_estado: :asc)
-		estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(:nombre_estado => :asc)
-		render action: :index, locals: {partial: 'estados_desercion_index', estado_desercion: EstadoDesercion.new, estados: estados_desercion}
-	end
-
-	def new_estado_desercion
+	def create_estado_desercion
 		ed_obj = EstadoDesercion.new(estado_desercion_params)
 
 		if ed_obj.valid?
 			# Guardar el nuevo estado de desercion a la BD.
 			if !ed_obj.getEstadoDesercion
 				ed_obj.save
-				render json: {msg: "El nuevo de deserción se ha agregado exitosamente.", estado_obj: ed_obj}
+				render json: {msg: "El nuevo de deserción se ha agregado exitosamente.", type: "success", estado_obj: ed_obj}
 
 			else
-				render json: {errors: "El estado de deserción ya se encuentra ingresado."}, status: 422
+				render json: {msg: "El estado de deserción ya se encuentra ingresado.", type: "danger"}, status: 422
 			end
 
 		else
 			# Fallo en las validaciones del objeto de desercion.
-	  	render :json => {errors: ed_obj.getFormatErrorMessages}, status: 422
+	  	render :json => {msg: ed_obj.getFormatErrorMessages, type: "danger"}, status: 422
 			
 		end
 
@@ -61,7 +66,7 @@ class SuperUserController < ApplicationController
 
 	def new_user
 		users_permissions = UserPermission.select([:id, :name]).order(name: :asc)
-		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions}
+		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, context: 'usuario'}
 	end
 
 	def createUser

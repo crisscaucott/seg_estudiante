@@ -4,12 +4,6 @@
 <%= content_for :javascript do %>   
   <%= javascript_include_tag "estados_desercion", "data-turbolinks-track" => true  %>
 <% end %>
-<h1>Estados de deserción</h1>
-
-<div id="table_container">
-    <%= render partial: 'estados_desercion_table', locals: {estados: estados} %>
-</div>
-
 <div class="row">
   <div class="col-sm-8 form-box">
     <div class="form-top">
@@ -20,7 +14,7 @@
         <i class="fa fa-lock"></i>
       </div>
     </div>
-    <%= form_for(estado_desercion, url: new_estados_desercion_path, html: {id: 'estado_desercion_form', format: :json}) do |f| %>
+    <%= form_for(estado_desercion, url: create_estados_desercion_path, html: {id: 'estado_desercion_form', format: :json}) do |f| %>
 
         <div class="form-group">
             <%= f.label :nombre_estado %><br />

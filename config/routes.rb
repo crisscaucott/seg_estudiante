@@ -8,10 +8,12 @@ Rails.application.routes.draw do
   end
 
   get '/admini/', to: 'super_user#index', as: 'admini'
-  get '/admini/nuevo_usuario', to: 'super_user#new_user', as: 'new_user'
-  post '/admini/nuevo_usuario/new', to: 'super_user#createUser', as: 'new_user_new'
-  get '/admini/estados_desercion', to: 'super_user#estados_desercion_index', as: 'estados_desercion'
-  post '/admini/estados_desercion/new', to: 'super_user#new_estado_desercion', as: 'new_estados_desercion'
+  get '/admini/usuario/nuevo', to: 'super_user#new_user', as: 'new_user'
+  post '/admini/usuario/create', to: 'super_user#createUser', as: 'new_user_new'
+
+  get '/admini/estados_desercion/nuevo', to: 'super_user#new_estados_desercion', as: 'new_estados_desercion'
+  get '/admini/estados_desercion/modificar', to: 'super_user#modify_estados_desercion', as: 'modify_estados_desercion'
+  post '/admini/estados_desercion/create', to: 'super_user#create_estado_desercion', as: 'create_estados_desercion'
   post '/admini/estados_desercion/update', to: 'super_user#update_estado_desercion', as: 'update_estado_desercion'
   # You can have the root of your site routed with "root"
   # root 'main#index'

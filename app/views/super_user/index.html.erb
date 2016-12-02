@@ -1,7 +1,24 @@
-<div class="col-sm-4 list-group">
-	<%= link_to('Agregar usuario', new_user_path, class: "list-group-item list-group-item-action") %>
-	<%= link_to('Estados deserción', estados_desercion_path, class: "list-group-item list-group-item-action") %>
+<div class="col-sm-3 list-group">
+  <div id="MainMenu">
+    <div class="list-group panel" id="option-list">
 
+      <% options = setActive(context, 'usuario') %>
+
+      <a href="#usuario" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Usuario</a>
+      <div class="<%= options[:div_class] %>" id="usuario" <%= options[:div_expanded] %> >
+          <%= link_to('Agregar usuario', new_user_path, class: "list-group-item list-group-item-action" + setSubActive(new_user_path)) %>
+      </div>
+      
+      <% options = setActive(context, 'estado') %>
+
+      <a href="#estados" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Estados deserción</a>
+      <div class="<%= options[:div_class] %>" id="estados" <%= options[:div_expanded] %> >
+          <%= link_to('Agregar estado', new_estados_desercion_path, class: "list-group-item list-group-item-action" + setSubActive(new_estados_desercion_path)) %>
+          <%= link_to('Modificar estados', modify_estados_desercion_path, class: "list-group-item list-group-item-action" + setSubActive(modify_estados_desercion_path)) %>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <div class="col-sm-8">

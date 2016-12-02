@@ -44,7 +44,9 @@ class SuperUserController < ApplicationController
 			# Verificar que el nombre nuevo del estado no exista en la BD.
 			if !ed_obj.getEstadoDesercion
 				if ed_obj.save
-					render json: {msg: "Estado de deserción actualizado exitosamente.", type: "success", estado_obj: ed_obj}
+					estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(:nombre_estado => :asc)
+
+					render json: {msg: "Estado de deserción actualizado exitosamente.", table: render_to_string(partial: 'estados_desercion_table', formats: [:html], layout: false, locals: {estados: estados_desercion}), type: "success", estado_obj: ed_obj}
 
 				else
 					render json: {msg: ed_obj.getFormatErrorMessages, type: 'danger'}, status: 422

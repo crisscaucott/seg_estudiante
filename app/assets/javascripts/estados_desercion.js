@@ -68,7 +68,7 @@ $( "form#estado_desercion_form" ).submit(function( event ) {
 });
 
 // Evento de click en el boton "editar" de la tabla de deserciones.
-data_table.on('click', 'button.edit_btn', function(event){
+$('div#table_container').on('click', 'button.edit_btn', function(event){
 	var tr = $(this).parents('tr');
 	var trs = $(this).parents('tbody').children();
 	var submit_btn = $("form#edit_estado_desercion_form").find('input[type=submit]');
@@ -109,7 +109,7 @@ data_table.on('click', 'button.edit_btn', function(event){
 });
 
 // Envio de formulario de edicion de estados de desercion de la tabla.
-$( "form#edit_estado_desercion_form" ).submit(function( event ) {
+$('div#table_container').on('submit', 'form#edit_estado_desercion_form', function(event){
 	event.preventDefault();
 	var trs = data_table.find('tbody').children(), tr = null, hidden = null, data = null, noti_params = {msg: null, type: null}, btn = $(event.target).find('input[type=submit]'), btn_text = btn.val();
 
@@ -123,8 +123,6 @@ $( "form#edit_estado_desercion_form" ).submit(function( event ) {
 	    break;
 	  }
 	}
-
-	console.log(data);
 
 	if (data !== null) {
 		$.ajax({
@@ -142,13 +140,12 @@ $( "form#edit_estado_desercion_form" ).submit(function( event ) {
 		    noti_params.msg = data.msg;
 		    noti_params.type = data.type;
 
-		    console.log(data);
+        data_table.DataTable().clear();
+        $('div#table_container').html(data.table);
+        data_table.DataTable().draw();
 
-        var row_data = data_table.DataTable().row(tr).data();
-		    row_data.nombre_estado = data.estado_obj.nombre_estado;
-		    row_data.notifica = data.estado_obj.notifica ? "<span>Si</span>" : "<span>No</span>";
-
-		    // data_table.DataTable().row(tr).data(row_data).draw(false);
+        data_table = $('table#estados_table');
+        initDataTable(data_table, datatable_options);
 
 		}).fail(function(jqXHR, textStatus, errorThrown) {
 

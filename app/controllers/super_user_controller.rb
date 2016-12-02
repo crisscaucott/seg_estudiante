@@ -106,6 +106,11 @@ class SuperUserController < ApplicationController
     end
 	end
 
+	def modify_users
+
+		render action: :index, locals: {partial: 'modify_usuarios', context: 'usuario'}
+	end
+
 	def isDecano
 		if current_user.user_permission.name != "Decano"
 			redirect_to :root, :status => 301, :flash => { msg: 'Usted no tiene los permisos para estar en esta sección.', alert_type: 'warning'}

@@ -7,6 +7,7 @@
       <a href="#usuario" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Usuario</a>
       <div class="<%= options[:div_class] %>" id="usuario" <%= options[:div_expanded] %> >
           <%= link_to('Agregar usuario', new_user_path, class: "list-group-item list-group-item-action" + setSubActive(new_user_path)) %>
+          <%= link_to('Modificar usuarios', modify_users_path, class: "list-group-item list-group-item-action" + setSubActive(modify_users_path)) %>
       </div>
       
       <% options = setActive(context, 'estado') %>

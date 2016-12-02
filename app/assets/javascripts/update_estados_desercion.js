@@ -22,9 +22,13 @@ $('div#table_container').on('click', 'button.edit_btn', function(event){
   for(var i = 0; i < trs.length; i++){
     if (tr[0].rowIndex === trs[i].rowIndex) // Fila de la tabla donde se va a editar.
     {
-      $(trs[i]).toggleClass('active');
+      // Quitar la fila selecionada para eliminar.
+      $(trs[i]).removeClass('danger');
+      $(trs[i]).find('input.row_delete').val(0);
 
-      if ($(trs[i]).hasClass('active')){
+      $(trs[i]).toggleClass('info');
+
+      if ($(trs[i]).hasClass('info')){
         $(trs[i]).find('span').addClass('hidden');
         $(trs[i]).find('input').removeClass('hidden');
         $(trs[i]).find('input.row_edited').val(1);
@@ -42,26 +46,66 @@ $('div#table_container').on('click', 'button.edit_btn', function(event){
       }
       
     }else{
-      $(trs[i]).removeClass('active');
+      $(trs[i]).removeClass('info');
       $(trs[i]).find('span').removeClass('hidden');
       $(trs[i]).find('input').addClass('hidden');
       $(trs[i]).find('input.row_edited').val(0);
     }
   }
+});
 
+// Evento de click en el boton "Eliminar" de la tabla de deserciones.
+$('div#table_container').on('click', 'button.delete_btn', function(event){
+  var tr = $(this).parents('tr');
+  var trs = $(this).parents('tbody').children();
+  var submit_btn = $("form#edit_estado_desercion_form").find('input[type=submit]');
+  
+  for(var i = 0; i < trs.length; i++){
+    if (tr[0].rowIndex === trs[i].rowIndex){ // Fila de la tabla donde se va a editar.
+      $(trs[i]).removeClass('info');
+      $(trs[i]).toggleClass('danger');
+
+      if ($(trs[i]).hasClass('danger')){
+        $(trs[i]).find('span').removeClass('hidden');
+        $(trs[i]).find('input').addClass('hidden');
+        $(trs[i]).find('input.row_edited').val(0);
+        $(trs[i]).find('input.row_delete').val(1);
+
+        // Habilitar el boton submit de finalizar
+        submit_btn.attr('disabled', false);
+
+      }else{
+        $(trs[i]).find('span').removeClass('hidden');
+        $(trs[i]).find('input').addClass('hidden');
+        $(trs[i]).find('input.row_edited').val(0);
+        $(trs[i]).find('input.row_delete').val(0);
+
+        // Desabilitar el boton submit de finalizar.
+        submit_btn.attr('disabled', true);
+      }
+
+    }else{
+      // Todas las filas que no sea la seleccionada.
+      $(trs[i]).removeClass('danger');
+      $(trs[i]).find('input.row_delete').val(0);
+      $(trs[i]).find('input.row_edited').val(0);
+
+    }
+  }  
 
 });
 
 // Envio de formulario de edicion de estados de desercion de la tabla.
 $('div#table_container').on('submit', 'form#edit_estado_desercion_form', function(event){
   event.preventDefault();
-  var trs = data_table.find('tbody').children(), tr = null, hidden = null, data = null, noti_params = {msg: null, type: null}, btn = $(event.target).find('input[type=submit]'), btn_text = btn.val();
+  var trs = data_table.find('tbody').children(), tr = null, hidden_upd = null, hidden_del = null, data = null, noti_params = {msg: null, type: null}, btn = $(event.target).find('input[type=submit]'), btn_text = btn.val();
 
   for (var i = 0; i < trs.length; i++)
   {
-    hidden = $(trs[i]).find('input.row_edited');
-
-    if (hidden.val() == 1){
+    hidden_upd = $(trs[i]).find('input.row_edited').val();
+    hidden_del = $(trs[i]).find('input.row_delete').val();
+    
+    if (hidden_upd == 1 || hidden_del == 1){
       data = $(trs[i]).find('input').serialize();
       tr = $(trs[i])
       break;

@@ -3,9 +3,12 @@ class EstadoDesercion < ActiveRecord::Base
 
 	validates_presence_of :nombre_estado
 
-	def getEstadoDesercion
-		# byebug
-		return EstadoDesercion.exists?(nombre_estado: self.nombre_estado)
+	def getEstadoDesercion(id = nil)
+		if id.nil?
+			return EstadoDesercion.exists?(nombre_estado: self.nombre_estado)
+		else
+			return EstadoDesercion.exists?(["nombre_estado = ? AND id != ?", self.nombre_estado, id])
+		end
 	end
 
 	def nombre_estado=(new_nombre_estado)

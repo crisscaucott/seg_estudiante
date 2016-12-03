@@ -6,6 +6,7 @@
                 <th>#</th>
                 <th>Nombre estado</th>
                 <th>Notifica</th>
+                <th>Riesgoso</th>
                 <th></th>
             </tr>
         </thead>
@@ -23,6 +24,10 @@
                     <td>
                         <span><%= e.notificar ? "Si" : "No" %></span>
                         <%= f.check_box :notificar, checked: e.notificar, class: 'form-control hidden' %>
+                    </td>
+                    <td>
+                        <span><%= e.riesgoso ? "Si" : "No" %></span>
+                        <%= f.check_box :riesgoso, checked: e.riesgoso, class: 'form-control hidden' %>
                     </td>
                     <td class="text-center">
                         <%= button_tag('Editar', type: 'button', class: 'btn btn-primary edit_btn') %>

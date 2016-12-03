@@ -5,6 +5,7 @@ var datatable_options = {
       {"data": "num"}, 
       {"data": "nombre_estado"}, 
       {"data": "notifica"},
+      {"data": "riesgoso"},
       {"data": "editar"},
     ],
   }

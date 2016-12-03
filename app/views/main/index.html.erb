@@ -39,60 +39,8 @@
 	</div>
 	<div class="col-sm-9">
 		<h3 class="text-center">Estudiantes</h3>
-		<table class="table table-bordered no-footer">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Nombre</th>
-					<th>Año ingreso</th>
-					<th>Carrera</th>
-					<th>Estado deserción</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td>1</td>
-					<td>Estudiante 1</td>
-					<td>Ing. en Computación</td>
-					<td>2010</td>
-					<td>Critico</td>
-				</tr>
-				<tr>
-					<td>2</td>
-					<td>Estudiante 2</td>
-					<td>Ing. en Computación</td>
-					<td>2009</td>
-					<td>Critico</td>
-				</tr>
-				<tr>
-					<td>3</td>
-					<td>Estudiante 3</td>
-					<td>Ing. en Computación</td>
-					<td>2011</td>
-					<td>Critico</td>
-				</tr>
-				<tr>
-					<td>4</td>
-					<td>Estudiante 4</td>
-					<td>Ing. en Computación</td>
-					<td>2004</td>
-					<td>Critico</td>
-				</tr>
-				<tr>
-					<td>5</td>
-					<td>Estudiante 5</td>
-					<td>Ing. en Computación</td>
-					<td>2013</td>
-					<td>Critico</td>
-				</tr>
-				<tr>
-					<td>6</td>
-					<td>Estudiante 6</td>
-					<td>Ing. en Computación</td>
-					<td>2000</td>
-					<td>Critico</td>
-				</tr>
-			</tbody>
-		</table>
+		<div id="estudiantes_table">
+			<%= render partial: 'estudiantes_table', locals: local_assigns %>
+		</div>
 	</div>
 </div>

@@ -42,6 +42,9 @@
 <% if user_signed_in? %>
   <div class="container">
     <ul class="nav nav-tabs nav-justified">
+      <li class="nav-item <%= isActive("main", action_name) %>">
+        <%= link_to('Estudiantes', root_path, class: 'nav-link') %>
+      </li>
       <li class="nav-item <%= isActive("mass_load", action_name) %>">
         <%= link_to('Carga masiva', mass_load_path, class: 'nav-link') %>
       </li>

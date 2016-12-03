@@ -1,7 +1,9 @@
 class MainController < ApplicationController
 
 	def index
-
+		estudiantes = Estudiante.getEstudiantes
+		estados = EstadoDesercion.getEstados
+		render action: :index, locals: {estudiantes: estudiantes, estados: estados}
 	end
 
 	def mass_load

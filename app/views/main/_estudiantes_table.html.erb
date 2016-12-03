@@ -1,0 +1,40 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "estudiantes", "data-turbolinks-track" => true  %>
+<% end %>
+<%= form_for(:estudiante, url: update_estado_desercion_path, html: {id: 'estudiantes_form', format: :json}) do |f| %>
+
+	<table id="estudiantes_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Nombre</th>
+				<th>Rut</th>
+				<th>Año ingreso</th>
+				<th>Carrera</th>
+				<th>Estado deserción</th>
+				<th>Editar estado</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% estudiantes.each_with_index do |e, index| %>
+				<tr>
+					<td><%= index + 1 %></td>
+					<td><%= e.nombre %> <%= e.apellido %></td>
+					<td><%= e.rut %></td>
+					<td><%= e.fecha_ingreso.strftime("%Y") %></td>
+					<td><%= e.carrera.nombre %></td>
+					<td>
+						<span><%= e.estado_desercion_id.nil? ? "Ninguno" : e.estado_desercion.nombre_estado %></span>
+
+						<%= f.collection_select(:estado_desercion_id, estados, :id, :nombre_estado, {prompt: false, include_blank: "Ninguno" , selected: e.estado_desercion_id}, {class: 'form-control'}) %>
+						
+					</td>
+					<td class="text-center">
+						<%= button_tag('Editar', type: 'button', class: 'btn btn-primary edit_btn') %>
+					</td>
+				</tr>
+			<% end %>
+		</tbody>
+	</table>
+	<%= f.submit("Finalizar", disabled: true, class: 'btn btn-success') %>
+<% end %>

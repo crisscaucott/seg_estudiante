@@ -128,7 +128,6 @@ ActiveRecord::Schema.define(version: 20161203022336) do
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "estudiante", "carrera"
-  add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"

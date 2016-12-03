@@ -1,6 +1,7 @@
 class EstadoDesercion < ActiveRecord::Base
 	self.table_name = 'estado_desercion'
 	DESERTO_ESTADO = "Desertó"
+	has_many :estudiante, class_name: "Estudiante", foreign_key: "estado_desercion_id"
 
 	validates_presence_of :nombre_estado
 

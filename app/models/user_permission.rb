@@ -11,4 +11,8 @@ class UserPermission < ActiveRecord::Base
   def self.getNormalUserId
   	return self.select(:id).find_by_name("Usuario normal").id
   end
+
+  def self.getPermissions
+    return self.select([:id, :name]).order(name: :asc)
+  end
 end

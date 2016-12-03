@@ -35,4 +35,12 @@ module ApplicationHelper
 	def setSubActive(controller)
 		return current_page?(controller) ? " sub-active" : ""
 	end
+
+	def getFormattedAttrObjErrors(errors, class_name)
+		str_errors = ""
+		errors.each do |error_attr, error|
+			str_errors += "<b>#{class_name.human_attribute_name(error_attr)}:</b> #{error.join(',')}<br>"
+		end
+		return str_errors.html_safe
+	end
 end

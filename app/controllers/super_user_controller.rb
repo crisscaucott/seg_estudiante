@@ -1,4 +1,5 @@
 class SuperUserController < ApplicationController
+	include ApplicationHelper
 	before_action :isDecano
 
 	def index
@@ -79,7 +80,7 @@ class SuperUserController < ApplicationController
 	end
 
 	def new_user
-		users_permissions = UserPermission.select([:id, :name]).order(name: :asc)
+		users_permissions = UserPermission.getPermissions
 		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, context: 'usuario'}
 	end
 
@@ -106,9 +107,49 @@ class SuperUserController < ApplicationController
     end
 	end
 
-	def modify_users
+	def update_user
+		users_params = update_user_params
+		user_obj = User.find_by(id: users_params[:id])
 
-		render action: :index, locals: {partial: 'modify_usuarios', context: 'usuario'}
+		if !user_obj.nil?
+			users = User.getUsers
+			users_permissions = UserPermission.getPermissions
+
+			if params[:to_delete] == "1"
+				user_obj.deleted_at = DateTime.now
+				user_obj.save
+
+				render json: {msg: "Usuario borrado exitosamente.", type: "success", table: render_to_string(partial: 'usuarios_table', formats: [:html], layout: false, locals: {users: users, users_permissions: users_permissions})}
+
+			elsif params[:row_edited] == "1"
+				# Si se encontro el usuario con el id.
+				user_obj.assign_attributes(users_params.except(:id, :deleted_at))
+				user_obj.deleted_at = nil if users_params[:deleted_at] == "0"
+
+				if user_obj.valid?
+					user_obj.save
+
+					# Cumplio con las validaciones.
+					render json: {msg: "El usuario ha sido actualizado exitosamente.", type: "success", table: render_to_string(partial: 'usuarios_table', formats: [:html], layout: false, locals: {users: users, users_permissions: users_permissions})}
+
+				else
+					# No paso la validaciones.
+					render json: {msg: getFormattedAttrObjErrors(user_obj.errors.messages, User), type: "danger"}, status: :bad_request
+				end
+			else
+				# Error de opcion.
+				render json: {msg: "Ha ocurrido un error con la opción ingresada.", type: 'danger'}, status: 422
+			end
+		else
+			# No se encontro el usuario en la bd con el id dado.
+			render json: {msg: "Hubo en actualizar el usuario."}, status: :bad_request
+		end
+	end
+
+	def modify_users
+		users = User.getUsers
+		users_permissions = UserPermission.getPermissions
+		render action: :index, locals: {partial: 'modify_usuarios', context: 'usuario', users: users, users_permissions: users_permissions}
 	end
 
 	def isDecano
@@ -123,5 +164,9 @@ class SuperUserController < ApplicationController
 
 	def sign_up_params
   	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission)
+  end
+
+  def update_user_params
+  	params.require(:user).permit(:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at)
   end
 end

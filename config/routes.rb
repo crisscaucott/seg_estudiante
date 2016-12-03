@@ -9,8 +9,9 @@ Rails.application.routes.draw do
 
   get '/admini/', to: 'super_user#index', as: 'admini'
   get '/admini/usuario/nuevo', to: 'super_user#new_user', as: 'new_user'
-  post '/admini/usuario/create', to: 'super_user#createUser', as: 'new_user_new'
   get '/admini/usuario/modificar', to: 'super_user#modify_users', as: 'modify_users'
+  post '/admini/usuario/create', to: 'super_user#createUser', as: 'new_user_new'
+  post '/admini/usuario/update', to: 'super_user#update_user', as: 'update_user'
 
   get '/admini/estados_desercion/nuevo', to: 'super_user#new_estados_desercion', as: 'new_estados_desercion'
   get '/admini/estados_desercion/modificar', to: 'super_user#modify_estados_desercion', as: 'modify_estados_desercion'

@@ -1,8 +1,9 @@
 <%= content_for :javascript do %>   
   <%= javascript_include_tag "update_usuarios", "data-turbolinks-track" => true  %>
+  <%= javascript_include_tag "validar_rut", "data-turbolinks-track" => true  %>
 <% end %>
 <div class="row">
-  <div class="col-sm-8 form-box">
+  <div class="form-box">
     <div class="form-top">
       <div class="form-top-left">
         <h3>Modificar usuarios</h3>
@@ -12,6 +13,7 @@
       </div>
     </div>
     <div id="table_container">
+        <%= render partial: 'usuarios_table', locals: local_assigns %>
     </div>
   </div>
 </div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161203013234) do
+ActiveRecord::Schema.define(version: 20161203021429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(version: 20161203013234) do
   create_table "estado_desercion", force: :cascade do |t|
     t.string  "nombre_estado",                 null: false
     t.boolean "notificar",     default: false
+    t.boolean "riesgoso",      default: false, null: false
   end
 
   create_table "estudiante", force: :cascade do |t|

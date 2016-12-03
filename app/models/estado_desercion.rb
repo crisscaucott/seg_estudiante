@@ -1,7 +1,12 @@
 class EstadoDesercion < ActiveRecord::Base
 	self.table_name = 'estado_desercion'
+	DESERTO_ESTADO = "Desertó"
 
 	validates_presence_of :nombre_estado
+
+	def self.getEstados()
+		return self.all.order(nombre_estado: :asc)
+	end
 
 	def getEstadoDesercion(id = nil)
 		if id.nil?

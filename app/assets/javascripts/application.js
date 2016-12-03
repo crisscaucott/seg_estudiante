@@ -32,6 +32,29 @@ function showNotification(options)
 	title = options.title === null ? null : options.title;
 	dismissable = options.dismiss === null ? true : options.dismiss;
 
+	// Cambiar el icono del mensaje en base a su tipo (info, danger, etc).
+	switch(type)
+	{
+	    case 'success':
+	        icon = 'glyphicon glyphicon-ok';
+	    break;
+
+	    case 'info':
+	        icon = 'glyphicon glyphicon-info-sign';
+	    break;
+
+	    case 'warning':
+	        icon = 'glyphicon glyphicon-warning-sign';            
+	    break;
+
+	    case 'danger':
+	        icon = 'glyphicon glyphicon-warning-sign';
+	    break;
+
+	    default:
+	        icon = null;
+	}
+
 	if (options.closeAll !== null && options.closeAll)
 	{
 		$.notifyClose();
@@ -40,7 +63,7 @@ function showNotification(options)
 
 	notif = $.notify({
 		// options
-		// icon: 'glyphicon glyphicon-warning-sign',
+    icon: icon,
 		title: title,
 		message: options.msg,
 	},{

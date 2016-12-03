@@ -44,6 +44,13 @@ class User < ActiveRecord::Base
     false
   end
 
+  def self.getUsers(filters = {})
+    users = self.select([:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at]).order(name: :asc)
+
+    users = users.where.not(deleted_at: nil) if !filters[:deleted_at].nil?
+    return users
+  end
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)

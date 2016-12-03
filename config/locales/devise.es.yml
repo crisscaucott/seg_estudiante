@@ -2,23 +2,30 @@
 
 es:
   activerecord:
+    attributes:
+        user:
+          name: "Nombre"
+          last_name: "Apellido"
+          email: "Email"
+          password: "Contraseña"
+          rut: "Rut"
     errors:
       models:
         user:
           attributes:
             name:
-              blank: "Nombre no puede estar en blanco."
+              blank: "No puede estar en blanco."
             rut:
-              blank: "Rut no puede estar en blanco."
-              taken: "El rut ingresado ya está en uso."
+              blank: "No puede estar en blanco."
+              taken: "Ya está en uso."
             email: 
-              blank: "Correo no puedo estar en blanco."
-              taken: "El correo ingresado ya está en uso."
+              blank: "No puede estar en blanco."
+              taken: "Ya está en uso."
               invalid: "El formato del correo ingresado es inválido."
             password:
-              blank: "Contraseña no puede estar en blanco."
+              blank: "No puede estar en blanco."
             last_name:
-              blank: "Apellido no puede estar en blanco."
+              blank: "No puede estar en blanco."
       messages:
         record_invalid: "La validación falló: %{errors}"
         restrict_dependent_destroy:

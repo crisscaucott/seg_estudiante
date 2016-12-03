@@ -1,0 +1,60 @@
+<%= form_for(:user, url: update_user_path, html: {id: 'user_form', format: :json}) do |f| %>
+  <table id="users_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Email</th>
+        <th>Rut</th>
+        <th>Tipo Usuario</th>
+        <th>Borrado</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.each_with_index do |u, index| %>
+        <tr>
+          <%= f.hidden_field(:id, value: u.id) %>
+          <%= hidden_field_tag(:row_edited, 0, class: 'row_edited', id: nil) %>
+          <%= hidden_field_tag(:to_delete, 0, class: 'row_delete', id: nil) %>
+          <td><%= index + 1 %></td>
+          <td>
+            <span><%= u.name %></span>
+            <%= f.text_field(:name, value: u.name, class: 'form-control hidden', placeholder: :nombre) %>
+          </td>
+          <td>
+            <span><%= u.last_name %></span>
+            <%= f.text_field(:last_name, value: u.last_name, class: 'form-control hidden', placeholder: :apellido) %>
+          </td>
+          <td>
+            <span><%= u.email %></span>
+            <%= f.email_field(:email, value: u.email, class: 'form-control hidden', placeholder: :Email) %>
+          </td>
+          <td>
+            <span><%= u.rut %></span>
+            <%= f.text_field(:rut, value: u.rut, class: 'form-control hidden', placeholder: :rut) %>
+          </td>
+          <td>
+            <span><%= u.user_permission.name %></span>
+            <%= f.collection_select(:id_permission, users_permissions, :id, :name, {prompt: false, selected: u.id_permission}, {class: 'form-control hidden'}) %>
+          </td>
+          <td>
+            <% if u.deleted_at.nil? %>
+              <span>No</span>
+              <%= f.check_box :deleted_at, checked: false, class: 'form-control hidden' %>
+            <% else %>
+              <span><%= u.deleted_at.strftime("%Y-%m-%d %H:%M") %></span>
+              <%= f.check_box :deleted_at, checked: true, class: 'form-control hidden' %>
+            <% end %>            
+          </td>
+          <td class="text-center">
+            <%= button_tag('Editar', type: 'button', class: 'btn btn-sm btn-primary edit_btn') %>
+            <%= button_tag('Eliminar', type: 'button', class: 'btn btn-sm btn-danger delete_btn') %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%= f.submit("Finalizar", disabled: true, class: 'btn btn-success') %>
+<% end %>

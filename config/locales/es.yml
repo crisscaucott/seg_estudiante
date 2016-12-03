@@ -24,6 +24,9 @@ es:
   invalid_rut: "Rut no válido."
 
   activerecord:
+    models:
+      attributes:
+        
     errors:
       models:
         estado_desercion:

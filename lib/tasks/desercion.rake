@@ -13,6 +13,7 @@ namespace :desercion do
 			{nombre_estado: "Retención Segura", notificar: false, riesgoso: false},
 			{nombre_estado: "Cambio de Carrera", notificar: false, riesgoso: false},
 			{nombre_estado: EstadoDesercion::DESERTO_ESTADO, notificar: false, riesgoso: true},
+			{nombre_estado: EstadoDesercion::DESERTO_NINGUNO, notificar: false, riesgoso: false},
 		]
 
 		estados.each do |estado|

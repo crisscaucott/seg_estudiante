@@ -45,7 +45,7 @@ class SuperUserController < ApplicationController
 
 		if !ed_obj.nil?
 			# Verificar que el estado no sea fijo.
-			if ed_obj.nombre_estado != EstadoDesercion::DESERTO_ESTADO
+			if !ed_obj.checkIsEstadoFijo
 				if params[:to_delete] == "1"
 					# Borrar estado (REVISAR SI HAY QYE VERIFICAR SI HAY ESTUDIANTES CON ESE ESTADO ANTES DE BORRAR).
 					ed_obj.destroy!

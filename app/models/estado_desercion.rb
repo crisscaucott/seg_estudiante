@@ -1,6 +1,7 @@
 class EstadoDesercion < ActiveRecord::Base
 	self.table_name = 'estado_desercion'
 	DESERTO_ESTADO = "Desertó"
+	DESERTO_NINGUNO = "Ninguno"
 	has_many :estudiante, class_name: "Estudiante", foreign_key: "estado_desercion_id"
 
 	validates_presence_of :nombre_estado
@@ -14,6 +15,14 @@ class EstadoDesercion < ActiveRecord::Base
 			return EstadoDesercion.exists?(nombre_estado: self.nombre_estado)
 		else
 			return EstadoDesercion.exists?(["nombre_estado = ? AND id != ?", self.nombre_estado, id])
+		end
+	end
+
+	def checkIsEstadoFijo
+		if self.nombre_estado == DESERTO_ESTADO || self.nombre_estado == DESERTO_NINGUNO
+			return true
+		else
+			return false
 		end
 	end
 

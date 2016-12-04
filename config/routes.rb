@@ -17,8 +17,9 @@ Rails.application.routes.draw do
   get '/admini/estados_desercion/modificar', to: 'super_user#modify_estados_desercion', as: 'modify_estados_desercion'
   post '/admini/estados_desercion/create', to: 'super_user#create_estado_desercion', as: 'create_estados_desercion'
   post '/admini/estados_desercion/update', to: 'super_user#update_estado_desercion', as: 'update_estado_desercion'
-  # You can have the root of your site routed with "root"
-  # root 'main#index'
+
+  get '/admini/estudiantes/subir', to: 'super_user#subir_estudiantes', as: 'subir_estudiantes'
+  post '/admini/estudiantes/upload', to: 'super_user#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   

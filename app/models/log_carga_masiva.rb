@@ -291,6 +291,93 @@ class LogCargaMasiva < ActiveRecord::Base
 		return response
 	end
 
+	def uploadEstudiantes
+		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
+		response = {error: false, msg: nil}
+		header = spreadsheet.row(1).map{|h| h.gsub(/ñ/i, 'n').downcase.to_sym }
+		estado_desercion_obj = EstadoDesercion.select(:id).find_by(nombre_estado: EstadoDesercion::DESERTO_NINGUNO)
+		est_detail = {total: 0, new: 0, upd: 0, failed: 0}
+
+		# Se verifica que el estado de desercion 'ninguno' exista.
+		if estado_desercion_obj.nil?
+			response[:error] = true
+			response[:msg] = "Error interno"
+			return response
+		end
+
+		(2..spreadsheet.last_row).each do |ss_row|
+			if !spreadsheet.row(ss_row)[0].nil?
+				est_detail[:total] += 1
+
+				row_hash = Hash[[header, spreadsheet.row(ss_row)].transpose]
+				carrera_obj = Carrera.select(:id).find_by(codigo: row_hash[:codigo_carrera_sig21].strip)
+				est_hash = {
+					nombre: row_hash[:nombres],
+					apellido: row_hash[:a_paterno] + " " + row_hash[:a_materno],
+					rut: row_hash[:rut].to_i.to_s.strip,
+					dv: row_hash[:dv].to_i.to_s.strip,
+					fecha_ingreso: formatPeriodoAcademico(row_hash[:periodo_academico].to_i.to_s),
+					carrera_id: carrera_obj.nil? ? nil : carrera_obj.id,
+					estado_desercion_id: estado_desercion_obj.id # Todos los estudiantes se inicializan con estado de desercion "ninguno".
+				}
+
+				# Se tiene que encontrar la carrera primero
+				if !carrera_obj.nil?
+					# Verificar si el estudiante ya esta en la bd.
+					estudiante_obj = Estudiante.where(rut: est_hash[:rut]).where(dv: est_hash[:dv]).where(carrera_id: est_hash[:carrera_id]).first
+
+					if !estudiante_obj.nil?
+						# Esta en la BD, se pasa a actualizar sus datos.
+						estudiante_obj.assign_attributes(est_hash)
+
+						if estudiante_obj.valid?
+							puts "Estudiante encontrado valido".green
+							est_detail[:upd] += 1
+							estudiante_obj.save
+
+						else
+							puts "Estudiante encontrado no valido".green
+							est_detail[:failed] += 1
+							
+						end
+
+					else
+						# No esta en la BD, se agrega como nuevo.
+						estudiante_obj = Estudiante.new(est_hash)
+						
+						if estudiante_obj.valid?
+							# Cumple con todas las validaciones.
+							puts "Estudiante nuevo valido".green
+							est_detail[:new] += 1
+							estudiante_obj.save
+
+						else
+							# No cumple.
+							puts "Estudiante nuevo no valido".green
+							est_detail[:failed] += 1
+							
+						end
+					end
+				else
+					# No se encontro la carrera.
+					puts "No se encontro la carrera.".green
+					est_detail[:failed] += 1
+
+				end
+			end # END if [0].nil?
+		end # END EXCEL each.
+
+		if !response[:error]
+			self.tipo_carga = "estudiante"
+			self.detalle = est_detail
+			self.save
+
+			response[:msg] = est_detail
+		end
+
+		return response
+	end
+
 	def openSpreadsheet(file)
 	  case file.extname
 		  when '.csv' then Roo::Csv.new(file.realpath, packed: false, file_warning: :ignore)
@@ -298,6 +385,12 @@ class LogCargaMasiva < ActiveRecord::Base
 		  when '.xlsx' then Roo::Excelx.new(file.realpath, packed: false, file_warning: :ignore)
 		  else raise "Unknown file type: #{file.original_filename}"
 	  end
+	end
+
+	def formatPeriodoAcademico(date_time_str)
+		str_date = date_time_str[0...(date_time_str.size - 1)] # anio
+		str_date += date_time_str.last.to_i == 1 ? "-01" : "-07"
+		return DateTime.parse("#{str_date}-01")
 	end
 
 	def formatDateTime(date_time_str)

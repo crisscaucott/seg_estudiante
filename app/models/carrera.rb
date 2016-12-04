@@ -6,4 +6,8 @@ class Carrera < ActiveRecord::Base
 	def self.getCarreras
 		return self.select([:id, :nombre]).order(nombre: :asc)
 	end
+
+	def nombre=(new_nombre)
+		self[:nombre] = new_nombre.strip.capitalize
+	end
 end

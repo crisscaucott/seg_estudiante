@@ -165,6 +165,11 @@ class SuperUserController < ApplicationController
 		end		
 	end
 
+	def subir_estudiantes
+		
+		render action: :index, locals: {partial: 'subir_estudiantes', context: 'estudiantes', file: LogCargaMasiva.new}
+	end
+
 	def estado_desercion_params
 		params.require(:estado_desercion).permit(:id, :nombre_estado, :notificar, :riesgoso)
 	end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161204220601) do
+ActiveRecord::Schema.define(version: 20161204225320) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,11 @@ ActiveRecord::Schema.define(version: 20161204220601) do
     t.string   "dv",                  null: false
   end
 
+  create_table "frec_alerta", force: :cascade do |t|
+    t.integer "dias",    null: false
+    t.string  "mensaje", null: false
+  end
+
   create_table "log_carga_masiva", force: :cascade do |t|
     t.integer  "usuario_id",  null: false
     t.string   "tipo_carga",  null: false
@@ -129,7 +134,7 @@ ActiveRecord::Schema.define(version: 20161204220601) do
     t.integer  "id_permission",                       null: false
     t.string   "rut",                                 null: false
     t.datetime "deleted_at"
-    t.integer  "frecuencia_alertas"
+    t.integer  "frec_alerta_id"
   end
 
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
@@ -144,5 +149,6 @@ ActiveRecord::Schema.define(version: 20161204220601) do
   add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
+  add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"
 end

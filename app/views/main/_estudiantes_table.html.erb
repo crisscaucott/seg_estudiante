@@ -29,7 +29,7 @@
 						<td>
 							<span><%= e.estado_desercion_id.nil? ? "Ninguno" : e.estado_desercion.nombre_estado %></span>
 
-							<%= f2.collection_select(:estado_desercion_id, estados, :id, :nombre_estado, {prompt: false, include_blank: "Ninguno" , selected: e.estado_desercion_id}, {class: 'form-control hidden'}) %>
+							<%= f2.collection_select(:estado_desercion_id, estados, :id, :nombre_estado, {prompt: false, selected: e.estado_desercion_id}, {class: 'form-control hidden'}) %>
 							
 						</td>
 						<td class="text-center">

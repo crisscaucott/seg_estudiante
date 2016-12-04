@@ -1,41 +1,37 @@
 <div class="container col-sm-12">
 	<div class="col-sm-3">
 		<h3 class="text-center">Filtros</h3>
-		<form id="convFilter" class="form-horizontal" action="/admin/conversations/filter">
+
+    <%= form_for(:estudiantes_filter, url: get_filter_estudiantes_path, html: {id: 
+      'estudiantes_filter', class: 'form-horizontal', format: :json}) do |f| %>
+    
       <div class="form-group">
-        <label class="col-sm-4 control-label" for="keywords">Año ingreso</label>
+        <%= f.label(:año_ingreso, class: 'col-sm-4 control-label') %>
         <div class="col-sm-8">
-          <select name="" class="form-control">
-          	<option value="">2009</option>
-          	<option value="">2010</option>
-          	<option value="">2011</option>
-          </select>
+          <%= f.select(:anio_ingreso, filters[:anios_ingreso], {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
+
       <div class="form-group">
-        <label class="col-sm-4 control-label" for="dialogAct">Carrera</label>
+        <%= f.label(:carrera, class: 'col-sm-4 control-label') %>
         <div class="col-sm-8">
-        	<select name="" class="form-control">
-          	<option value="">Ing. en Computación</option>
-          	<option value="">Ing. en Construcción</option>
-          	<option value="">Arquitectura</option>
-          </select>
+          <%= f.collection_select(:carrera, filters[:carreras], :id, :nombre, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
+
       <div class="form-group">
-        <label class="col-sm-4 control-label" for="slot">Estado deserción</label>
+        <%= f.label(:estado_desercion, class: 'col-sm-4 control-label') %>
         <div class="col-sm-8">
-          <select name="" class="form-control">
-          	<option value="">Bueno</option>
-          	<option value="">Malo</option>
-          	<option value="">Critico</option>
-          </select>
+          <%= f.collection_select(:estado_desercion, filters[:estados_desercion], :id, :nombre_estado, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
+
       <div class="text-center">
-      	<a href="#" class="btn btn-default">Filtrar</a>
+        <%= f.submit(:filtrar, class: 'btn btn-default') %>
       </div>
-    </form>
+
+    <% end %>    
+    
 	</div>
 	<div class="col-sm-9">
 		<h3 class="text-center">Estudiantes</h3>

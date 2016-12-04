@@ -101,5 +101,51 @@ $('div#estudiantes_container').on('submit', 'form#estudiantes_form', function(ev
 	    btn.val(btn_text);
 	    showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
 	});
+});
+
+$('form#estudiantes_filter').on('submit', function(event){
+	event.preventDefault();
+	var btn = $(event.target).find('input[type=submit]'), btn_text = btn.val();
+	var noti_params = {msg: null, type: null};
+
+	$.ajax({
+	  url: event.target.action,
+	  data: $(event.target).serialize(),
+	  method: event.target.method,
+	  beforeSend: function()
+	  {
+	    btn.val('Filtrando...');
+	    btn.toggleClass('disabled');
+	    showNotification({msg: "Aplicando filtros...", type: 'info', closeAll: true});
+
+	  }
+	}).done(function(data, textStatus, jqXHR) {
+	    noti_params.msg = data.msg;
+	    noti_params.type = data.type;
+
+	    data_table.DataTable().clear();
+	    $('div#estudiantes_container').html(data.table);
+	    data_table.DataTable().draw();
+
+	    data_table = $('table#estudiantes_table');
+	    initDataTable(data_table, datatable_options);
+
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+
+	    noti_params.msg = errorThrown;
+	    noti_params.type = 'danger';
+
+	    if (jqXHR.responseJSON !== undefined)
+	    {
+	      noti_params.msg = jqXHR.responseJSON.msg;
+	      noti_params.type = jqXHR.responseJSON.type;
+	    }
+
+	}).always(function(data, textStatus, errorThrown) {
+	    btn.toggleClass('disabled');
+	    btn.val(btn_text);
+	    showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+	});
 
 });
+

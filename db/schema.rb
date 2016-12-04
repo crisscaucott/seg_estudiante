@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161204220028) do
+ActiveRecord::Schema.define(version: 20161204220601) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "alerta", force: :cascade do |t|
+    t.integer  "usuario_id",  null: false
+    t.string   "tipo_alert",  null: false
+    t.datetime "fecha_envio", null: false
+    t.string   "mensaje",     null: false
+    t.string   "estado",      null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "asignatura", force: :cascade do |t|
     t.string   "nombre",        null: false
@@ -125,6 +135,7 @@ ActiveRecord::Schema.define(version: 20161204220028) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["rut"], name: "index_users_on_rut", unique: true, using: :btree
 
+  add_foreign_key "alerta", "users", column: "usuario_id"
   add_foreign_key "asistencia", "asignatura"
   add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"

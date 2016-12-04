@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, authentication_keys: [:login]
 
   belongs_to :user_permission, class_name: "UserPermission", foreign_key: "id_permission"
+  has_many :alertas, class_name: "Alerta", foreign_key: "usuario_id"
+
   validates :name, :last_name, :email, presence: true
   validates_format_of :email, with: email_regexp
   validates_presence_of :rut

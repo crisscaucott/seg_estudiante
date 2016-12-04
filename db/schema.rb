@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20161204220601) do
 
   create_table "alerta", force: :cascade do |t|
     t.integer  "usuario_id",  null: false
-    t.string   "tipo_alert",  null: false
+    t.string   "tipo_alerta", null: false
     t.datetime "fecha_envio", null: false
     t.string   "mensaje",     null: false
     t.string   "estado",      null: false

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161203022336) do
+ActiveRecord::Schema.define(version: 20161203021429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 20161203022336) do
     t.string   "apellido",            null: false
     t.string   "rut",                 null: false
     t.integer  "carrera_id",          null: false
-    t.integer  "estado_desercion_id"
+    t.integer  "estado_desercion_id", null: false
     t.datetime "fecha_eliminacion"
     t.datetime "fecha_ingreso",       null: false
     t.datetime "created_at",          null: false
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20161203022336) do
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "estudiante", "carrera"
+  add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"

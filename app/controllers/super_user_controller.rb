@@ -1,5 +1,6 @@
 class SuperUserController < ApplicationController
 	include ApplicationHelper
+	include MassLoadHelper
 	before_action :isDecano
 
 	def index
@@ -170,6 +171,26 @@ class SuperUserController < ApplicationController
 		render action: :index, locals: {partial: 'subir_estudiantes', context: 'estudiantes', file: LogCargaMasiva.new}
 	end
 
+	def subir_estudiantes_xls
+		est_params = subir_estudiante_params
+		uploaded_file = uploadFile(est_params[:url_archivo])
+
+		if !uploaded_file[:file_path].nil?
+			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+
+			res = mass_load_obj.uploadEstudiantes()
+
+			if !res[:error]
+				render json: {msg: render_to_string(partial: 'detalle_subida_estudiante', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
+				
+			else
+				render json: {msg: res[:msg], type: "danger"}, status: :bad_request
+			end
+		else
+			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+		end
+	end
+
 	def estado_desercion_params
 		params.require(:estado_desercion).permit(:id, :nombre_estado, :notificar, :riesgoso)
 	end
@@ -180,5 +201,9 @@ class SuperUserController < ApplicationController
 
   def update_user_params
   	params.require(:user).permit(:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at)
+  end
+
+  def subir_estudiante_params
+  	params.require(:log_carga_masiva).permit(:url_archivo)
   end
 end

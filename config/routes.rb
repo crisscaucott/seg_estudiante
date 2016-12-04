@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   post '/admini/estados_desercion/update', to: 'super_user#update_estado_desercion', as: 'update_estado_desercion'
 
   get '/admini/estudiantes/subir', to: 'super_user#subir_estudiantes', as: 'subir_estudiantes'
-  get '/admini/estudiantes/upload', to: 'super_user#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
+  post '/admini/estudiantes/upload', to: 'super_user#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   

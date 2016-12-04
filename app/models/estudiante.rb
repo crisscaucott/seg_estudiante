@@ -4,6 +4,9 @@ class Estudiante < ActiveRecord::Base
 	belongs_to :estado_desercion, class_name: "EstadoDesercion"
 	has_many :calificacions, class_name: "Calificacion", foreign_key: "estudiante_id"
 
+	validates_presence_of :nombre, :apellido, :rut, :dv, :fecha_ingreso, :carrera_id, :estado_desercion_id
+	validate :validarRut
+
 	def self.getIdEstudianteByCarreraAndRut(rut, carrera_id, fields = [:id])
 		return self.select(fields).where(rut: rut.to_s.strip).where(carrera_id: carrera_id).first
 	end
@@ -32,5 +35,26 @@ class Estudiante < ActiveRecord::Base
 		end
 
 		return estudiantes
+	end
+
+	def validarRut
+		rut = self.rut + self.dv
+		self.errors[:rut] << "Rut inválido." if !RUT::validar(rut)
+	end
+
+	def nombre=(new_nombre)
+		self[:nombre] = new_nombre.strip.titleize
+	end
+
+	def apellido=(new_apellido)
+		self[:apellido] = new_apellido.strip.titleize
+	end
+
+	def rut=(new_rut)
+		self[:rut] = new_rut.strip
+	end
+
+	def dv=(new_dv)
+		self[:dv] = new_dv.strip
 	end
 end

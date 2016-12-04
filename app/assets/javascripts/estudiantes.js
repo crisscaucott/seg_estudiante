@@ -85,6 +85,9 @@ $('div#estudiantes_container').on('submit', 'form#estudiantes_form', function(ev
 	    data_table = $('table#estudiantes_table');
 	    initDataTable(data_table, datatable_options);
 
+	    // Dejar seleccionado en "cualquiera" el filtro de estado de desercion.
+	    $('select#estudiantes_filter_estado_desercion option[value=""').prop('selected', true)
+
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 
 	    noti_params.msg = errorThrown;

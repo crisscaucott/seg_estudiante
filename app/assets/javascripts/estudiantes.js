@@ -1,14 +1,14 @@
 var data_table = $('table#estudiantes_table');
 var datatable_options = {
-    dom: 'tip',
+    dom: 'ftip',
     columns: [
-      {"data": "num"}, 
-      {"data": "nombre"}, 
-      {"data": "rut"},
-      {"data": "anio_ingreso"},
-      {"data": "carrera"},
-      {"data": "estado_desercion"},
-      {"data": "editar"},
+      {"data": "num", "searchable": false}, 
+      {"data": "nombre", "searchable": true}, 
+      {"data": "rut", "searchable": true},
+      {"data": "anio_ingreso", "searchable": false},
+      {"data": "carrera", "searchable": false},
+      {"data": "estado_desercion", "searchable": false},
+      {"data": "editar", "searchable": false},
     ],
   }
 

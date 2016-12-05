@@ -24,4 +24,8 @@ class Alerta < ActiveRecord::Base
 		end
 	end	
 
+	def self.deleteAlertasPendientes()
+		return self.where(tipo_alerta: 'email').where(estado: 'Pendiente').delete_all
+	end
+
 end

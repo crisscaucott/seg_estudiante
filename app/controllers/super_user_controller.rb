@@ -202,28 +202,34 @@ class SuperUserController < ApplicationController
 		frec_alerta_obj = FrecAlerta.find_by(id: config_params[:frec_alerta_id])
 		if !frec_alerta_obj.nil?
 			if config_params[:fecha_comienzo].present?
-				# Revisar que la fecha de envio calculada (fecha comienza + frecuencia de dias) sea al menos 1 dia mas que el dia de hoy.
-				hoydia = DateTime.now.to_date
-				fecha_envio = DateTime.parse(config_params[:fecha_comienzo]) + frec_alerta_obj.dias.days
 
-				if (fecha_envio - hoydia).to_i > 0
-					# Fecha de envio validada.
-					# Setear la frencuencia de alertas de todos los usuarios, menos el usuario actual osea el decano.
-					User.setFrecAlertaId(current_user.id, frec_alerta_obj.id)
-					users = User.getUsers({except_user_id: current_user.id})
+				if frec_alerta_obj.dias != 0
+					# Revisar que la fecha de envio calculada (fecha comienza + frecuencia de dias) sea al menos 1 dia mas que el dia de hoy.
+					hoydia = DateTime.now.to_date
+					fecha_envio = DateTime.parse(config_params[:fecha_comienzo]) + frec_alerta_obj.dias.days
 
-					# Generar las alertas para todos los usuarios.
-					Alerta.setAlertaToUsers(users, fecha_envio)
+					if (fecha_envio - hoydia).to_i > 0
+						# Fecha de envio validada.
+						# Setear la frencuencia de alertas de todos los usuarios, menos el usuario actual osea el decano.
+						User.setFrecAlertaId(current_user.id, frec_alerta_obj.id)
+						users = User.getUsers({except_user_id: current_user.id})
 
-					render json: {msg: "Configuración de alertas hecha exitosamente.", type: "success"}
+						# Generar las alertas para todos los usuarios.
+						Alerta.setAlertaToUsers(users, fecha_envio)
+
+						render json: {msg: "Configuración de alertas hecha exitosamente.", type: "success"}
+					else
+						# La fecha de envio es menor que la fecha de hoydia
+						render json: {msg: "La fecha de envio calculada es menor que hoy dia. Por favor seleciona una fecha de comienzo mas tardía.", type: "warning"}, status: :unprocessable_entity
+						
+					end
+
 				else
-					# La fecha de envio es menor que la fecha de hoydia
-					render json: {msg: "La fecha de envio calculada es menor que hoy dia. Por favor seleciona una fecha de comienzo mas tardía.", type: "warning"}, status: :unprocessable_entity
-					
+					# Si tiene marcado la opcion de 'desactivado', se borraran todas las alertas pendientes.
+					alertas_deleted = Alerta.deleteAlertasPendientes
+					render json: {msg: "Configuración de alertas hecha exitosamente. Se han detenido <b>#{alertas_deleted}</b> alertas que ya estaban pendientes.".html_safe, type: "success"}
+
 				end
-
-
-
 			else
 				render json: {msg: "La fecha de comienzo no está definida.", type: "danger"}, status: :unprocessable_entity
 							

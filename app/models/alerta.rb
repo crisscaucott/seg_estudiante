@@ -4,12 +4,23 @@ class Alerta < ActiveRecord::Base
 
 	def self.setAlertaToUsers(users, fecha_envio)
 		users.each do |u|
-			alerta_obj = self.new(
-				usuario_id: u.id,
-				tipo_alerta: "email",
-				fecha_envio: fecha_envio,
-			)
-			alerta_obj.save
+			# Consultar si existe la alerta pendiente para el usuario con id = u.id
+			alerta_obj = self.where(estado: "Pendiente").where(usuario_id: u.id).where(tipo_alerta: 'email').first
+
+			if alerta_obj.nil?
+				# No existe alerta pendiente para tal usuario
+				alerta_obj = self.new(
+					usuario_id: u.id,
+					tipo_alerta: "email",
+					fecha_envio: fecha_envio,
+				)
+
+				alerta_obj.save
+			else
+				# Si ya habia una alerta pendiente, solo se actualiza su fecha de envio.
+				alerta_obj.fecha_envio = fecha_envio
+				alerta_obj.save
+			end
 		end
 	end	
 

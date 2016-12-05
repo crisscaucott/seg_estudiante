@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Estudiantes potenciales desertores</h1>
+    <ul>
+    	<% @estudiantes.each do |e| %>
+				<li><%= e.nombre %></li>
+    	<% end %>
+    </ul>
+  </body>
+</html>

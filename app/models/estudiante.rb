@@ -1,11 +1,12 @@
 class Estudiante < ActiveRecord::Base
-	self.table_name = 'estudiante'
 	belongs_to :carrera, class_name: "Carrera"
 	belongs_to :estado_desercion, class_name: "EstadoDesercion"
 	has_many :calificacions, class_name: "Calificacion", foreign_key: "estudiante_id"
+  has_and_belongs_to_many :users, class_name: "User", foreign_key: "estudiante_id", join_table: "tutor_estudiante", association_foreign_key: 'usuario_id'
 
 	validates_presence_of :nombre, :apellido, :rut, :dv, :fecha_ingreso, :carrera_id, :estado_desercion_id
 	validate :validarRut
+	self.table_name = 'estudiante'
 
 	def self.getIdEstudianteByCarreraAndRut(rut, carrera_id, fields = [:id])
 		return self.select(fields).where(rut: rut.to_s.strip).where(carrera_id: carrera_id).first

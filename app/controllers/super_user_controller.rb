@@ -215,7 +215,7 @@ class SuperUserController < ApplicationController
 					# Generar las alertas para todos los usuarios.
 					Alerta.setAlertaToUsers(users, fecha_envio)
 
-					render json: {msg: "oda", type: "success"}
+					render json: {msg: "Configuración de alertas hecha exitosamente.", type: "success"}
 				else
 					# La fecha de envio es menor que la fecha de hoydia
 					render json: {msg: "La fecha de envio calculada es menor que hoy dia. Por favor seleciona una fecha de comienzo mas tardía.", type: "warning"}, status: :unprocessable_entity

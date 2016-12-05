@@ -17,13 +17,13 @@ ActiveRecord::Schema.define(version: 20161204225320) do
   enable_extension "plpgsql"
 
   create_table "alerta", force: :cascade do |t|
-    t.integer  "usuario_id",  null: false
-    t.string   "tipo_alerta", null: false
-    t.datetime "fecha_envio", null: false
-    t.string   "mensaje",     null: false
-    t.string   "estado",      null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "usuario_id",                        null: false
+    t.string   "tipo_alerta",                       null: false
+    t.datetime "fecha_envio",                       null: false
+    t.string   "mensaje"
+    t.string   "estado",      default: "Pendiente", null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   create_table "asignatura", force: :cascade do |t|

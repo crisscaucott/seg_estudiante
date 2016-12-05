@@ -47,8 +47,16 @@ class User < ActiveRecord::Base
     false
   end
 
+  def self.setFrecAlertaId(except_user_id, frec_alerta_id)
+    self.where.not(id: except_user_id).update_all(frec_alerta_id: frec_alerta_id)
+  end
+
   def self.getUsers(filters = {})
     users = self.select([:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at]).order(name: :asc)
+
+    if !filters[:except_user_id].nil?
+      users = users.where.not(id: filters[:except_user_id])
+    end
 
     users = users.where.not(deleted_at: nil) if !filters[:deleted_at].nil?
     return users

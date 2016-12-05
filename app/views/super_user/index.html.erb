@@ -24,6 +24,13 @@
       <div class="<%= options[:div_class] %>" id="estudiantes" <%= options[:div_expanded] %> >
           <%= link_to('Subir estudiantes', subir_estudiantes_path, class: "list-group-item list-group-item-action" + setSubActive(subir_estudiantes_path)) %>
       </div>
+
+      <% options = setActive(context, 'alertas') %>
+
+      <a href="#alertas" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Alertas</a>
+      <div class="<%= options[:div_class] %>" id="alertas" <%= options[:div_expanded] %> >
+          <%= link_to('Configurar', config_alertas_path, class: "list-group-item list-group-item-action" + setSubActive(config_alertas_path)) %>
+      </div>
     </div>
   </div>
 </div>

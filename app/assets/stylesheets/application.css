@@ -12,6 +12,7 @@
  *
  *= require bootstrap.min.css
  *= require animate.css
+ *= require bootstrap-datetimepicker
  */
 
 div#main-navbar > div.container-fluid > nav > div > a > img{

@@ -4,8 +4,8 @@ class CreateAlerta < ActiveRecord::Migration
     	t.integer :usuario_id, null: false
     	t.string :tipo_alerta, null: false
     	t.datetime :fecha_envio, null: false
-    	t.string :mensaje, null: false
-    	t.string :estado, null: false
+    	t.string :mensaje
+    	t.string :estado, null: false, default: "Pendiente"
       t.timestamps null: false
     end
 

@@ -46,6 +46,13 @@ gem 'rut_chileno'
 
 gem 'devise-i18n'
 
+# Para libreria de calendario JS
+gem 'momentjs-rails'
+gem 'bootstrap3-datetimepicker-rails'
+
+gem 'figaro'
+gem 'mailgun_rails'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

@@ -3,6 +3,10 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, authentication_keys: [:login]
 
   belongs_to :user_permission, class_name: "UserPermission", foreign_key: "id_permission"
+  belongs_to :frec_alerta, class_name: "FrecAlerta", foreign_key: "frec_alerta_id"
+  has_many :alertas, class_name: "Alerta", foreign_key: "usuario_id"
+  has_and_belongs_to_many :estudiantes, class_name: "Estudiante", foreign_key: "usuario_id", join_table: "tutor_estudiante"
+
   validates :name, :last_name, :email, presence: true
   validates_format_of :email, with: email_regexp
   validates_presence_of :rut
@@ -44,8 +48,16 @@ class User < ActiveRecord::Base
     false
   end
 
+  def self.setFrecAlertaId(except_user_id, frec_alerta_id)
+    self.where.not(id: except_user_id).update_all(frec_alerta_id: frec_alerta_id)
+  end
+
   def self.getUsers(filters = {})
     users = self.select([:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at]).order(name: :asc)
+
+    if !filters[:except_user_id].nil?
+      users = users.where.not(id: filters[:except_user_id])
+    end
 
     users = users.where.not(deleted_at: nil) if !filters[:deleted_at].nil?
     return users

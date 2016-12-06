@@ -20,9 +20,10 @@ class MainController < ApplicationController
 		estudiantes.each do |num, estudiante|
 			if estudiante[:row_edited].to_i == 1
 				total += 1
-				est_obj = Estudiante.select([:id, :estado_desercion_id]).find_by(id: estudiante[:id])
+				est_obj = Estudiante.find_by(id: estudiante[:id])
 				if !est_obj.nil?
 					est_obj.estado_desercion_id = estudiante[:estado_desercion_id].blank? ? nil : estudiante[:estado_desercion_id].to_i
+
 					if est_obj.save
 						estudiantes_updated += 1
 					end

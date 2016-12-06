@@ -191,19 +191,72 @@ class SuperUserController < ApplicationController
 		end
 	end
 
-	def estado_desercion_params
-		params.require(:estado_desercion).permit(:id, :nombre_estado, :notificar, :riesgoso)
+	def config_alertas
+		
+		render action: :index, locals: {partial: 'config_alertas' ,context: 'alertas', user: User.new, frecuencia_alertas: FrecAlerta.all.order(dias: :asc)}
 	end
 
-	def sign_up_params
-  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission)
-  end
+	def set_config_alertas
+		config_params = frec_alerta_params
 
-  def update_user_params
-  	params.require(:user).permit(:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at)
-  end
+		frec_alerta_obj = FrecAlerta.find_by(id: config_params[:frec_alerta_id])
+		if !frec_alerta_obj.nil?
+			if config_params[:fecha_comienzo].present?
 
-  def subir_estudiante_params
-  	params.require(:log_carga_masiva).permit(:url_archivo)
-  end
+				if frec_alerta_obj.dias != 0
+					# Revisar que la fecha de envio calculada (fecha comienza + frecuencia de dias) sea al menos 1 dia mas que el dia de hoy.
+					hoydia = DateTime.now.to_date
+					fecha_envio = DateTime.parse(config_params[:fecha_comienzo]) + frec_alerta_obj.dias.days
+
+					if (fecha_envio - hoydia).to_i > 0
+						# Fecha de envio validada.
+						# Setear la frencuencia de alertas de todos los usuarios, menos el usuario actual osea el decano.
+						User.setFrecAlertaId(current_user.id, frec_alerta_obj.id)
+						users = User.getUsers({except_user_id: current_user.id})
+
+						# Generar las alertas para todos los usuarios.
+						Alerta.setAlertaToUsers(users, fecha_envio)
+
+						render json: {msg: "Configuración de alertas hecha exitosamente.", type: "success"}
+					else
+						# La fecha de envio es menor que la fecha de hoydia
+						render json: {msg: "La fecha de envio calculada es menor que hoy dia. Por favor seleciona una fecha de comienzo mas tardía.", type: "warning"}, status: :unprocessable_entity
+						
+					end
+
+				else
+					# Si tiene marcado la opcion de 'desactivado', se borraran todas las alertas pendientes.
+					alertas_deleted = Alerta.deleteAlertasPendientes
+					render json: {msg: "Configuración de alertas hecha exitosamente. Se han detenido <b>#{alertas_deleted}</b> alertas que ya estaban pendientes.".html_safe, type: "success"}
+
+				end
+			else
+				render json: {msg: "La fecha de comienzo no está definida.", type: "danger"}, status: :unprocessable_entity
+							
+			end
+		else
+			render json: {msg: "Ha ocurrido un error en configurar la frecuencia de alertas a los usuarios.", type: "danger"}, status: :unprocessable_entity
+		end
+	end
+
+	private
+		def frec_alerta_params
+			params.require(:alerta_config).permit(:frec_alerta_id, :fecha_comienzo)
+		end
+
+		def estado_desercion_params
+			params.require(:estado_desercion).permit(:id, :nombre_estado, :notificar, :riesgoso)
+		end
+
+		def sign_up_params
+	  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission)
+	  end
+
+	  def update_user_params
+	  	params.require(:user).permit(:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at)
+	  end
+
+	  def subir_estudiante_params
+	  	params.require(:log_carga_masiva).permit(:url_archivo)
+	  end
 end

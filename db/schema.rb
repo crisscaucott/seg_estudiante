@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161204171018) do
+ActiveRecord::Schema.define(version: 20161205032545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "alerta", force: :cascade do |t|
+    t.integer  "usuario_id",                        null: false
+    t.string   "tipo_alerta",                       null: false
+    t.datetime "fecha_envio",                       null: false
+    t.string   "mensaje"
+    t.string   "estado",      default: "Pendiente", null: false
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
 
   create_table "asignatura", force: :cascade do |t|
     t.string   "nombre",        null: false
@@ -79,6 +89,11 @@ ActiveRecord::Schema.define(version: 20161204171018) do
     t.string   "dv",                  null: false
   end
 
+  create_table "frec_alerta", force: :cascade do |t|
+    t.integer "dias",    null: false
+    t.string  "mensaje", null: false
+  end
+
   create_table "log_carga_masiva", force: :cascade do |t|
     t.integer  "usuario_id",  null: false
     t.string   "tipo_carga",  null: false
@@ -95,6 +110,11 @@ ActiveRecord::Schema.define(version: 20161204171018) do
     t.boolean  "descargado",     default: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+  end
+
+  create_table "tutor_estudiante", force: :cascade do |t|
+    t.integer "usuario_id"
+    t.integer "estudiante_id"
   end
 
   create_table "user_permissions", force: :cascade do |t|
@@ -119,11 +139,13 @@ ActiveRecord::Schema.define(version: 20161204171018) do
     t.integer  "id_permission",                       null: false
     t.string   "rut",                                 null: false
     t.datetime "deleted_at"
+    t.integer  "frec_alerta_id"
   end
 
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["rut"], name: "index_users_on_rut", unique: true, using: :btree
 
+  add_foreign_key "alerta", "users", column: "usuario_id"
   add_foreign_key "asistencia", "asignatura"
   add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"
@@ -132,5 +154,6 @@ ActiveRecord::Schema.define(version: 20161204171018) do
   add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
+  add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"
 end

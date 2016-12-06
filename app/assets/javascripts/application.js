@@ -21,6 +21,8 @@
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap.min
 //= require bootbox.min
+//= require moment
+//= require bootstrap-datetimepicker
 
 var notifications = [];
 var notifications_limit = 3;

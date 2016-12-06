@@ -21,6 +21,9 @@ Rails.application.routes.draw do
   get '/admini/estudiantes/subir', to: 'super_user#subir_estudiantes', as: 'subir_estudiantes'
   post '/admini/estudiantes/upload', to: 'super_user#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
 
+  get '/admini/alertas/config', to: 'super_user#config_alertas', as: 'config_alertas'
+  post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
+
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'

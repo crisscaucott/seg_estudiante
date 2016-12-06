@@ -1,0 +1,37 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "frec_alertas_config", "data-turbolinks-track" => true  %>
+<% end %>
+<div class="row">
+  <div class="col-sm-8 form-box">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h3>Configurar frecuencia de envío de alertas</h3>
+      </div>
+      <div class="form-top-right">
+        <i class="fa fa-lock"></i>
+      </div>
+    </div>
+    <%= form_for(:alerta_config, url: set_config_alertas_path, html: {id: 'config_alertas_form', format: :json}) do |f| %>
+
+      <div class="form-group">
+        <%= f.label :frecuencia_alertas %><br />
+        <%= f.collection_select(:frec_alerta_id, frecuencia_alertas, :id, :mensaje, {}, {class: 'form-control'}) %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :fecha_comienzo %>
+        <div class='input-group date' id='datetimepicker1'>
+          <%= f.text_field(:fecha_comienzo, class: 'form-control', placeholder: "dd/mm/aaaa") %>
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
+      </div>
+
+    <div class="actions text-center">
+      <%= f.submit 'Guardar', class: 'btn btn-primary' %>
+    </div>
+
+    <% end %>
+  </div>
+</div>

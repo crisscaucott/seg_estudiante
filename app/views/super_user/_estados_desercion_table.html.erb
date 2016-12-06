@@ -16,7 +16,15 @@
                     <%= f.hidden_field(:id, value: e.id) %>
                     <%= hidden_field_tag(:row_edited, 0, class: 'row_edited', id: nil) %>
                     <%= hidden_field_tag(:to_delete, 0, class: 'row_delete', id: nil) %>
-                    <td><%= index + 1 %></td>
+
+                    <td>
+                      <div class="radio">
+                        <label>
+                          <%= radio_button_tag(:replace_estado, true, false, class: 'hidden', id: nil, disabled: true) %>
+                          <%= index + 1 %>
+                        </label>
+                      </div>
+                    </td>
                     <td>
                         <span><%= e.nombre_estado %></span>
                         <%= f.text_field(:nombre_estado, value: e.nombre_estado, class: 'form-control hidden', placeholder: :nombre_estado) %>

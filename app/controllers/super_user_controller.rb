@@ -48,11 +48,30 @@ class SuperUserController < ApplicationController
 			# Verificar que el estado no sea fijo.
 			if !ed_obj.checkIsEstadoFijo
 				if params[:to_delete] == "1"
-					# Borrar estado (REVISAR SI HAY QYE VERIFICAR SI HAY ESTUDIANTES CON ESE ESTADO ANTES DE BORRAR).
-					ed_obj.destroy!
-					estados_desercion = EstadoDesercion.getEstados
+					# Borrar estado
+					if !params[:replace_estado].nil?
+						if ed_obj.id != params[:replace_estado]
+							replace_ed_obj = EstadoDesercion.find_by(id: params[:replace_estado])
+							if !replace_ed_obj.nil?
+								# Primero actualizar a todos los estudiantes con el estado de desercion de reemplazo.
+								Estudiante.where(estado_desercion_id: ed_obj.id).update_all(estado_desercion_id: replace_ed_obj.id)
 
-					render json: {msg: "Estado de deserción actualizado exitosamente.", table: render_to_string(partial: 'estados_desercion_table', formats: [:html], layout: false, locals: {estados: estados_desercion}), type: "success"}
+								# Despues borrar estado (REVISAR SI HAY QYE VERIFICAR SI HAY ESTUDIANTES CON ESE ESTADO ANTES DE BORRAR).
+								ed_obj.destroy!
+								estados_desercion = EstadoDesercion.getEstados
+
+								render json: {msg: "Estado de deserción eliminado exitosamente.", table: render_to_string(partial: 'estados_desercion_table', formats: [:html], layout: false, locals: {estados: estados_desercion}), type: "success"}
+
+							else
+								render json: {msg: "Ha ocurrido un problema en encontrar el estado de deserción para reasignar a los estudiantes del sistema.", type: "danger"}, status: :bad_request					
+							end
+
+						else
+							render json: {msg: "El estado de deserción a borrar es el mismo que el estado para la reasignación.", type: "danger"}, status: :bad_request					
+						end
+					else
+						render json: {msg: "Ha ocurrido un problema con el borrado del estado de deserción.", type: "danger"}, status: :bad_request
+					end
 
 				elsif params[:row_edited] == "1"
 					# Actualizar estado.

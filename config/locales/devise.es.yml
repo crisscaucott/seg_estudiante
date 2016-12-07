@@ -59,7 +59,10 @@ es:
         forgot_your_password: "¿Olvidó su contraseña?"
         send_me_reset_password_instructions: "Enviar instrucciones para reestablecer contraseña."
       edit:
-        change_my_password: "Cambiar contraseña."
+        change_my_password: "Cambiar contraseña"
+        change_your_password: "Cambia tu contraseña"
+        new_password: "Contraseña nueva"
+        confirm_new_password: "Confirmar contraseña nueva"
       send_instructions: 'Recibirás un correo electrónico con instrucciones sobre cómo reiniciar tu contraseña en unos minutos.'
       updated: 'Tu contraseña fue cambiada exitosamente y has sido ingresado al sistema.'
       updated_not_active: 'Tu contraseña se cambió exitosamente.'

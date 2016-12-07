@@ -1,19 +1,29 @@
 <%= content_for :javascript do %>   
   <%= javascript_include_tag "recuperar_pass", "data-turbolinks-track" => true  %>
 <% end %>
-<h2><%= t('.forgot_your_password') %></h2>
-
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true %>
+<div class="row">
+  <div class="col-sm-6 col-sm-offset-3 form-box">
+  <div class="form-top text-center">
+    <div class="form-top-left">
+      <h2><%= t('.forgot_your_password') %></h2>
+    </div>
+    <div class="form-top-right">
+      <i class="fa fa-lock"></i>
+    </div>
   </div>
+		<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+		  <%= devise_error_messages! %>
 
-  <div class="actions">
-    <%= f.submit t('.send_me_reset_password_instructions') %>
-  </div>
-<% end %>
+		  <div class="form-group">
+		    <%= f.label :email %><br />
+		    <%= f.email_field :email, autofocus: true, class: 'form-control', placeholder: 'Email' %>
+		  </div>
 
-<%= render "devise/shared/links" %>
+		  <div class="actions">
+				<%= link_to "Volver", new_user_session_path, class: 'btn btn-default pull-left' %>
+		    <%= f.submit t('.send_me_reset_password_instructions'), class: 'btn btn-primary pull-right' %>
+		  </div>
+		<% end %>
+
+	</div>
+</div>

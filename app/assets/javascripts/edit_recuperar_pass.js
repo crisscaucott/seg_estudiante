@@ -12,12 +12,12 @@ $('form#new_user').submit(function(event){
     method: event.target.method,
     beforeSend: function()
     {
-      btn.val('Enviando correo...');
+      btn.val('Cambiando contraseña...');
       btn.prop('disabled', true);
-      showNotification({msg: 'Enviando correo de recuperación de contraseña...', type: 'info', closeAll: true})
+      showNotification({msg: 'Cambiando contraseña...', type: 'info', closeAll: true})
     }
   }).done(function(data, textStatus, jqXHR) {
-      noti_params.msg = dat.msg;
+      noti_params.msg = data.msg;
       noti_params.type = 'success';
 
   }).fail(function(jqXHR, textStatus, errorThrown) {

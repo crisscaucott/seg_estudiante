@@ -13,7 +13,7 @@ class MyDevises::PasswordsController < Devise::PasswordsController
       # respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
     
     	# Esto es hermoso!
-    	flash[:msg] = "Se ha enviado el correo de recuperación de contraseña al email '#{resource.email}'".
+    	flash[:msg] = "Se ha enviado exitosamente el correo de recuperación de contraseña al email '#{resource.email}'".
     	flash[:alert_type] = 'success'
     	flash.keep(:msg)
     	flash.keep(:alert_type)

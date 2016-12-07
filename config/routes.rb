@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
-  devise_for :users, :controllers => {registrations: "my_devises/registrations", sessions: "my_devises/sessions"}
+  devise_for :users, :controllers => {registrations: "my_devises/registrations", sessions: "my_devises/sessions", passwords: "my_devises/passwords"}
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
+
+  namespace :admin do resources :users, only: :show do post :generate_new_password_email end 
+  end
 
   devise_scope :user do
     root to: "main#index"

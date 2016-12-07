@@ -29,6 +29,10 @@ es:
         
     errors:
       models:
+        user:
+          attributes:
+            reset_password_token:
+              invalid: "Contraseña inválida."
         estado_desercion:
             attributes:
               nombre_estado:

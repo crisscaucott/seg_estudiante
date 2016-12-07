@@ -29,12 +29,14 @@
           <%= f.label :remember_me %>
         </div>
       <% end %>
+
+      <div class="field">
+        <%= link_to "Recuperar contraseña",  new_password_path(resource), class: '' %>
+      </div>
     
       <div class="actions text-center">
         <%= f.submit 'Ingresar', class: 'btn btn-primary' %>
-        <%= link_to "Registrarse", new_user_registration_path, class: 'btn btn-default' %>
       </div>
-
     <% end %>
   </div>
 </div>

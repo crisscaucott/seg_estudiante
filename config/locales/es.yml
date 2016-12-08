@@ -29,6 +29,10 @@ es:
         
     errors:
       models:
+        estudiante:
+          attributes:
+            fecha_ingreso:
+              blank: "No puede estar en blanco."
         user:
           attributes:
             reset_password_token:

@@ -1,0 +1,16 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "asociar_tutores_estudiantes", "data-turbolinks-track" => true  %>
+<% end %>
+<%= content_for :css do %>   
+  <%= stylesheet_link_tag 'asociar_tutores_estudiantes', media: 'all', 'data-turbolinks-track' => true %>
+<% end %>
+<div class="row">
+  <div class="form-box">
+    <div class="form-top text-center">
+      <h3>Asociar tutores y estudiantes</h3>
+    </div>
+    <div id="table_container">
+        <%= render partial: 'tutor_estudiante', locals: local_assigns %>
+    </div>
+  </div>
+</div>

@@ -281,7 +281,9 @@ class SuperUserController < ApplicationController
 	# --- METODOS TUTORES ---
 
 	def asociar_tutores_est_index
-		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores]}
+		estudiantes = Estudiante.getEstudiantes
+		tutores = User.getTutoresUsers
+		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new, estudiantes: estudiantes}
 	end
 
 	# --- FIN METODOS TUTORES ---

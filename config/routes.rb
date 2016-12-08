@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
   get '/admini/tutores/asociar', to: 'super_user#asociar_tutores_est_index', as: 'asociar_tutores_est_index'
+  post '/admini/tutores/set_asociations', to: 'super_user#set_asociations_tutores', as: 'set_asociations_tutores'
+
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   

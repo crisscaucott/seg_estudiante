@@ -1,7 +1,9 @@
 <div class="col-sm-12">
   <%= form_for(tutor_usr, url: set_asociations_tutores_path, html: {id: 'tutores_est_form', format: :json}) do |f| %>
+    <div class="text-center">
+    	<%= f.submit("Guardar", class: 'btn btn-success') %>
+    </div>
     <%= fields_for(:users) do |ff| %>
-
 			<div class="col-sm-6">
 				<div class="form-top text-center">
 		    	<h3>Tutores</h3>
@@ -16,7 +18,7 @@
 		    </div>
 			</div>
 
-			<%= fields_for(:estudiantes) do |fff| %>
+			<%= ff.fields_for(:estudiantes) do |fff| %>
 				<div class="col-sm-6">
 					<div class="form-top text-center">
 			    	<h3>Estudiantes</h3>
@@ -24,14 +26,14 @@
 
 			    <div class="tutor_est_containers">
 			    	<ul id="check-list-box" class="list-group checked-list-box">
-							<% estudiantes.each do |e| %>
+							<%= fff.collection_check_boxes(:id, estudiantes, :id, :nombre, {:include_hidden => false}) do |c| %>
 			          <li class="list-group-item">
-									<span class="state-icon glyphicon glyphicon-unchecked">
-									</span>
-			          	<%= e.nombre %>
-			          	<%= fff.check_box(:id, checked: false, value: e.id, class: 'hidden') %>
-			          </li>
-		          <% end -%>
+								<span class="state-icon glyphicon glyphicon-unchecked">
+								</span>
+								<%= c.label %>
+								<%= c.check_box(class: 'hidden') %>
+								</li>
+							<% end -%>
 			      </ul>
 			    </div>
 

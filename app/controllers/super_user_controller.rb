@@ -2,6 +2,7 @@ class SuperUserController < ApplicationController
 	include ApplicationHelper
 	include MassLoadHelper
 	before_action :isDecano
+	around_filter :check_params, only: :set_associations_tutores
 	CONTEXTS = {
 		estado: 'estado',
 		user: 'usuario',
@@ -286,6 +287,49 @@ class SuperUserController < ApplicationController
 		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new, estudiantes: estudiantes}
 	end
 
+	def set_associations_tutores
+		associations_params = tutores_est_params
+
+		if !associations_params[:id].nil? && !associations_params[:estudiantes].nil?
+			tutor_obj = User.find_by(id: associations_params[:id])
+
+			if !tutor_obj.nil?
+				# Hash con el detalle de las asociaciones,
+				# se guarda las asociaciones nuevas con exito, los estudiantes que ya estaban asociados
+				# y el total de estudiantes ingresados en el formulario
+				detail = {new: 0, not: 0, total: 0}
+				# Obtener un array con los ids de todos los estudiantes asociados al tutor,
+				# sirve para evitar asociar un estudiante ya asociado al tutor.
+				ids_estudiantes = tutor_obj.estudiante_ids
+				detail[:total] = associations_params[:estudiantes][:id].size
+
+				# Recorrer los ids de los estudiantes a asignar al tutor.
+				associations_params[:estudiantes][:id].each do |est_id|
+					if !ids_estudiantes.include?(est_id.to_i)
+						# Si no esta el estudiante en el array, quiere decir que ese estudiante no esta asociado al tutor.
+
+						# Verificar si el id del estudiante esta en la BD (SOLO POR SEGURIDAD).
+						est_obj = Estudiante.select(:id).find_by(id: est_id)
+						if !est_obj.nil?
+							# Asociar el estudiante al tutor (LA MAGIA).
+							tutor_obj.estudiantes << est_obj
+							detail[:new] += 1
+						end
+					else
+						detail[:not] += 1
+						# puts "El tutor id: #{tutor_obj.id} ya tiene asignado al estudiante id: #{est_id}".green
+					end
+				end
+
+				render json: {msg: render_to_string(partial: 'detalle_asociacion_tutor', formats: [:html], layout: false, locals: {detail: detail, tutor: tutor_obj}), type: :success}
+			else
+				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request
+			end
+		else
+			render json: {msg: "Debes seleccionar un tutor y estudiantes para poder realizar la asignación.", type: :danger}, status: :bad_request
+		end
+	end
+
 	# --- FIN METODOS TUTORES ---
 
 	private
@@ -293,6 +337,21 @@ class SuperUserController < ApplicationController
 			if current_user.user_permission.name != "Decano"
 				redirect_to :root, :status => 301, :flash => { msg: 'Usted no tiene los permisos para estar en esta sección.', alert_type: 'warning'}
 			end		
+		end
+
+		# Esta funcion sirve para verificar que existan datos enviados del formulario del tutor-estudiantes, toma la excepcion y devuelve un json con el error.
+		def check_params
+			begin
+				yield
+			rescue ActionController::ParameterMissing => e
+				render json: {msg: "Faltan datos.", type: :danger}, status: :bad_request
+			rescue StandardError => e
+				raise e
+			end
+		end
+
+		def tutores_est_params
+			params.require(:users).permit(:id, estudiantes: [id: []])
 		end
 
 		def frec_alerta_params

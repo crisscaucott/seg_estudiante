@@ -330,6 +330,33 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	def ver_asociaciones
+		tutores = User.getTutoresUsers
+		render action: :index, locals: {partial: 'ver_asociaciones', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new}
+	end
+
+	def get_estudiantes_by_tutor
+		tutor_params = get_estudiantes_params
+
+		if !tutor_params[:id].nil?
+			tutor_obj = User.find_by(id: tutor_params[:id])
+
+			if !tutor_obj.nil?
+				if !tutor_obj.estudiantes.empty?
+
+					render json: {msg: "Estudiantes obtenidos exitosamente.",estudiantes_list: render_to_string(partial: 'lista_estudiantes_by_tutor', formats: [:html], layout: false, locals: {estudiantes: tutor_obj.estudiantes}), type: :success}
+				else
+					render json: {msg: "El tutor seleccionado <b>no tiene estudiantes asignados.</b>".html_safe, type: :warning}, status: :bad_request				
+				end
+			else
+				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request				
+			end
+
+		else
+			render json: {msg: "Debe seleccionar un tutor para poder obtener sus estudiantes asociados.", type: :danger}, status: :bad_request
+		end
+	end
+
 	# --- FIN METODOS TUTORES ---
 
 	private
@@ -348,6 +375,10 @@ class SuperUserController < ApplicationController
 			rescue StandardError => e
 				raise e
 			end
+		end
+
+		def get_estudiantes_params
+			params.require(:users).permit(:id)
 		end
 
 		def tutores_est_params

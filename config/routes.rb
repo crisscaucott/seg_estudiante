@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
   get '/admini/tutores/asociar', to: 'super_user#asociar_tutores_est_index', as: 'asociar_tutores_est_index'
+  get '/admini/tutores/ver', to: 'super_user#ver_asociaciones', as: 'ver_asociaciones'
+  post '/admini/tutores/get_estudiantes', to: 'super_user#get_estudiantes_by_tutor', as: 'get_estudiantes_by_tutor'
   post '/admini/tutores/set_asociations', to: 'super_user#set_associations_tutores', as: 'set_asociations_tutores'
 
 

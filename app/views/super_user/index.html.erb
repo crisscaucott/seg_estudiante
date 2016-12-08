@@ -38,6 +38,7 @@
       <a href="#tutores" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Tutores</a>
       <div class="<%= options[:div_class] %>" id="tutores" <%= options[:div_expanded] %> >
           <%= link_to('Asociar tutor-estudiante', asociar_tutores_est_index_path, class: "list-group-item list-group-item-action" + setSubActive(asociar_tutores_est_index_path)) %>
+          <%= link_to('Ver asociaciones', ver_asociaciones_path, class: "list-group-item list-group-item-action" + setSubActive(ver_asociaciones_path)) %>
       </div>
 
     </div>

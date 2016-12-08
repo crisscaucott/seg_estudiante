@@ -1,7 +1,8 @@
 namespace :user do
-	desc "Task para llenar la tabla de permisos de usuario, con sus tipos de permisos"
+	desc "Task para llenar la tabla de permisos de usuario, con sus tipos de permisos. Esto se debería hacer solo 1 vez, ya que hay que truncar todas las tablas que tengan relación con el usuario."
 	task :fill_permission_table => :environment do
-		permissions = ['Decano', 'Usuario normal']
+    ActiveRecord::Base.connection.execute("TRUNCATE #{UserPermission.table_name}, #{User.table_name}, #{Reporte.table_name}, #{LogCargaMasiva.table_name}, #{Alerta.table_name} RESTART IDENTITY")
+		permissions = ['Decano', 'Director', 'Tutor', 'Usuario normal']
 
 		permissions.each do |p|
 			up = UserPermission.new(name: p)
@@ -9,7 +10,7 @@ namespace :user do
 		end
 	end
 
-  desc "Crea un super usuario."
+  desc "Crea un super usuario. Sirve para tener un usuario base inicial para crear a los demás usuarios del sistema."
   task :create_super_user => :environment do
     up = UserPermission.select(:id).where(name: "Decano").first
 

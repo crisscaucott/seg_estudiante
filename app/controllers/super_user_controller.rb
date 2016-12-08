@@ -2,20 +2,29 @@ class SuperUserController < ApplicationController
 	include ApplicationHelper
 	include MassLoadHelper
 	before_action :isDecano
+	CONTEXTS = {
+		estado: 'estado',
+		user: 'usuario',
+		estudiantes: 'estudiantes',
+		alertas: 'alertas',
+		tutores: 'tutores'
+	}
 
 	def index
 		render action: :index, locals: {context: nil}
 	end
 
+	# --- METODOS ESTADO DE DESERCION ---
+
 	def new_estados_desercion
 		# estados_desercion = EstadoDesercion.select([:id, :nombre_estado, :notificar]).order(nombre_estado: :asc)
 		estados_desercion = EstadoDesercion.getEstados
-		render action: :index, locals: {partial: 'new_estado_desercion', estado_desercion: EstadoDesercion.new, estados: estados_desercion, context: 'estado'}
+		render action: :index, locals: {partial: 'new_estado_desercion', estado_desercion: EstadoDesercion.new, estados: estados_desercion, context: CONTEXTS[:estado]}
 	end
 
 	def modify_estados_desercion
 		estados_desercion = EstadoDesercion.getEstados
-		render action: :index, locals: {partial: 'modify_estado_desercion', context: 'estado', estados: estados_desercion}
+		render action: :index, locals: {partial: 'modify_estado_desercion', context: CONTEXTS[:estado], estados: estados_desercion}
 		
 	end
 
@@ -106,9 +115,14 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	# --- FIN METODOS ESTADO DE DESERCION ---
+
+
+	# --- METODOS USUARIO ---
+
 	def new_user
 		users_permissions = UserPermission.getPermissions
-		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, context: 'usuario'}
+		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, context: CONTEXTS[:user]}
 	end
 
 	def createUser
@@ -176,18 +190,17 @@ class SuperUserController < ApplicationController
 	def modify_users
 		users = User.getUsers
 		users_permissions = UserPermission.getPermissions
-		render action: :index, locals: {partial: 'modify_usuarios', context: 'usuario', users: users, users_permissions: users_permissions}
+		render action: :index, locals: {partial: 'modify_usuarios', context: CONTEXTS[:user], users: users, users_permissions: users_permissions}
 	end
 
-	def isDecano
-		if current_user.user_permission.name != "Decano"
-			redirect_to :root, :status => 301, :flash => { msg: 'Usted no tiene los permisos para estar en esta sección.', alert_type: 'warning'}
-		end		
-	end
+	# --- FIN METODOS USUARIO ---
+
+
+	# --- METODOS ESTUDIANTES ---
 
 	def subir_estudiantes
 		
-		render action: :index, locals: {partial: 'subir_estudiantes', context: 'estudiantes', file: LogCargaMasiva.new}
+		render action: :index, locals: {partial: 'subir_estudiantes', context: CONTEXTS[:estudiantes], file: LogCargaMasiva.new}
 	end
 
 	def subir_estudiantes_xls
@@ -210,9 +223,13 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	# --- FIN METODOS ESTUDIANTES ---
+
+
+	# --- METODOS ALERTAS ---
+
 	def config_alertas
-		
-		render action: :index, locals: {partial: 'config_alertas' ,context: 'alertas', user: User.new, frecuencia_alertas: FrecAlerta.all.order(dias: :asc)}
+		render action: :index, locals: {partial: 'config_alertas' ,context: CONTEXTS[:alertas], user: User.new, frecuencia_alertas: FrecAlerta.all.order(dias: :asc)}
 	end
 
 	def set_config_alertas
@@ -258,7 +275,24 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	# --- FIN METODOS ALERTAS ---
+
+
+	# --- METODOS TUTORES ---
+
+	def asociar_tutores_est_index
+		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores]}
+	end
+
+	# --- FIN METODOS TUTORES ---
+
 	private
+		def isDecano
+			if current_user.user_permission.name != "Decano"
+				redirect_to :root, :status => 301, :flash => { msg: 'Usted no tiene los permisos para estar en esta sección.', alert_type: 'warning'}
+			end		
+		end
+
 		def frec_alerta_params
 			params.require(:alerta_config).permit(:frec_alerta_id, :fecha_comienzo)
 		end

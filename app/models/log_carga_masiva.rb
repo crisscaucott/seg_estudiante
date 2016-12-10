@@ -134,8 +134,19 @@ class LogCargaMasiva < ActiveRecord::Base
 		response = {error: false, msg: nil}
 
 	  # BUSCAR LA ASIGNATURA EN LA BD.
+	  asignatura_codigo = /\[.*\]/.match(spreadsheet.row(1)[2])[0].gsub(/(\[|\]|\s)/, '')
 	  asignatura_name = spreadsheet.row(1)[2].gsub(/\[.*\]\p{Space}*/, '')
-	  asignatura_obj = Asignatura.select([:id, :nombre]).where(nombre: asignatura_name.downcase).where(fecha_borrado: nil).first
+	  asignatura_obj = Asignatura.select([:id, :nombre]).where(codigo: asignatura_codigo).where(fecha_borrado: nil).first
+
+	  # Si no se encuentra la asignatura, se crea en base a su codigo y nombre.
+	  if asignatura_obj.nil?
+	  	asignatura_obj = Asignatura.new(
+	  		nombre: asignatura_name.strip.capitalize,
+	  		codigo: asignatura_codigo,
+	  		creditos: 0
+	  	)
+	  	asignatura_obj.save
+	  end
 
 	  begin
 		  # PERIODO ACADEMICO

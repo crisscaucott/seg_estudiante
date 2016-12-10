@@ -55,4 +55,12 @@ module ApplicationHelper
 			return true
 		end
 	end
+
+	def isUserType(user_type)
+		if current_user.user_permission.name == user_type
+			return true
+		else
+			return false
+		end
+	end
 end

@@ -21,9 +21,6 @@ Rails.application.routes.draw do
   post '/admini/estados_desercion/create', to: 'super_user#create_estado_desercion', as: 'create_estados_desercion'
   post '/admini/estados_desercion/update', to: 'super_user#update_estado_desercion', as: 'update_estado_desercion'
 
-  get '/admini/estudiantes/subir', to: 'super_user#subir_estudiantes', as: 'subir_estudiantes'
-  post '/admini/estudiantes/upload', to: 'super_user#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
-
   get '/admini/alertas/config', to: 'super_user#config_alertas', as: 'config_alertas'
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
@@ -45,8 +42,11 @@ Rails.application.routes.draw do
   post '/carga_masiva/asistencia/asistencia_detalle', to: 'mass_load#get_asistencia_detail', as: 'mass_load_asistencia_detail'
   post '/carga_masiva/asistencia/filtering', to: 'mass_load#get_asistencia_filtering', as: 'filtering_asistencia'
 
-  get '/carga_masiva/alumnos/subir', to: 'mass_load#alumnos', as: 'mass_load_alumnos'
+  get '/carga_masiva/alumnos/subir', to: 'mass_load#subir_estudiantes', as: 'mass_load_alumnos'
   get '/carga_masiva/alumnos/ver', to: 'mass_load#get_alumnos', as: 'mass_load_get_alumnos'
+
+  get '/carga_masiva/estudiantes/subir', to: 'mass_load#subir_estudiantes', as: 'subir_estudiantes'
+  post '/carga_masiva/estudiantes/upload', to: 'mass_load#subir_estudiantes_xls', as: 'subir_estudiantes_xls'
   
   post '/carga_masiva/notas/upload_xls', to: 'mass_load#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'

@@ -330,6 +330,45 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	def set_desasociations_tutores
+		desasociations_params = tutores_est_params
+
+		if !desasociations_params[:id].nil? && !desasociations_params[:estudiantes].nil?
+			tutor_obj = User.find_by(id: desasociations_params[:id])
+
+			if !tutor_obj.nil?
+				# Hash con el detalle de las desasociaciones,
+				# se guarda las desasociaciones nuevas con exito.
+				detail = {disassociated: 0, total: desasociations_params[:estudiantes][:id].size, associated: 0}
+
+				# Se recorre todos los estudiantes asignados del tutor...
+				tutor_obj.estudiantes.each do |est_obj|
+					# Si el id de alguno de ellos esta en el array de ids que se quiere desasociar...
+					if desasociations_params[:estudiantes][:id].include?(est_obj.id.to_s)
+						# Se borra la asociacion (borra tupla en la tabla intermedia).
+						tutor_obj.estudiantes.delete(est_obj)
+						detail[:disassociated] += 1
+					end
+				end
+
+				# Contar cuantos estudiantes asociados le quedan al tutor despues de la desasociacion.
+				detail[:associated] = tutor_obj.estudiantes.size
+
+				render json: {
+					msg: render_to_string(partial: 'detalle_desasociacion_tutor', formats: [:html], layout: false, locals: {detail: detail, tutor: tutor_obj}),
+					estudiantes_list: detail[:associated] != 0 ? render_to_string(partial: 'lista_estudiantes_by_tutor', formats: [:html], layout: false, locals: {estudiantes: tutor_obj.estudiantes}) : nil,
+					type: :success
+				}
+
+			else
+				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request
+
+			end			
+		else
+			render json: {msg: "Debes seleccionar un tutor y estudiantes para poder realizar la desasociación.", type: :danger}, status: :bad_request
+		end
+	end
+
 	def ver_asociaciones
 		tutores = User.getTutoresUsers
 		render action: :index, locals: {partial: 'ver_asociaciones', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new}

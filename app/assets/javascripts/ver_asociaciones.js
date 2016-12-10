@@ -25,6 +25,7 @@ $('input#desasociar_btn').on('click', function(event){
   }
 });
 
+// Evento de click en cada tutor para pode traer a los estudianres asociados a el.
 $('div.funkyradio-primary > label').on('click', function(event){
   // event.preventDefault();
   var form = $('form#tutores_form');
@@ -36,7 +37,7 @@ $('div.funkyradio-primary > label').on('click', function(event){
   data.push({name: inputs.attr('name'), value: inputs.attr('value')})
 
   $.ajax({
-    url: form[0].action,
+    url: '/admini/tutores/get_estudiantes',
     data: data,
     method: form[0].method,
     beforeSend: function()
@@ -45,7 +46,7 @@ $('div.funkyradio-primary > label').on('click', function(event){
       showNotification({msg: "Obteniendo estudiantes asociados...", type: 'info', closeAll: true});
     }
   }).done(function(data, textStatus, jqXHR) {
-      // desasociar = true;
+      desasociar = false;
       noti_params.msg = data.msg;
       noti_params.type = data.type;
 
@@ -53,10 +54,11 @@ $('div.funkyradio-primary > label').on('click', function(event){
       init2();
 
       $('input#desasociar_btn').prop('disabled', false);
+      $('input#desasociar_btn').val('Desasociar');
       submit_btn.prop('disabled', false);
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
-      // desasociar = false;
+      desasociar = false;
       noti_params.msg = errorThrown;
       noti_params.type = 'danger';
 
@@ -66,18 +68,75 @@ $('div.funkyradio-primary > label').on('click', function(event){
         noti_params.type = jqXHR.responseJSON.type;
       }
       $('input#desasociar_btn').prop('disabled', true);
+      $('input#desasociar_btn').val('Desasociar');
       submit_btn.prop('disabled', true);
 
   }).always(function(data, textStatus, errorThrown) {
-    // checkDesasociarSubmitBtn();
       showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
-
   });
 });
 
+// Enviar formulario de desasociacion de estudiantes.
 $('form#tutores_form').on('submit', function(event){
   event.preventDefault();
-  console.log(event);
+  data = $(event.target).serialize();
+  btn = $(event.target).find('input[type=submit]');
+  btn_text = btn.val();
+  var noti_params = {msg: null, type: null};
+
+  $.ajax({
+    url: (event.target).action,
+    data: data,
+    method: (event.target).method,
+    beforeSend: function()
+    {
+      btn.prop('disabled', true);
+      btn.val('Guardando...');
+      showNotification({msg: "Desasociando estudiantes a tutor...", type: 'info', closeAll: true});
+    }
+  }).done(function(data, textStatus, jqXHR) {
+      noti_params.msg = data.msg;
+      noti_params.type = data.type;
+
+      if (data.estudiantes_list === null) {
+        // No quedan mas estudiantes asociados al tutor.
+        // Vaciar div contenedor de estudiantes.
+        $('div#estudiantes_list').empty();
+        // Cambiar a falso la variable indicadora de desasociacion.
+        desasociar = false;
+        // Cambiar el mensaje del boton para desasociar.
+        $('input#desasociar_btn').prop('disabled', true);
+        $('input#desasociar_btn').val('Desasociar');
+
+      }else{
+        // Aun quedan estudiantes asociados.
+        $('div#estudiantes_list').html(data.estudiantes_list);
+        init2();
+        var checkboxes = $(event.target).find('input[type=checkbox]');
+        updateSpanIcons(checkboxes);
+        updateAllDisplays(checkboxes);
+      }
+
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+      noti_params.msg = errorThrown;
+      noti_params.type = 'danger';
+
+      if (jqXHR.responseJSON !== undefined)
+      {
+        noti_params.msg = jqXHR.responseJSON.msg;
+        noti_params.type = jqXHR.responseJSON.type;
+      }
+
+  }).always(function(data, textStatus, errorThrown) {
+      if (data.estudiantes_list === null) {
+        btn.prop('disabled', true);
+      }else{
+        btn.prop('disabled', false);
+      }
+      btn.val(btn_text);
+      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+
+  });
 });
 
 function init2() {
@@ -107,7 +166,6 @@ function init2() {
     });
       
     
-
     // Initialization
     function init1() {
         
@@ -142,15 +200,13 @@ function updateSpanIcons (checkboxes) {
 }
 
 function updateAllDisplays(checkboxes) {
-  // if (desasociar) {
-    for (var i = 0; i < checkboxes.length; i++) {
-      var widget = $(checkboxes[i]).parents('li');
-      var color = (widget.data('color') ? widget.data('color') : "danger");
-      var style = (widget.data('style') == "button" ? "btn-" : "list-group-item-");
-      $(checkboxes).prop('checked', false);
-      updateDisplay($(checkboxes[i]), widget, style, color, false);
-    }
-  // }
+  for (var i = 0; i < checkboxes.length; i++) {
+    var widget = $(checkboxes[i]).parents('li');
+    var color = (widget.data('color') ? widget.data('color') : "danger");
+    var style = (widget.data('style') == "button" ? "btn-" : "list-group-item-");
+    $(checkboxes).prop('checked', false);
+    updateDisplay($(checkboxes[i]), widget, style, color, false);
+  }
 }
 
 // Actions
@@ -174,9 +230,3 @@ function updateDisplay(checkbox, widget, style, color, set_icon = true) {
       widget.removeClass(style + color);
   }
 }
-
-$('form#tutores_form').on('submit', function(event){
-  event.preventDefault();
-
-
-});

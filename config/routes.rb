@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   get '/admini/tutores/ver', to: 'super_user#ver_asociaciones', as: 'ver_asociaciones'
   post '/admini/tutores/get_estudiantes', to: 'super_user#get_estudiantes_by_tutor', as: 'get_estudiantes_by_tutor'
   post '/admini/tutores/set_asociations', to: 'super_user#set_associations_tutores', as: 'set_asociations_tutores'
+  post '/admini/tutores/set_desasociations', to: 'super_user#set_desasociations_tutores', as: 'set_desasociations_tutores'
 
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'

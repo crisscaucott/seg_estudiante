@@ -5,7 +5,7 @@
   <%= stylesheet_link_tag 'asociar_tutores_estudiantes', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
 
-<%= form_for(tutor_usr, url: get_estudiantes_by_tutor_path, html: {id: 'tutores_form', format: :json}) do |f| %>
+<%= form_for(tutor_usr, url: set_desasociations_tutores_path, html: {id: 'tutores_form', format: :json}) do |f| %>
 	<div class="row">
 	  <div class="form-box">
 	    <div class="form-top text-center">

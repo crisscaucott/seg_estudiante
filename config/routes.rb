@@ -27,6 +27,13 @@ Rails.application.routes.draw do
   get '/admini/alertas/config', to: 'super_user#config_alertas', as: 'config_alertas'
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
+  get '/admini/tutores/asociar', to: 'super_user#asociar_tutores_est_index', as: 'asociar_tutores_est_index'
+  get '/admini/tutores/ver', to: 'super_user#ver_asociaciones', as: 'ver_asociaciones'
+  post '/admini/tutores/get_estudiantes', to: 'super_user#get_estudiantes_by_tutor', as: 'get_estudiantes_by_tutor'
+  post '/admini/tutores/set_asociations', to: 'super_user#set_associations_tutores', as: 'set_asociations_tutores'
+  post '/admini/tutores/set_desasociations', to: 'super_user#set_desasociations_tutores', as: 'set_desasociations_tutores'
+
+
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
@@ -40,7 +47,6 @@ Rails.application.routes.draw do
 
   get '/carga_masiva/alumnos/subir', to: 'mass_load#alumnos', as: 'mass_load_alumnos'
   get '/carga_masiva/alumnos/ver', to: 'mass_load#get_alumnos', as: 'mass_load_get_alumnos'
-
   
   post '/carga_masiva/notas/upload_xls', to: 'mass_load#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'

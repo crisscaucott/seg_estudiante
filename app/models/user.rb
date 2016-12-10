@@ -63,6 +63,10 @@ class User < ActiveRecord::Base
     return users
   end
 
+  def self.getTutoresUsers
+    return self.includes(:user_permission).joins(:user_permission).merge(UserPermission.where(name: 'Tutor'))
+  end
+
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)

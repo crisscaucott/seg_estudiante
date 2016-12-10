@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161205032545) do
+ActiveRecord::Schema.define(version: 20161210224451) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -70,6 +70,10 @@ ActiveRecord::Schema.define(version: 20161205032545) do
     t.datetime "updated_at",        null: false
   end
 
+  create_table "destinos", force: :cascade do |t|
+    t.string "nombre", null: false
+  end
+
   create_table "estado_desercion", force: :cascade do |t|
     t.string  "nombre_estado",                 null: false
     t.boolean "notificar",     default: false
@@ -89,6 +93,18 @@ ActiveRecord::Schema.define(version: 20161205032545) do
     t.string   "dv",                  null: false
   end
 
+  create_table "ficha_estudiante", force: :cascade do |t|
+    t.integer  "estudiante_id",       null: false
+    t.integer  "tutor_id",            null: false
+    t.integer  "estado_desercion_id", null: false
+    t.integer  "motivo_desercion_id"
+    t.integer  "destino_id"
+    t.datetime "fecha_registro",      null: false
+    t.text     "comentario"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
   create_table "frec_alerta", force: :cascade do |t|
     t.integer "dias",    null: false
     t.string  "mensaje", null: false
@@ -101,6 +117,10 @@ ActiveRecord::Schema.define(version: 20161205032545) do
     t.datetime "updated_at",  null: false
     t.string   "url_archivo", null: false
     t.json     "detalle"
+  end
+
+  create_table "motivo_desercion", force: :cascade do |t|
+    t.string "nombre", null: false
   end
 
   create_table "reportes", force: :cascade do |t|
@@ -152,6 +172,9 @@ ActiveRecord::Schema.define(version: 20161205032545) do
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "estudiante", "carrera"
   add_foreign_key "estudiante", "estado_desercion"
+  add_foreign_key "ficha_estudiante", "estado_desercion"
+  add_foreign_key "ficha_estudiante", "estudiante"
+  add_foreign_key "ficha_estudiante", "users", column: "tutor_id"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
   add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"

@@ -5,45 +5,45 @@
   <%= stylesheet_link_tag 'asociar_tutores_estudiantes', media: 'all', 'data-turbolinks-track' => true %>
 <% end %>
 
-<div class="row">
-  <div class="form-box">
-    <div class="form-top text-center">
-      <h3>Asociar tutores y estudiantes</h3>
-    </div>
+<%= form_for(tutor_usr, url: get_estudiantes_by_tutor_path, html: {id: 'tutores_form', format: :json}) do |f| %>
+	<div class="row">
+	  <div class="form-box">
+	    <div class="form-top text-center">
+	      <h3>Asociar tutores y estudiantes</h3>
+	    </div>
 
-		<div class="col-sm-12">
-			<div class="col-sm-6">
-				<div class="form-top text-center">
-		    	<h3>Tutores</h3>
-		    </div>
+    <%= fields_for(:users) do |ff| %>
+			<div class="col-sm-12">
+				<div class="text-center">
+					<%= f.submit("Guardar", class: 'btn btn-success', disabled: true) %>
+					<input type="button", class="btn btn-danger", id="desasociar_btn", disabled="disabled", value="Desasociar">
+				</div>
+				<div class="col-sm-6">
+					<div class="form-top text-center">
+			    	<h3>Tutores</h3>
+			    </div>
+			    	<%= fields_for(:users) do |ff| %>
+					    <div class="funkyradio tutor_est_containers">
+								<% tutores.each_with_index do |tutor, index| %>
+						      <div class="funkyradio-primary">
+						      	<%= ff.radio_button(:id, tutor.id, id: tutor.class.name.downcase + '_' + index.to_s) %>
+						      	<%= ff.label(:bla, tutor.name, for: tutor.class.name.downcase + '_' + index.to_s) %>
+						      </div>
+								<% end %>
+					    </div>
+				    <% end -%>
+				</div>
 
-		  	<%= form_for(tutor_usr, url: get_estudiantes_by_tutor_path, html: {id: 'tutores_form', format: :json}) do |f| %>
-
-		    	<%= fields_for(:users) do |ff| %>
-					
-				    <div class="funkyradio tutor_est_containers">
-							<% tutores.each_with_index do |tutor, index| %>
-					      <div class="funkyradio-primary">
-					      	<%= ff.radio_button(:id, tutor.id, id: tutor.class.name.downcase + '_' + index.to_s) %>
-					      	<%= ff.label(:bla, tutor.name, for: tutor.class.name.downcase + '_' + index.to_s) %>
-					      </div>
-							<% end %>
+				<div class="col-sm-6">
+					<div class="form-top text-center">
+				    	<h3>Estudiantes</h3>
 				    </div>
 
-			    <% end -%>
-
-		    <% end -%>
+				    <div class="tutor_est_containers" id="estudiantes_list">
+				    </div>
+			  	</div>
+				</div>
 			</div>
-
-			<div class="col-sm-6">
-				<div class="form-top text-center">
-		    	<h3>Estudiantes</h3>
-		    </div>
-
-		    <div class="tutor_est_containers" id="estudiantes_list">
-		    </div>
-
-		  </div>
-		</div>
-	</div>
-</div>
+		<% end -%>
+	</div> <!-- row -->
+<% end -%>

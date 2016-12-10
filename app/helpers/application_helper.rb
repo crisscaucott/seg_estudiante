@@ -43,4 +43,16 @@ module ApplicationHelper
 		end
 		return str_errors.html_safe
 	end
+
+	def escandaloso1(str)
+		puts "#{str}".colorize(:color => :white, :background => :green)
+	end
+
+	def isTutorOrDecanoHelper()
+		if !(current_user.user_permission.name == "Decano" || current_user.user_permission.name == "Director")
+			return false
+		else
+			return true
+		end
+	end
 end

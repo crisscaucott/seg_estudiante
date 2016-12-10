@@ -109,7 +109,7 @@ $('div#table_container').on('submit', 'form#user_form', function(event){
     hidden_del = $(trs[i]).find('input.row_delete').val();
     
     if (hidden_upd == 1 || hidden_del == 1){
-      data = $(trs[i]).find('input').serialize();
+      data = $(trs[i]).find('input,select').serialize();
       rut = $(trs[i]).find('input#user_rut').val();
       tr = $(trs[i]);
       break;

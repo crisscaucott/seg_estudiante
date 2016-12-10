@@ -21,13 +21,16 @@
   				<%= link_to('Ver', mass_load_get_asistencia_path, class: "list-group-item list" + setSubActive(mass_load_get_asistencia_path)) %>
   	  </div>
 
-      <% options = setActive(context, 'alumnos') %>
+      <% if isTutorOrDecano %>
+        <% options = setActive(context, 'alumnos') %>
 
-  	  <a href="#alumnos" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Alumnos</a>
-  	  <div class="<%= options[:div_class] %>" id="alumnos" <%= options[:div_expanded] %> >
-  				<%= link_to('Subir', mass_load_alumnos_path, class: "list-group-item list" + setSubActive(mass_load_alumnos_path)) %>
-  				<%= link_to('Ver', mass_load_get_alumnos_path, class: "list-group-item list" + setSubActive(mass_load_get_alumnos_path)) %>
-  	  </div>
+    	  <a href="#alumnos" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Alumnos</a>
+    	  <div class="<%= options[:div_class] %>" id="alumnos" <%= options[:div_expanded] %> >
+    				<%= link_to('Subir', mass_load_alumnos_path, class: "list-group-item list" + setSubActive(mass_load_alumnos_path)) %>
+    				<%= link_to('Ver', mass_load_get_alumnos_path, class: "list-group-item list" + setSubActive(mass_load_get_alumnos_path)) %>
+    	  </div>
+      <% end -%>
+
   	</div>
   </div>
 </div>

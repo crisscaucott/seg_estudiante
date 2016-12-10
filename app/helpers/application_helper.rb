@@ -47,4 +47,12 @@ module ApplicationHelper
 	def escandaloso1(str)
 		puts "#{str}".colorize(:color => :white, :background => :green)
 	end
+
+	def isTutorOrDecano()
+		if !(current_user.user_permission.name == "Decano" || current_user.user_permission.name == "Director")
+			return false
+		else
+			return true
+		end
+	end
 end

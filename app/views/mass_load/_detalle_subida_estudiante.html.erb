@@ -1,0 +1,10 @@
+<b>Resumen subida de estudiantes:</b><br>
+<ul>
+	<% if detail[:new] != 0 %>
+		<li><%= detail[:new] %> de <%= detail[:total] %> nuevos estudiantes se han ingresado con éxito.</li>
+	<% end -%>
+	<li><%= detail[:upd] %> de <%= detail[:total] %> estudiantes se han actualizado con éxito.</li>
+	<% if detail[:failed] != 0 %>
+		<li><%= detail[:failed] %> de <%= detail[:total] %> estudiantes han tenido problemas con su ingreso/actualización.</li>
+	<% end -%>
+</ul>

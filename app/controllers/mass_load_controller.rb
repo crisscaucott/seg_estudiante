@@ -1,9 +1,10 @@
 class MassLoadController < ApplicationController
 	include MassLoadHelper
+	include ApplicationHelper
 	ANIOS_ATRAS = 10
+	before_filter :isTutorOrDecano ,only: [:subir_estudiantes, :subir_estudiantes_xls]
 
 	def index
-
 		render action: :index, locals: {context: nil}
 	end
 
@@ -174,4 +175,15 @@ class MassLoadController < ApplicationController
 	def subir_estudiante_params
 		params.require(:log_carga_masiva).permit(:url_archivo)
 	end
+
+	def isTutorOrDecano
+		if !(current_user.user_permission.name == "Decano" || current_user.user_permission.name == "Director")
+			flash[:msg] = "Usted no puede estar en esta sección."
+    	flash[:alert_type] = :warning
+    	flash.keep(:msg)
+    	flash.keep(:alert_type)
+			redirect_to action: "index", status: 301
+		end
+	end
+
 end

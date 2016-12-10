@@ -21,7 +21,7 @@
   				<%= link_to('Ver', mass_load_get_asistencia_path, class: "list-group-item list" + setSubActive(mass_load_get_asistencia_path)) %>
   	  </div>
 
-      <% if isTutorOrDecano %>
+      <% if isTutorOrDecanoHelper %>
         <% options = setActive(context, 'alumnos') %>
 
     	  <a href="#alumnos" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Alumnos</a>

@@ -178,7 +178,7 @@ class MassLoadController < ApplicationController
 
 	def isTutorOrDecano
 		if !(current_user.user_permission.name == "Decano" || current_user.user_permission.name == "Director")
-			flash[:msg] = "Usted no puede estar en esta sección."
+			flash[:msg] = "Usted no tiene los permisos para estar en esta sección."
     	flash[:alert_type] = :warning
     	flash.keep(:msg)
     	flash.keep(:alert_type)

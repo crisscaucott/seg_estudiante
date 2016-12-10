@@ -22,4 +22,37 @@ namespace :desercion do
 		end
 	end
 
+	desc "Llena la tabla de motivos de deserciones con sus tipos."
+	task :fill_motivos_desercion => :environment do
+		ActiveRecord::Base.connection.execute("TRUNCATE #{MotivoDesercion.table_name} RESTART IDENTITY")
+		motivos = [
+			{nombre: "Economico"},
+			{nombre: "Academico"},
+			{nombre: "Vocacional"},
+			{nombre: "Familiar"},
+			{nombre: "Personal"},
+			{nombre: "Otro"}
+		]
+
+		motivos.each do |m|
+			MotivoDesercion.new(m).save
+		end
+	end
+
+	desc "Llena la tabla de motivos de deserciones con sus tipos."
+	task :fill_destinos => :environment do
+		ActiveRecord::Base.connection.execute("TRUNCATE #{Destino.table_name} RESTART IDENTITY")
+		destinos = [
+			{nombre: "CC-FING"},
+			{nombre: "CC-UCEN"},
+			{nombre: "Otra universidad"},
+			{nombre: "Trabajo"},
+			{nombre: "Otro"}
+		]
+
+		destinos.each do |m|
+			Destino.new(m).save
+		end
+	end
+
 end

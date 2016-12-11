@@ -1,18 +1,38 @@
+var form = $('form#estudiantes_form');
 var data_table = $('table#estudiantes_table');
-var datatable_options = {
-    dom: 'ftip',
-    columns: [
-      {"data": "num", "searchable": false}, 
-      {"data": "nombre", "searchable": true}, 
-      {"data": "rut", "searchable": true},
-      {"data": "anio_ingreso", "searchable": false},
-      {"data": "carrera", "searchable": false},
-      {"data": "estado_desercion", "searchable": false},
-      {"data": "editar", "searchable": false},
-    ],
-  }
+var datatable_options;
+initVariables();
 
-initDataTable(data_table, datatable_options);
+function initVariables() {
+	if (form.length !== 0) {
+		datatable_options = {
+	    dom: 'ftip',
+	    columns: [
+	      {"data": "num", "searchable": false}, 
+	      {"data": "nombre", "searchable": true}, 
+	      {"data": "rut", "searchable": true},
+	      {"data": "anio_ingreso", "searchable": false},
+	      {"data": "carrera", "searchable": false},
+	      {"data": "estado_desercion", "searchable": false},
+	      {"data": "editar", "searchable": false},
+	    ],
+	  }
+	}else{
+		datatable_options = {
+	    dom: 'ftip',
+	    columns: [
+	      {"data": "num", "searchable": false}, 
+	      {"data": "nombre", "searchable": true}, 
+	      {"data": "rut", "searchable": true},
+	      {"data": "anio_ingreso", "searchable": false},
+	      {"data": "carrera", "searchable": false},
+	      {"data": "estado_desercion", "searchable": false},
+	    ],
+	  }
+	}
+
+	initDataTable(data_table, datatable_options);
+}
 
 $('div#estudiantes_container').on('click', 'button.edit_btn', function(event){
 	var tr = $(this).parents('tr');

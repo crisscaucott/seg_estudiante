@@ -9,7 +9,14 @@ class MainController < ApplicationController
 			estados_desercion: estados,
 			anios_ingreso: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
-		render action: :index, locals: {estudiantes: estudiantes, estados: estados, filters: filters}
+
+		if current_user.user_permission.name == "Usuario normal"
+			partial = 'estudiantes_table'
+		else
+			partial = 'estudiantes_table_editable'
+		end
+
+		render action: :index, locals: {estudiantes: estudiantes, estados: estados, filters: filters, partial: partial}
 	end
 
 	def update_estados_estudiantes

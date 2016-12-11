@@ -11,6 +11,7 @@ es:
           email: "Email"
           password: "Contraseña"
           rut: "Rut"
+          id_permission: "Tipo de Usuario"
     errors:
       models:
         ficha_estudiante:
@@ -19,6 +20,8 @@ es:
               blank: "No puede estar en blanco."
         user:
           attributes:
+            id_permission:
+              blank: "No puede estar en blanco."
             name:
               blank: "No puede estar en blanco."
             rut:

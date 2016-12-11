@@ -49,7 +49,7 @@
 
       <div class="form-group">
         <%= f.label :tipo_usuario %>
-        <%= f.collection_select(:id_permission, users_permissions, :id, :name, {}, {class: 'form-control'}) %>
+        <%= f.collection_select(:id_permission, users_permissions, :id, :name, {prompt: "Seleccione un tipo de usuario"}, {class: 'form-control'}) %>
       </div>
 
       <div class="form-group" id="carrera_option">

@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   has_many :alertas, class_name: "Alerta", foreign_key: "usuario_id"
   has_and_belongs_to_many :estudiantes, class_name: "Estudiante", foreign_key: "usuario_id", join_table: "tutor_estudiante"
 
-  validates :name, :last_name, :email, presence: true
+  validates :name, :last_name, :email, :id_permission, presence: true
   validates_format_of :email, with: email_regexp
   validates_presence_of :rut
   validates_uniqueness_of :rut
@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
 
   # Se verifica que se tenga asignado la carrera solo cuando el tipo de usuario es director. Tambien se verifica que el id de la carrera exista en la BD.
   def checkIdCarreraForDirector
-    if self.user_permission.name == "Director"
+    if !self[:id_permission].nil? && self.user_permission.name == "Director"
       if !self[:carrera_id].nil?
         if !Carrera.exists?(id: self[:carrera_id])
           self.errors[:carrera_id] = "La carrera seleccionada no se encuentra en el sistema."

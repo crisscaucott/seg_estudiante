@@ -10,6 +10,7 @@ function initVariables() {
 	    columns: [
 	      {"data": "num", "searchable": false}, 
 	      {"data": "nombre", "searchable": true}, 
+	      {"data": "apellido", "searchable": true}, 
 	      {"data": "rut", "searchable": true},
 	      {"data": "anio_ingreso", "searchable": false},
 	      {"data": "carrera", "searchable": false},
@@ -44,14 +45,14 @@ $('div#estudiantes_container').on('click', 'button.edit_btn', function(event){
 		hidden_element.val(0);
 		tr.removeClass('info');
 		tr.find('span').removeClass('hidden');
-		tr.find('select').addClass('hidden');
+		tr.find('input,select').addClass('hidden');
 
 	}else if (hidden_element.val() == "0") {
 		// Fila no seleccionada para editar
 		hidden_element.val(1);
 		tr.addClass('info');
 		tr.find('span').addClass('hidden');
-		tr.find('select').removeClass('hidden');
+		tr.find('input,select').removeClass('hidden');
 
 	}
 	checkEstudiantesEdited(trs);

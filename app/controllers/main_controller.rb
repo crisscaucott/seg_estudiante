@@ -29,8 +29,9 @@ class MainController < ApplicationController
 				total += 1
 				est_obj = Estudiante.find_by(id: estudiante[:id])
 				if !est_obj.nil?
-					est_obj.estado_desercion_id = estudiante[:estado_desercion_id].blank? ? nil : estudiante[:estado_desercion_id].to_i
-
+					update_fields = estudiantes_permitted_fields(estudiante)
+					est_obj.assign_attributes(update_fields)
+					# est_obj.estado_desercion_id = estudiante[:estado_desercion_id].blank? ? nil : estudiante[:estado_desercion_id].to_i
 					if est_obj.save
 						estudiantes_updated += 1
 					end
@@ -41,7 +42,7 @@ class MainController < ApplicationController
 		estudiantes = Estudiante.getEstudiantes
 		estados = EstadoDesercion.getEstados
 
-		render json: {msg: "Se han actualizado exitosamente <b>#{estudiantes_updated}</b> estudiante de los <b>#{total}</b> seleccionados.", type: "success", table: render_to_string(partial: 'estudiantes_table', formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}
+		render json: {msg: "Se han actualizado exitosamente <b>#{estudiantes_updated}</b> estudiante de los <b>#{total}</b> seleccionados.", type: "success", table: render_to_string(partial: 'estudiantes_table_editable', formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}
 	end
 
 	def get_estudiantes_filtering
@@ -77,6 +78,10 @@ class MainController < ApplicationController
 
 	def estudiantes_params
 		params.require(:estudiantes)
+	end
+
+	def estudiantes_permitted_fields(hash)
+		return hash.permit(:nombre, :apellido, :estado_desercion_id)
 	end
 
 	def estudiantes_filter_params

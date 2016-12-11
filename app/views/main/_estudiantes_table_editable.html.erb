@@ -7,7 +7,8 @@
 		<thead>
 			<tr>
 				<th>#</th>
-				<th>Nombre</th>
+				<th>Nombres</th>
+				<th>Apellidos</th>
 				<th>Rut</th>
 				<th>Año ingreso</th>
 				<th>Carrera</th>
@@ -22,7 +23,14 @@
 						<%= f2.hidden_field(:id, value: e.id) %>
 						<%= f2.hidden_field(:row_edited, value: 0, class: 'row_edited', id: nil) %>
 						<td><%= index + 1 %></td>
-						<td><%= e.nombre %> <%= e.apellido %></td>
+						<td>
+							<span><%= e.nombre %></span> 
+							<%= f2.text_field(:nombre, value: e.nombre, class: 'form-control hidden', placeholder: :nombre) %>
+						</td>
+						<td>
+							<span><%= e.apellido %></span> 
+							<%= f2.text_field(:apellido, value: e.apellido, class: 'form-control hidden', placeholder: :apellido) %>
+						</td>
 						<td><%= e.rut %></td>
 						<td><%= e.fecha_ingreso.strftime("%Y") %></td>
 						<td><%= e.carrera.nombre %></td>

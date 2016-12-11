@@ -2,13 +2,19 @@ class MainController < ApplicationController
 	ANIOS_ATRAS = 10
 
 	def index
-		estudiantes = Estudiante.getEstudiantes
+		estudiantes = Estudiante.getEstudiantesByUserType(current_user)
 		estados = EstadoDesercion.getEstados
 		filters = {
 			carreras: Carrera.getCarreras,
 			estados_desercion: estados,
 			anios_ingreso: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
+
+		if estudiantes === false
+			flash[:msg] = "Ha ocurrido un problema en obtener los estudiantes en el sistema."
+			flash[:alert_type] = :danger
+			estudiantes = []
+		end
 
 		if current_user.user_permission.name == "Usuario normal"
 			partial = 'estudiantes_table'

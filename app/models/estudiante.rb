@@ -18,6 +18,34 @@ class Estudiante < ActiveRecord::Base
 		return full_name
 	end
 
+	def self.getEstudiantesByUserType(user)
+		estudiantes = []
+		case user.user_permission.name
+			when "Decano"
+				# Todos los estudiantes
+				estudiantes = getEstudiantes()
+			when "Director"
+				# Todos los estudiantes segun la carrera que tiene asignado el director.
+				if !user.carrera_id.nil?
+					estudiantes = getEstudiantes({carrera: user.carrera_id})
+				else
+					# Cuando es el usuario es director pero no tiene asignado su carrera,
+					# se debe mostrar error.
+					estudiantes = false
+				end
+
+			when "Tutor"
+				# Todos los estudiantes que tiene asociado su tutor.
+				estudiantes = user.estudiantes
+
+			else
+				# Todos los estudiantes (Usuario Normal)
+				estudiantes = getEstudiantes()
+		end
+
+		return estudiantes
+	end
+
 	def self.getEstudiantes(filters = {})
 		estudiantes = self.all.order(nombre: :asc)
 

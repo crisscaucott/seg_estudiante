@@ -1,0 +1,69 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "ficha_estudiante", "data-turbolinks-track" => true  %>
+<% end %>
+
+<div class="col-sm-8 col-sm-offset-2">
+  <div class="form-top">
+    <div class="form-top-left text-center">
+      <h3>Ingresar ficha</h3>
+    </div>
+    <div class="form-top-right">
+      <i class="fa fa-lock"></i>
+    </div>
+  </div>
+  <%= form_for(ficha, url: send_ficha_path, html: {id: 'ficha_form', class: 'form-horizontal', format: :json}) do |f| %>
+
+    <div class="form-group">
+      <%= f.label :estudiante, class: 'col-sm-4 control-label' %>
+      <div class="col-sm-8">
+        <%= f.collection_select(:estudiante_id, estudiantes, :id, :nombre, {}, {class: 'form-control'}) %>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :estado_deserción, class: 'col-sm-4 control-label' %>
+      <div class="col-sm-8">
+        <%= f.select(:estado_desercion_id, options_for_select(estados_desercion.map{ |e| [e.nombre_estado, e.id, { 'data-riesgoso' => e.riesgoso } ] } ), {include_blank: false, prompt: "Seleccione un estado..."}, class: 'form-control' ) %>
+      </div>
+    </div>
+
+    <div id="riesgoso_fields">
+      <div class="form-group">
+        <%= f.label :motivo_deserción, class: 'col-sm-4 control-label' %>
+        <div class="col-sm-8">
+          <%= f.collection_select(:motivo_desercion_id, motivos, :id, :nombre, {}, {class: 'form-control'}) %>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <%= f.label :destino, class: 'col-sm-4 control-label' %>
+        <div class="col-sm-8">
+          <%= f.collection_select(:destino_id, destinos, :id, :nombre, {}, {class: 'form-control'}) %>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="form-group">
+      <%= f.label :fecha_registro, class: 'col-sm-4 control-label' %>
+      <div class='input-group date' id='datetimepicker1'>
+        <%= f.text_field(:fecha_registro, class: 'form-control', placeholder: "dd/mm/aaaa", value: DateTime.now.strftime("%d/%m/%Y")) %>
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :comentario, class: 'col-sm-4 control-label' %>
+      <div class="col-sm-8">
+        <%= f.text_area(:comentario, {class: 'form-control'}) %>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <%= f.submit("Guardar", class: 'btn btn-success') %>
+    </div>
+  
+  <% end %>
+</div>

@@ -60,4 +60,5 @@ Rails.application.routes.draw do
   
 
   get '/ficha_estudiante', to: 'ficha_estudiante#ficha_estudiante_index', as: 'ficha_estudiante'
+  post '/send_ficha', to: 'ficha_estudiante#save_ficha_estudiante', as: 'send_ficha'
 end

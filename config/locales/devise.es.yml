@@ -3,6 +3,8 @@
 es:
   activerecord:
     attributes:
+        ficha_estudiante:
+          estado_desercion_id: "Estado de deserción"
         user:
           name: "Nombre"
           last_name: "Apellido"
@@ -11,6 +13,10 @@ es:
           rut: "Rut"
     errors:
       models:
+        ficha_estudiante:
+          attributes:
+            estado_desercion_id:
+              blank: "No puede estar en blanco."
         user:
           attributes:
             name:

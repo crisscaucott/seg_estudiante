@@ -34,7 +34,7 @@ class FichaEstudiante < ActiveRecord::Base
 	end
 
 	def checkMotivoYDestino
-		if !self[:motivo_desercion_id].nil? 
+		if !self[:estado_desercion_id].nil? 
 			estado_des_obj = EstadoDesercion.find_by(id: self[:estado_desercion_id])
 			if estado_des_obj.riesgoso
 				if self[:motivo_desercion_id].nil? || self[:destino_id].nil?

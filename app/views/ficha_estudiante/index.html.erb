@@ -16,7 +16,7 @@
     <div class="form-group">
       <%= f.label :estudiante, class: 'col-sm-4 control-label' %>
       <div class="col-sm-8">
-        <%= f.collection_select(:estudiante_id, estudiantes, :id, :nombre, {}, {class: 'form-control'}) %>
+        <%= f.collection_select(:estudiante_id, estudiantes, :id, :nombre, {prompt: "Seleccione un estudiante..."}, {class: 'form-control'}) %>
       </div>
     </div>
 

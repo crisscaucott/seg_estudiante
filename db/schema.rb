@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161210224451) do
+ActiveRecord::Schema.define(version: 20161211222745) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,6 +160,7 @@ ActiveRecord::Schema.define(version: 20161210224451) do
     t.string   "rut",                                 null: false
     t.datetime "deleted_at"
     t.integer  "frec_alerta_id"
+    t.integer  "carrera_id"
   end
 
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
@@ -177,6 +178,7 @@ ActiveRecord::Schema.define(version: 20161210224451) do
   add_foreign_key "ficha_estudiante", "users", column: "tutor_id"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
+  add_foreign_key "users", "carrera"
   add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"
 end

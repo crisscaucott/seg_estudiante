@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
 
   belongs_to :user_permission, class_name: "UserPermission", foreign_key: "id_permission"
   belongs_to :frec_alerta, class_name: "FrecAlerta", foreign_key: "frec_alerta_id"
+  belongs_to :carrera, class_name: "Carrera", foreign_key: "carrera_id"
   has_many :alertas, class_name: "Alerta", foreign_key: "usuario_id"
   has_and_belongs_to_many :estudiantes, class_name: "Estudiante", foreign_key: "usuario_id", join_table: "tutor_estudiante"
 

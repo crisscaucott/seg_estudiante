@@ -29,6 +29,10 @@ es:
         
     errors:
       models:
+        ficha_estudiante:
+          attributes:
+            estudiante_id:
+              blank: "No puede estar en blanco."
         estudiante:
           attributes:
             fecha_ingreso:

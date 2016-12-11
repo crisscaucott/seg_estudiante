@@ -51,9 +51,11 @@
       <li class="nav-item <%= isActive("report", action_name) %>">
         <%= link_to('Ver reportes', reportes_path, class: 'nav-link') %>
       </li>
-      <li class="nav-item <%= isActive("observaciones", action_name) %>">
-        <%= link_to('Observaciones', observaciones_path, class: 'nav-link') %>
-      </li>
+      <% if isUserType('Tutor') %>
+        <li class="nav-item <%= isActive("ficha_estudiante", action_name) %>">
+          <%= link_to('Ficha estudiante', ficha_estudiante_path, class: 'nav-link') %>
+        </li>
+      <% end -%>
       <li class="nav-item <%= isActive("caracteristicas", action_name) %>">
         <%= link_to('Caracteristicas est.', caracteristicas_path, class: 'nav-link') %>
       </li>

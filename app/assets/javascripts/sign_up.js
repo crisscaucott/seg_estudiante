@@ -1,6 +1,10 @@
+var carrera_options = $('div#carrera_option').html();
+$('div#carrera_option').empty();
+
 // Evento de enviar formulario
 $( "form#sign_up_user" ).submit(function( event ) {
 	var data, btn;
+	var noti_params = {msg: null, type: null};
 	// Se evita que se recargue la pagina al enviar el formulario
 	event.preventDefault();
 	data = $(event.target).serialize();
@@ -18,31 +22,41 @@ $( "form#sign_up_user" ).submit(function( event ) {
 			{
 				btn.val('Registrando...');
 				btn.toggleClass('disabled');
+	    	showNotification({msg: "Creando usuario...", type: 'info', closeAll: true});
 			}
 		}).done(function(data, textStatus, jqXHR) {
-				showNotification({msg: jqXHR.responseJSON.msg, type: 'success'})
-				// console.log("done");
-				// console.log(data);
-				// console.log(textStatus);
-				// console.log(jqXHR);
+				noti_params.msg = data.msg;
+		    noti_params.type = data.type;
 
 	  }).fail(function(jqXHR, textStatus, errorThrown) {
-				showNotification({msg: jqXHR.responseJSON.errors, type: 'danger'})
-				console.log(jqXHR);
-				console.log(textStatus);
-				console.log(errorThrown);
+	  		noti_params.msg = errorThrown;
+	  		noti_params.type = 'danger';
+
+	  		if (jqXHR.responseJSON !== undefined)
+	  		{
+	  		  noti_params.msg = jqXHR.responseJSON.msg;
+	  		  noti_params.type = jqXHR.responseJSON.type;
+	  		}
 
 	  }).always(function(data, textStatus, errorThrown) {
 	  		btn.toggleClass('disabled');
 	  		btn.val(btn_text);
-	  		console.log("always");
-	  		console.log(data);
-	  		console.log(textStatus);
-	  		console.log(errorThrown);
+	    	showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
 	  });		
 	}else
 	{
 		showNotification({msg: 'El rut ingresado no es válido.', type: 'danger'})
 	}
 
+});
+
+// Cada vez que se cambia una opcion en el combo de estados de desercion.
+$("select#user_id_permission").on('change', function(event){
+  var carrera_id = $("option:selected", this).val();
+
+  if (carrera_id == 2) {
+    $('div#carrera_option').html(carrera_options);
+  }else{
+    $('div#carrera_option').empty();
+  }
 });

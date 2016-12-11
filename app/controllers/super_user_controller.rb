@@ -123,7 +123,9 @@ class SuperUserController < ApplicationController
 
 	def new_user
 		users_permissions = UserPermission.getPermissions
-		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, context: CONTEXTS[:user]}
+		carreras = Carrera.getCarreras
+
+		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, carreras: carreras, context: CONTEXTS[:user]}
 	end
 
 	def createUser
@@ -131,21 +133,21 @@ class SuperUserController < ApplicationController
   	new_user = User.new(sign_up_params)
 
     if new_user.valid?
+
     	# Campos de usuario validados.
 	    if new_user.save
 	    	# Usuario guardado en BD exitosamente.
 
-	    	return render json: {msg: "Usuario registrado exitosamente."}
+	    	return render json: {msg: "Usuario registrado exitosamente.", type: :success}
 
 	    else
 	    	# Fallo con guardar en la BD
-	      clean_up_passwords resource
-	      return render :json => {errors: "Ha ocurrido un error en registrar el usuario."}, status: 422
+	      # clean_up_passwords resource
+	      return render :json => {msg: "Ha ocurrido un error en registrar el usuario.", type: :danger}, status: 422
 	    end
-
     else
     	# Usuario no valido, por sus campos.
-    	return render json: {errors: new_user.getFormatErrorMessages}, status: 422
+    	return render json: {msg: getFormattedAttrObjErrors(new_user.errors.messages, User), type: :danger}, status: 422
     end
 	end
 
@@ -403,7 +405,7 @@ class SuperUserController < ApplicationController
 		end
 
 		def sign_up_params
-	  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission)
+	  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission, :carrera_id)
 	  end
 
 	  def update_user_params

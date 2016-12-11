@@ -50,7 +50,11 @@
       <div class="form-group">
         <%= f.label :tipo_usuario %>
         <%= f.collection_select(:id_permission, users_permissions, :id, :name, {}, {class: 'form-control'}) %>
-    
+      </div>
+
+      <div class="form-group" id="carrera_option">
+        <%= f.label :carrera %>
+        <%= f.collection_select(:carrera_id, carreras, :id, :nombre, {prompt: "Seleccione una carrera"}, {class: 'form-control'}) %>
       </div>
     
       <div class="actions text-center">

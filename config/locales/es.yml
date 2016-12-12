@@ -31,6 +31,8 @@ es:
       models:
         ficha_estudiante:
           attributes:
+            comentario:
+              blank: "No puede estar en blanco."
             estudiante_id:
               blank: "No puede estar en blanco."
         estudiante:

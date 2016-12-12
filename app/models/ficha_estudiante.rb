@@ -6,7 +6,7 @@ class FichaEstudiante < ActiveRecord::Base
 	belongs_to :motivo_desercion, class_name: "MotivoDesercion", foreign_key: :motivo_desercion_id
 	belongs_to :destino, class_name: "Destino", foreign_key: :destino_id
 
-	validates_presence_of :estudiante_id, :tutor_id, :estado_desercion_id, :fecha_registro
+	validates_presence_of :estudiante_id, :tutor_id, :estado_desercion_id, :fecha_registro, :comentario
 
 	validate :checkFieldsExists
 	validate :checkMotivoYDestino

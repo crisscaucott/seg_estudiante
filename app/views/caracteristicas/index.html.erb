@@ -1,0 +1,19 @@
+<div class="col-sm-3 list-group">
+  <div id="MainMenu">
+    <div class="list-group panel" id="option-list">
+
+      <% options = setActive(context, 'estilos') %>
+
+      <a href="#perfiles" class="<%= options[:a_class] %>" data-toggle="collapse" data-parent="#MainMenu">Estilos aprendizaje</a>
+      <div class="<%= options[:div_class] %>" id="perfiles" <%= options[:div_expanded] %> >
+          <%= link_to('Subir', subir_perfiles_path, class: "list-group-item list-group-item-action" + setSubActive(subir_perfiles_path)) %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-sm-9">
+  <% if !local_assigns[:partial].nil? %>
+    <%= render partial: partial, locals: local_assigns %>
+  <% end %>
+</div>

@@ -56,7 +56,8 @@ Rails.application.routes.draw do
   post '/estudiante/filtrar', to: 'main#get_estudiantes_filtering', as: 'get_filter_estudiantes'
 
   get '/reportes', to: 'main#reportes', as: 'reportes'
-  get '/caracteristicas', to: 'main#caracteristicas', as: 'caracteristicas'
+  get '/caracteristicas', to: 'caracteristicas#index', as: 'caracteristicas'
+  get '/caracteristicas/perfiles/subir', to: 'caracteristicas#subir_perfiles_index', as: 'subir_perfiles'
   
 
   get '/ficha_estudiante', to: 'ficha_estudiante#ficha_estudiante_index', as: 'ficha_estudiante'

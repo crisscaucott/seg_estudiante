@@ -489,7 +489,8 @@ class LogCargaMasiva < ActiveRecord::Base
 			end # END EXCEL
 		rescue StandardError => e
 			puts e
-			byebug
+			puts e.backtrace
+			# byebug
 			response[:error] = true
 			response[:msg] = "Ha ocurrido un error al leer el excel."
 		end

@@ -11,7 +11,7 @@ namespace :desercion do
 			{nombre_estado: "Medio Riesgo Deserción", notificar: false, riesgoso: false},
 			{nombre_estado: "Alta Probabilidad de Retención", notificar: false, riesgoso: false},
 			{nombre_estado: "Retención Segura", notificar: false, riesgoso: false},
-			{nombre_estado: "Cambio de Carrera", notificar: false, riesgoso: false},
+			# {nombre_estado: "Cambio de Carrera", notificar: false, riesgoso: false},
 			{nombre_estado: EstadoDesercion::DESERTO_ESTADO, notificar: false, riesgoso: true},
 			{nombre_estado: EstadoDesercion::DESERTO_NINGUNO, notificar: false, riesgoso: false},
 		]

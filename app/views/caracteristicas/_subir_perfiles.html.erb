@@ -1,9 +1,9 @@
 <%= content_for :javascript do %>   
-  <%= javascript_include_tag "subir_estudiantes", "data-turbolinks-track" => true  %>
+  <%= javascript_include_tag "subir_perfiles", "data-turbolinks-track" => true  %>
 <% end %>
 <h1>Subir estilos de aprendizaje</h1>
 
-<%= form_for(:hola, url: subir_estudiantes_xls_path, html: {id: 'estudiantes_form'}) do |f| %>
+<%= form_for(file, url: subir_perfiles_path, html: {id: 'perfiles_form'}) do |f| %>
   <%= f.file_field(:url_archivo, data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
 
   <div class="progress-wrapper">

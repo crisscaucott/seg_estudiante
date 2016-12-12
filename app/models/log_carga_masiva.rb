@@ -389,6 +389,122 @@ class LogCargaMasiva < ActiveRecord::Base
 		return response
 	end
 
+	def uploadPerfiles
+		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
+		response = {error: false, msg: nil}
+		detalle = {new: 0, total: 0, upd: 0, not_found: 0}
+
+		begin
+			header = spreadsheet.row(1).map{|h| h.gsub(/ñ/i, 'n').downcase.to_sym if !h.nil? }
+
+			estilos_header_since = 0
+			estilos_header_until = 0
+			pass = false
+			spreadsheet.row(1).each_with_index do |r, index|
+				if r =~ /honey/i
+					pass = true
+					estilos_header_since = index
+					estilos_header_until += 1
+				elsif r =~ /vark/i
+					pass = true
+					estilos_header_since = index if estilos_header_since == 0
+					estilos_header_until += 1
+				end
+
+				if pass && r.nil?
+					estilos_header_until += 1
+				end
+			end
+
+			estilos_header = spreadsheet.row(2)[estilos_header_since...(estilos_header_since + estilos_header_until)].map{|hn| hn.downcase.to_sym }
+
+			(3..spreadsheet.last_row).each do |ss_row|
+				# Para de leer el excel si encuentra una fila nula.
+				break if spreadsheet.row(ss_row)[0].nil?
+				detalle[:total] += 1
+				# {:a=>8, :r=>15, :t=>15, :p=>11, :v=>nil, :au=>nil, :"l/e"=>nil, :k=>nil}
+				estilos_hash = Hash[[estilos_header, spreadsheet.row(ss_row)[estilos_header_since...(estilos_header_since + estilos_header_until)]].transpose]
+				# {:"nro."=>1, :dni=>13850352, :nombre=>"ALDUNATE MENGUAL, JAVIER IGNACIO", :plan=>"IC04", :expediente=>462, :"estilos honey"=>8, nil=>nil, :"estilos vark"=>nil, :definitiva=>nil, :calificaci_n=>nil}
+				row_hash = Hash[[header, spreadsheet.row(ss_row)].transpose]
+
+				carrera_obj = Carrera.select(:id).where(plan: row_hash[:plan].strip.downcase).first
+
+				if !carrera_obj.nil?
+					estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
+
+					if !estudiante_obj.nil?
+						# Revisar en la BD si ya existe el estilo de aprendizaje del alumno x.
+						estilos_obj = EstilosAprendizaje.find_by(estudiante_id: estudiante_obj.id)
+
+						estilos_data = {
+							estudiante_id: estudiante_obj.id,
+							honey_activo: estilos_hash[:a],
+							honey_reflexivo: estilos_hash[:r],
+							honey_teorico: estilos_hash[:t],
+							honey_practico: estilos_hash[:p],
+							vark_visual: estilos_hash[:v],
+							vark_auditivo: estilos_hash[:au],
+							vark_le: estilos_hash[:"l/e"],
+							vark_kinestesico: estilos_hash[:k]
+						}
+
+						if estilos_obj.nil?
+							# Se crea.
+							estilos_obj = EstilosAprendizaje.new(estilos_data)
+
+							if estilos_obj.valid?
+								estilos_obj.save
+								detalle[:new] += 1
+
+							else
+								puts "ALGO FALLO AL GUARDAR EL ESTILO DE APRENDIZAJE"
+								
+							end
+
+						else
+							# Se actualiza.
+							estilos_obj.assign_attributes(estilos_data)
+							if estilos_obj.valid?
+								estilos_obj.save
+								detalle[:upd] += 1
+
+							else
+								puts "ALGO FALLO AL ACTUALIZAR EL ESTILO DE APRENDIZAJE"
+								
+							end
+							
+						end
+
+					else
+						detalle[:not_found] += 1
+						puts "NO SE ENCONTRO ESTUDIANTE"
+
+					end
+
+				else
+					detalle[:not_found] += 1
+					puts "NO SE ENCONTRO LA CARRERA, PLAN: #{row_hash[:plan]}"
+					
+				end
+			end # END EXCEL
+		rescue StandardError => e
+			puts e
+			byebug
+			response[:error] = true
+			response[:msg] = "Ha ocurrido un error al leer el excel."
+		end
+
+		if !response[:error]
+			# Si no hay errores, se registra la carga masiva del usuario.
+			self.tipo_carga = 'estilos_aprendizaje'
+			self.detalle = detalle
+			self.save
+			response[:msg] = detalle
+		end
+
+		return response
+	end
+
 	def openSpreadsheet(file)
 	  case file.extname
 		  when '.csv' then Roo::Csv.new(file.realpath, packed: false, file_warning: :ignore)

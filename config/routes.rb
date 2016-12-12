@@ -57,8 +57,9 @@ Rails.application.routes.draw do
 
   get '/reportes', to: 'main#reportes', as: 'reportes'
   get '/caracteristicas', to: 'caracteristicas#index', as: 'caracteristicas'
-  get '/caracteristicas/perfiles/subir', to: 'caracteristicas#subir_perfiles_index', as: 'subir_perfiles'
-  
+  get '/caracteristicas/perfiles/subir', to: 'caracteristicas#perfiles_index', as: 'perfiles_index'
+  post '/caracteristicas/perfiles/upload', to: 'caracteristicas#subir_perfiles', as: 'subir_perfiles'
+
 
   get '/ficha_estudiante', to: 'ficha_estudiante#ficha_estudiante_index', as: 'ficha_estudiante'
   post '/send_ficha', to: 'ficha_estudiante#save_ficha_estudiante', as: 'send_ficha'

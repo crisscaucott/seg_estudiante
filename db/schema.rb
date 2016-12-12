@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161211222745) do
+ActiveRecord::Schema.define(version: 20161212035736) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,20 @@ ActiveRecord::Schema.define(version: 20161211222745) do
     t.string  "nombre_estado",                 null: false
     t.boolean "notificar",     default: false
     t.boolean "riesgoso",      default: false, null: false
+  end
+
+  create_table "estilos_aprendizaje", force: :cascade do |t|
+    t.integer  "estudiante_id",    null: false
+    t.integer  "honey_activo"
+    t.integer  "honey_reflexivo"
+    t.integer  "honey_teorico"
+    t.integer  "honey_practico"
+    t.integer  "vark_visual"
+    t.integer  "vark_auditivo"
+    t.integer  "vark_le"
+    t.integer  "vark_kinestesico"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "estudiante", force: :cascade do |t|
@@ -171,6 +185,7 @@ ActiveRecord::Schema.define(version: 20161211222745) do
   add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
+  add_foreign_key "estilos_aprendizaje", "estudiante"
   add_foreign_key "estudiante", "carrera"
   add_foreign_key "estudiante", "estado_desercion"
   add_foreign_key "ficha_estudiante", "estado_desercion"

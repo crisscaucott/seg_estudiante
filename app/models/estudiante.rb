@@ -67,7 +67,7 @@ class Estudiante < ActiveRecord::Base
 	end
 
 	def validarRut
-		rut = self.rut + self.dv
+		rut = self.rut + self.dv.to_s
 		self.errors[:rut] << "Rut inválido." if !RUT::validar(rut)
 	end
 
@@ -80,7 +80,7 @@ class Estudiante < ActiveRecord::Base
 	end
 
 	def rut=(new_rut)
-		self[:rut] = new_rut.strip
+		self[:rut] = new_rut.to_s.strip
 	end
 
 	def dv=(new_dv)

@@ -18,7 +18,6 @@ class MassLoadController < ApplicationController
 		calificaciones = Calificacion.getCalificaciones
 		filtro_notas = {
 			carreras: Carrera.getCarreras,
-			asignaturas: Asignatura.getAsignaturas
 		}
 		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
 	end

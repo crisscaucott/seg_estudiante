@@ -123,7 +123,7 @@ class LogCargaMasiva < ActiveRecord::Base
 			self.detalle = assis_detail
 			self.save
 
-		  response[:msg] = "Asistencias subidas exitosamente."
+		  response[:msg] = assis_detail
 		end
 
 		return response

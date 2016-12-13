@@ -123,7 +123,7 @@ class MassLoadController < ApplicationController
 			res = mass_load_obj.uploadAssistance()
 
 			if !res[:error]
-				render json: {msg: res[:msg]}
+				render json: {msg: render_to_string(partial: 'detalle_subida_asistencia', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
 			else
 				render json: {msg: res[:msg]}, status: :unprocessable_entity
 			end

@@ -1,0 +1,12 @@
+<b>Resumen subida de notas:</b><br>
+<ul>
+	<li>Se han subido/actualizado con éxito las asistencias de <b><%= detail[:success] %></b> estudiantes de los <b><%= detail[:total] %></b> contenidos en el excel.</li>
+
+	<% if detail[:est_not_found] != 0 %>
+		<li>Existen <b><%= detail[:est_not_found] %></b> estudiantes que no fueron encontrados en el sistema.</li>
+	<% end -%>
+
+	<% if detail[:failed] != 0 %>
+		<li>Existen <b><%= detail[:failed] %></b> estudiantes que tuvieron problemas en subir/actualizar sus asistencias.</li>
+	<% end -%>
+</ul>

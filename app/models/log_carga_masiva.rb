@@ -222,7 +222,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		    			if !nota.nil?
 		    				# Primero consultar si la nota del alumno ya existe en la BD,
 		    				# si existe, se actualiza la nota al alumno, sino se ingresa.
-		    				calificacion_obj = Calificacion.select([:id, :valor_calificacion]).where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
+		    				calificacion_obj = Calificacion.where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
 
 		    				if calificacion_obj.nil?
 		    					puts "NOTA NUEVA"

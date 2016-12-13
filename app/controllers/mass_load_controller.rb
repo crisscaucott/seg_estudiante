@@ -2,6 +2,7 @@ class MassLoadController < ApplicationController
 	include MassLoadHelper
 	include ApplicationHelper
 	ANIOS_ATRAS = 10
+	around_filter :checkUpload, only: [:uploadXls, :uploadAssistance, :subir_estudiantes_xls]
 	before_filter :isTutorOrDecano ,only: [:subir_estudiantes, :subir_estudiantes_xls]
 
 	def index
@@ -17,7 +18,6 @@ class MassLoadController < ApplicationController
 		calificaciones = Calificacion.getCalificaciones
 		filtro_notas = {
 			carreras: Carrera.getCarreras,
-			asignaturas: Asignatura.getAsignaturas
 		}
 		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
 	end
@@ -31,7 +31,7 @@ class MassLoadController < ApplicationController
 			
 			res = mass_load_obj.uploadNotas()
 			if !res[:error]
-				render json: {msg: res[:msg]}
+				render json: {msg: render_to_string(partial: 'detalle_subida_notas', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
 			else
 				render json: {msg: res[:msg]}, status: :unprocessable_entity
 			end
@@ -41,14 +41,29 @@ class MassLoadController < ApplicationController
 		end
 	end
 
+	def getAsignaturasByCarrera
+		carrera_obj = Carrera.select([:id, :nombre]).find_by(id: params[:carrera_id])
+
+		if !carrera_obj.nil?
+			asignaturas = carrera_obj.asignaturas.select([:id, :nombre]).order(nombre: :asc)
+
+			if asignaturas.size != 0
+				render json: {msg: "Asignaturas obtenidas exitosamente.", asignaturas: asignaturas, type: :success}
+			else
+				render json: {msg: "No se encontraron asignaturas con la carrera elegida.", type: :warning}, status: :unprocessable_entity
+			end
+
+		else
+			render json: {msg: "Hubo un problema en encontrar la carrera seleccionada en el sistema.", type: :warning}, status: :unprocessable_entity			
+		end
+	end
+
 	def get_notas_filtering
 		filters = notas_filter_params
 		calificaciones = Calificacion.getCalificaciones(filters)
 
 		if calificaciones.size != 0
-			byebug
-			calificaciones.map{|c| c.periodo_academico = formatDateToSemesterPeriod(c.periodo_academico) }
-
+			# calificaciones.map{|c| c.periodo_academico = formatDateToSemesterPeriod(c.periodo_academico) }
 
 			render json: {msg: "Datos de calificaciones obtenidos exitosamente.", calificaciones: calificaciones}, include: [:asignatura, estudiante: {include: :carrera}]
 		else
@@ -77,10 +92,10 @@ class MassLoadController < ApplicationController
 		asistencias = Asistencia.getAsistencias(filter_params)
 
 		if asistencias.present?
-			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
+			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", type: :success, asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
 
 		else
-			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: "warning"}, status: :unprocessable_entity			
+			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: :warning, asistencias: asistencias}
 		end
 
 	end
@@ -108,7 +123,7 @@ class MassLoadController < ApplicationController
 			res = mass_load_obj.uploadAssistance()
 
 			if !res[:error]
-				render json: {msg: res[:msg]}
+				render json: {msg: render_to_string(partial: 'detalle_subida_asistencia', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
 			else
 				render json: {msg: res[:msg]}, status: :unprocessable_entity
 			end
@@ -183,6 +198,19 @@ class MassLoadController < ApplicationController
     	flash.keep(:msg)
     	flash.keep(:alert_type)
 			redirect_to action: "index", status: 301
+		end
+	end
+
+	def checkUpload
+		begin
+			yield
+		rescue StandardError => e
+			if e.backtrace[0] =~ /log_carga_masiva/i
+				render json: {msg: "Error de lectura del excel.", type: :danger}, status: :bad_request
+			else
+				# byebug
+				render json: {msg: "Error inesperado.", type: :danger}, status: :bad_request
+			end
 		end
 	end
 

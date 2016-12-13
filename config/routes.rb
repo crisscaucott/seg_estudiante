@@ -35,6 +35,7 @@ Rails.application.routes.draw do
   
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
   get '/carga_masiva/notas/ver', to: 'mass_load#get_notas', as: 'mass_load_get_notas'
+  post '/carga_masiva/notas/ver/get_asignaturas', to: 'mass_load#getAsignaturasByCarrera'
   post '/carga_masiva/notas/filtering', to: 'mass_load#get_notas_filtering', as: 'filtering_notas'
 
   get '/carga_masiva/asistencia/subir', to: 'mass_load#asistencia', as: 'mass_load_asistencia'

@@ -42,14 +42,29 @@ class MassLoadController < ApplicationController
 		end
 	end
 
+	def getAsignaturasByCarrera
+		carrera_obj = Carrera.select([:id, :nombre]).find_by(id: params[:carrera_id])
+
+		if !carrera_obj.nil?
+			asignaturas = carrera_obj.asignaturas.select([:id, :nombre]).order(nombre: :asc)
+
+			if asignaturas.size != 0
+				render json: {msg: "Asignaturas obtenidas exitosamente.", asignaturas: asignaturas, type: :success}
+			else
+				render json: {msg: "No se encontraron asignaturas con la carrera elegida.", type: :warning}, status: :unprocessable_entity
+			end
+
+		else
+			render json: {msg: "Hubo un problema en encontrar la carrera seleccionada en el sistema.", type: :warning}, status: :unprocessable_entity			
+		end
+	end
+
 	def get_notas_filtering
 		filters = notas_filter_params
 		calificaciones = Calificacion.getCalificaciones(filters)
 
 		if calificaciones.size != 0
-			byebug
-			calificaciones.map{|c| c.periodo_academico = formatDateToSemesterPeriod(c.periodo_academico) }
-
+			# calificaciones.map{|c| c.periodo_academico = formatDateToSemesterPeriod(c.periodo_academico) }
 
 			render json: {msg: "Datos de calificaciones obtenidos exitosamente.", calificaciones: calificaciones}, include: [:asignatura, estudiante: {include: :carrera}]
 		else
@@ -194,6 +209,7 @@ class MassLoadController < ApplicationController
 			if e.backtrace[0] =~ /log_carga_masiva/i
 				render json: {msg: "Error de lectura del excel.", type: :danger}, status: :bad_request
 			else
+				# byebug
 				render json: {msg: "Error inesperado.", type: :danger}, status: :bad_request
 			end
 		end

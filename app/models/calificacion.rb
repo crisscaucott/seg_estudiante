@@ -7,11 +7,11 @@ class Calificacion < ActiveRecord::Base
 	def self.getCalificaciones(filters = {})
 		query = self.includes(:asignatura, estudiante: [:carrera])
 
-		if !filters[:carrera].nil?
+		if filters[:carrera].present?
 			query = query.select(["carrera.nombre AS nombre_carrera"]).where('carrera.id = ?', filters[:carrera]).references(:carrera)
 		end
 
-		if !filters[:asignatura].nil?
+		if filters[:asignatura].present?
 			query = query.where('asignatura.id = ?', filters[:asignatura]).references(:asignatura)
 		end
 		return query

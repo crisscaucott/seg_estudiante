@@ -2,6 +2,7 @@ class MassLoadController < ApplicationController
 	include MassLoadHelper
 	include ApplicationHelper
 	ANIOS_ATRAS = 10
+	around_filter :checkUpload, only: [:uploadXls, :uploadAssistance, :subir_estudiantes_xls]
 	before_filter :isTutorOrDecano ,only: [:subir_estudiantes, :subir_estudiantes_xls]
 
 	def index
@@ -183,6 +184,18 @@ class MassLoadController < ApplicationController
     	flash.keep(:msg)
     	flash.keep(:alert_type)
 			redirect_to action: "index", status: 301
+		end
+	end
+
+	def checkUpload
+		begin
+			yield
+		rescue StandardError => e
+			if e.backtrace[0] =~ /log_carga_masiva/i
+				render json: {msg: "Error de lectura del excel.", type: :danger}, status: :bad_request
+			else
+				render json: {msg: "Error inesperado.", type: :danger}, status: :bad_request
+			end
 		end
 	end
 

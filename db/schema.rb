@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161213233516) do
+ActiveRecord::Schema.define(version: 20161213233902) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,7 @@ ActiveRecord::Schema.define(version: 20161213233516) do
     t.string   "plan",              null: false
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
+    t.integer  "escuela_id",        null: false
   end
 
   create_table "destinos", force: :cascade do |t|
@@ -192,6 +193,7 @@ ActiveRecord::Schema.define(version: 20161213233516) do
   add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
+  add_foreign_key "carrera", "escuela"
   add_foreign_key "escuela", "users", column: "director_id"
   add_foreign_key "estilos_aprendizaje", "estudiante"
   add_foreign_key "estudiante", "carrera"

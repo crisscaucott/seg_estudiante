@@ -132,6 +132,7 @@ class LogCargaMasiva < ActiveRecord::Base
 	def uploadNotas()
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
 		response = {error: false, msg: nil}
+		detalle = {est_not_found: 0, est_found: 0, total: 0, new_notas: 0, upd_notas: 0, failed_notas: 0}
 
 	  # BUSCAR LA ASIGNATURA EN LA BD.
 	  asignatura_codigo = /\[.*\]/.match(spreadsheet.row(1)[2])[0].gsub(/(\[|\]|\s)/, '')
@@ -202,6 +203,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		    	puts spreadsheet.row(ss_row)[0]
 		    	# byebug
 		    	break if spreadsheet.row(ss_row)[0].nil?
+		    	detalle[:total] += 1
 		    	# Se crea un hash con las notas del estudiante.
 		    	# {:n1=>nil, :n2=>nil, :n3=>nil, :oa=>nil, :prom=>nil, :plab=>nil, :np=>nil, :ex=>nil}
 		    	notas_alumno_hash = Hash[[header_notas, spreadsheet.row(ss_row)[5...(5 + notas_fields_count)]].transpose]
@@ -211,6 +213,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		    	estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
 
 		    	if !estudiante_obj.nil?
+		    		detalle[:est_found] += 1
 		    		# Estudiante encontrado en la BD
 
 		    		# Hacer calzar SOLO las notas parciales, entre la fila de cada estudiante con el hash de las ponderaciones de las notas (ponderaciones_hash)
@@ -239,9 +242,11 @@ class LogCargaMasiva < ActiveRecord::Base
 			    				if calificacion_obj.save
 			    					# Se ingreso la calificacion con exito
 			    					puts "ingreso exitoso id: #{calificacion_obj.id}"
+			    					detalle[:new_notas] += 1
 			    				else
 			    					# Fallo el ingreso
 			    					puts "ingreso NO exitoso"
+			    					detalle[:failed_notas] += 1
 			    					
 			    				end
 
@@ -250,15 +255,20 @@ class LogCargaMasiva < ActiveRecord::Base
 
 		    					# Se actualiza el valor de la calificacion
 		    					calificacion_obj.valor_calificacion = nota
-		    					calificacion_obj.save!
-		    					
+		    					if calificacion_obj.save
+		    						detalle[:upd_notas] += 1
+		    					else
+			    					detalle[:failed_notas] += 1
+		    						
+		    					end
 		    				end # END calificacion_obj.nil?
 		    			end # END !nota.nil?
 		    		end # END ponderaciones_hash.each
 
 		    	else
 		    		# Estudiante no encontrado en la BD
-		    		
+		    		detalle[:est_not_found] += 1
+
 		    	end
 		    end # END notas_row_found
 
@@ -296,7 +306,10 @@ class LogCargaMasiva < ActiveRecord::Base
 		if !response[:error]
 			# Si no hay errores, se registra la carga masiva del usuario.
 			self.tipo_carga = 'excel'
-			self.save			
+			self.detalle = detalle
+			self.save
+
+			response[:msg] = detalle
 		end
 
 		return response

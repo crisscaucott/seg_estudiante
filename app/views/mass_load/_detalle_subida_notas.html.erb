@@ -1,0 +1,14 @@
+<b>Resumen subida de notas:</b><br>
+<ul>
+	<li>En el excel, se encontraron <b><%= detail[:est_found] %></b> de <b><%= detail[:total] %></b> estudiantes y <b><%= detail[:est_not_found] %></b> no se encontraron en el sistema.</li>
+
+	<% if detail[:new_notas] != 0 %>
+		<li>Se subieron con éxito <b><%= detail[:new_notas] %></b> nuevas notas.</li>
+	<% end -%>
+
+	<li>Se actualizaron con éxito <b><%= detail[:upd_notas] %></b> notas.</li>
+
+	<% if detail[:failed_notas] != 0 %>
+		<li><b><%= detail[:failed_notas] %></b> notas tuvieron error con su subida.</li>
+	<% end -%>
+</ul>

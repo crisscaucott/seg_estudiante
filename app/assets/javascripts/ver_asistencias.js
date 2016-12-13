@@ -51,8 +51,8 @@ table.on('click', 'button.ver-detail', function(event){
         btn.toggleClass('disabled');
       }
     }).done(function(data, textStatus, jqXHR) {
-        noti_params.msg = jqXHR.responseJSON.msg;
-        noti_params.type = jqXHR.responseJSON.type;
+        noti_params.msg = data.msg;
+        noti_params.type = data.type;
 
         bootbox.alert({
           size: 'large',
@@ -74,7 +74,7 @@ table.on('click', 'button.ver-detail', function(event){
     }).always(function(data, textStatus, errorThrown) {
         btn.toggleClass('disabled');
         btn.val(btn_text);
-        showNotification({msg: noti_params.msg, type: noti_params.type})
+        showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
     }); 
   }
 });
@@ -98,22 +98,21 @@ $('form#filters_form').submit(function(event){
     }
   }).done(function(data, textStatus, jqXHR) {
       // Borrar los datos de la tabla.
-      console.log(jqXHR.responseJSON);
       var dt = table.DataTable();
       dt.clear();
-      for (var i = 0; i < jqXHR.responseJSON.asistencias.length; i++)
+      for (var i = 0; i < data.asistencias.length; i++)
       {
-        // var pa = new Date(Date.parse(jqXHR.responseJSON.calificaciones[i].periodo_academico));
+        // var pa = new Date(Date.parse(data.calificaciones[i].periodo_academico));
         dt.row.add({
           "num": i + 1,
-          "estudiante": jqXHR.responseJSON.asistencias[i].estudiante.nombre + " " + jqXHR.responseJSON.asistencias[i].estudiante.apellido + "|" +jqXHR.responseJSON.asistencias[i].estudiante_id,
-          "asignatura": jqXHR.responseJSON.asistencias[i].asignatura.nombre + "|" +jqXHR.responseJSON.asistencias[i].asignatura_id,
+          "estudiante": data.asistencias[i].estudiante.nombre + " " + data.asistencias[i].estudiante.apellido + "|" +data.asistencias[i].estudiante_id,
+          "asignatura": data.asistencias[i].asignatura.nombre + "|" +data.asistencias[i].asignatura_id,
           "accion": null
         });
       }
       dt.draw();
-      noti_params.msg = jqXHR.responseJSON.msg;
-      noti_params.type = 'success';
+      noti_params.msg = data.msg;
+      noti_params.type = data.type;
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
 
@@ -129,7 +128,7 @@ $('form#filters_form').submit(function(event){
   }).always(function(data, textStatus, errorThrown) {
       btn.toggleClass('disabled');
       btn.val(btn_text);
-      showNotification({msg: noti_params.msg, type: noti_params.type})
+      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
   });
 
 });

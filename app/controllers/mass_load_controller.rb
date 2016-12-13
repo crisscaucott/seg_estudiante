@@ -92,10 +92,10 @@ class MassLoadController < ApplicationController
 		asistencias = Asistencia.getAsistencias(filter_params)
 
 		if asistencias.present?
-			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
+			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", type: :success, asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
 
 		else
-			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: "warning"}, status: :unprocessable_entity			
+			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: :warning, asistencias: asistencias}
 		end
 
 	end

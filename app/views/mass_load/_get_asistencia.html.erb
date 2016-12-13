@@ -13,19 +13,15 @@
     </div>
   </div>
   <%= form_for(:filters, url: filtering_asistencia_path, html: {id: 'filters_form', format: 'json'}) do |f| %>
-      <!-- <div class="form-group">
-        <%= f.label :carrera %><br />
-        <%= f.collection_select(:carrera, filtros[:carreras], :id, :nombre, {}, {class: 'form-control'}) %>
-      </div> -->
 
       <div class="form-group">
         <%= f.label :asignatura %><br />
-        <%= f.collection_select(:asignatura, filtros[:asignaturas], :id, :nombre, {}, {class: 'form-control'}) %>
+        <%= f.collection_select(:asignatura, filtros[:asignaturas], :id, :nombre, {prompt: "Cualquiera"}, {class: 'form-control'}) %>
       </div>
 
       <div class="form-group">
         <%= f.label :periodo %><br />
-        <%= f.select(:periodo, filtros[:periodos], {}, {class: 'form-control'}) %>
+        <%= f.select(:periodo, filtros[:periodos], {prompt: "Cualquiera"}, {class: 'form-control'}) %>
       </div>
 
       <div class="actions text-center">

@@ -65,7 +65,7 @@ class MainController < ApplicationController
 			estados = EstadoDesercion.getEstados
 			render json: {msg: "Estudiantes obtenidos con los filtros definidos exitosamente.", type: "success", table: render_to_string(partial: partial, formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}
 		else
-			render json: {msg: "No se encontraron estudiantes con los filtros definidos.", type: "warning"}, status: :bad_request
+			render json: {msg: "No se encontraron estudiantes con los filtros definidos.", type: :warning}
 		end
 	end
 

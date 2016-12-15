@@ -148,11 +148,12 @@ $('form#estudiantes_filter').on('submit', function(event){
 	    noti_params.type = data.type;
 
 	    data_table.DataTable().clear();
-	    $('div#estudiantes_container').html(data.table);
+	    if (data.table !== undefined) {
+	   		$('div#estudiantes_container').html(data.table);
+		    data_table = $('table#estudiantes_table');
+		    initDataTable(data_table, datatable_options);
+	    }
 	    data_table.DataTable().draw();
-
-	    data_table = $('table#estudiantes_table');
-	    initDataTable(data_table, datatable_options);
 
 	}).fail(function(jqXHR, textStatus, errorThrown) {
 

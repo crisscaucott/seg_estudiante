@@ -3,10 +3,10 @@ class LogCargaMasiva < ActiveRecord::Base
 
 	def uploadAssistance()
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
-		req_data = {asignatura: nil}
+		req_data = {asignatura: nil, ids_carreras: nil}
 		header_assis = nil
 		response = {error: false, msg: nil}
-		assis_detail = {success: 0, failed: 0, est_not_found: 0, total: 0}
+		assis_detail = {success: 0, failed: 0, est_not_found: 0, total: 0, est_multiple: 0}
 
 		(1..spreadsheet.last_row).each do |ss_row|
 			# Fila 'curso'
@@ -34,7 +34,13 @@ class LogCargaMasiva < ActiveRecord::Base
 						response[:msg] = "Hubo problema en encontrar la asignatura del excel."
 						break
 					end
-				end					
+				end
+
+				# Guardar los ids de las carreras que pertenece la asignatura encontrada,
+				# esto es util para encontrar a que carrera pertenece cada alumno leido.
+				# Para que todo funcione, debe existir la relacion entre carrera y asignatura, osea debe estar la fila en la tabla 'asignatura-carrera'.
+				req_data[:ids_carreras] = req_data[:asignatura].carrera_ids
+
 			end # END if curso
 
 			# Desde aqui empieza la fila de cada estudiante con su asistencia.
@@ -45,12 +51,23 @@ class LogCargaMasiva < ActiveRecord::Base
 				assis_detail[:total] += 1 # Se cuenta 1 alumno mas al total.
 				assis_hash = Hash[[header_assis, spreadsheet.row(ss_row)].transpose]
 
-				estudiante_obj = Estudiante.getIdEstudianteByCarreraAndRut(assis_hash[:"nombre de usuario"].to_i, req_data[:asignatura].id)
+				# Se agrega la condicion si el estudiante tiene uno de los ids de carreras asociado a la asignatura, en caso de que el estudiante este varias veces en la BD pero en distintas carreras.
+				estudiante_obj = Estudiante.select(:id).where(rut: assis_hash[:"nombre de usuario"].to_i.to_s).where(fecha_eliminacion: nil).where(carrera_id: req_data[:ids_carreras])
+
+				if estudiante_obj.size > 1
+					# Hay mas de 1 estudiante activo cursando algunas de las carreras asociadas a la asignatura, no se sube su asitencia (mal).
+					estudiante_obj = nil
+					assis_detail[:est_multiple] += 1
+					puts "SE ENCONTRO MAS DE 1 ESTUDIANTE"
+				elsif estudiante_obj.size == 1
+					# Solo se encontro 1 estudiante (bien).
+					estudiante_obj = estudiante_obj[0]
+				end
 
 				# Se cambia a false, si hay problema en actualizar o ingresar 
 				# con alguna de las asistencias del estudiante.
 				pass = true
-				if !estudiante_obj.nil?
+				if estudiante_obj.present?
 					# Se encontro al estudiante en la BD.
 					# Recorrer los campos del estudiante
 					assis_hash.each do |assis_field, assis_value|

@@ -3,10 +3,10 @@ class MainController < ApplicationController
 
 	def index
 		estudiantes = Estudiante.getEstudiantesByUserType(current_user)
-		estados = EstadoDesercion.getEstados
+
 		filters = {
-			carreras: Carrera.getCarreras,
-			estados_desercion: estados,
+			carreras: Carrera.getCarreras(escuela_id: current_user.escuela_id),
+			estados_desercion: EstadoDesercion.getEstados,
 			anios_ingreso: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
 
@@ -22,7 +22,7 @@ class MainController < ApplicationController
 			partial = 'estudiantes_table_editable'
 		end
 
-		render action: :index, locals: {estudiantes: estudiantes, estados: estados, filters: filters, partial: partial}
+		render action: :index, locals: {estudiantes: estudiantes, estados: filters[:estados_desercion], filters: filters, partial: partial}
 	end
 
 	def update_estados_estudiantes
@@ -53,13 +53,19 @@ class MainController < ApplicationController
 
 	def get_estudiantes_filtering
 		filters = estudiantes_filter_params
-		estudiantes = Estudiante.getEstudiantes(filters)
+		estudiantes = Estudiante.getEstudiantesByUserType(current_user, filters)
 
 		if estudiantes.size != 0
+			if current_user.user_permission.name == "Usuario normal"
+				partial = 'estudiantes_table'
+			else
+				partial = 'estudiantes_table_editable'
+			end
+
 			estados = EstadoDesercion.getEstados
-			render json: {msg: "Estudiantes obtenidos con los filtros definidos exitosamente.", type: "success", table: render_to_string(partial: 'estudiantes_table', formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}
+			render json: {msg: "Estudiantes obtenidos con los filtros definidos exitosamente.", type: "success", table: render_to_string(partial: partial, formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}
 		else
-			render json: {msg: "No se encontraron estudiantes con los filtros definidos.", type: "warning"}, status: :bad_request
+			render json: {msg: "No se encontraron estudiantes con los filtros definidos.", type: :warning}
 		end
 	end
 

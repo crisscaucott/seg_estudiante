@@ -1,5 +1,5 @@
-var carrera_options = $('div#carrera_option').html();
-$('div#carrera_option').empty();
+var carrera_options = $('div#escuela_field').html();
+$('div#escuela_field').empty();
 
 // Evento de enviar formulario
 $( "form#sign_up_user" ).submit(function( event ) {
@@ -52,11 +52,11 @@ $( "form#sign_up_user" ).submit(function( event ) {
 
 // Cada vez que se cambia una opcion en el combo de estados de desercion.
 $("select#user_id_permission").on('change', function(event){
-  var carrera_id = $("option:selected", this).val();
+  var escuela_id = $("option:selected", this).val();
 
-  if (carrera_id == 2) {
-    $('div#carrera_option').html(carrera_options);
+  if (escuela_id == 2) {
+    $('div#escuela_field').html(carrera_options);
   }else{
-    $('div#carrera_option').empty();
+    $('div#escuela_field').empty();
   }
 });

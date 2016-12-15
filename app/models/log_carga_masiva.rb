@@ -3,10 +3,10 @@ class LogCargaMasiva < ActiveRecord::Base
 
 	def uploadAssistance()
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
-		req_data = {asignatura: nil}
+		req_data = {asignatura: nil, ids_carreras: nil}
 		header_assis = nil
 		response = {error: false, msg: nil}
-		assis_detail = {success: 0, failed: 0, est_not_found: 0, total: 0}
+		assis_detail = {success: 0, failed: 0, est_not_found: 0, total: 0, est_multiple: 0}
 
 		(1..spreadsheet.last_row).each do |ss_row|
 			# Fila 'curso'
@@ -34,7 +34,13 @@ class LogCargaMasiva < ActiveRecord::Base
 						response[:msg] = "Hubo problema en encontrar la asignatura del excel."
 						break
 					end
-				end					
+				end
+
+				# Guardar los ids de las carreras que pertenece la asignatura encontrada,
+				# esto es util para encontrar a que carrera pertenece cada alumno leido.
+				# Para que todo funcione, debe existir la relacion entre carrera y asignatura, osea debe estar la fila en la tabla 'asignatura-carrera'.
+				req_data[:ids_carreras] = req_data[:asignatura].carrera_ids
+
 			end # END if curso
 
 			# Desde aqui empieza la fila de cada estudiante con su asistencia.
@@ -45,12 +51,23 @@ class LogCargaMasiva < ActiveRecord::Base
 				assis_detail[:total] += 1 # Se cuenta 1 alumno mas al total.
 				assis_hash = Hash[[header_assis, spreadsheet.row(ss_row)].transpose]
 
-				estudiante_obj = Estudiante.getIdEstudianteByCarreraAndRut(assis_hash[:"nombre de usuario"].to_i, req_data[:asignatura].id)
+				# Se agrega la condicion si el estudiante tiene uno de los ids de carreras asociado a la asignatura, en caso de que el estudiante este varias veces en la BD pero en distintas carreras.
+				estudiante_obj = Estudiante.select(:id).where(rut: assis_hash[:"nombre de usuario"].to_i.to_s).where(fecha_eliminacion: nil).where(carrera_id: req_data[:ids_carreras])
+
+				if estudiante_obj.size > 1
+					# Hay mas de 1 estudiante activo cursando algunas de las carreras asociadas a la asignatura, no se sube su asitencia (mal).
+					estudiante_obj = nil
+					assis_detail[:est_multiple] += 1
+					puts "SE ENCONTRO MAS DE 1 ESTUDIANTE"
+				elsif estudiante_obj.size == 1
+					# Solo se encontro 1 estudiante (bien).
+					estudiante_obj = estudiante_obj[0]
+				end
 
 				# Se cambia a false, si hay problema en actualizar o ingresar 
 				# con alguna de las asistencias del estudiante.
 				pass = true
-				if !estudiante_obj.nil?
+				if estudiante_obj.present?
 					# Se encontro al estudiante en la BD.
 					# Recorrer los campos del estudiante
 					assis_hash.each do |assis_field, assis_value|
@@ -209,67 +226,74 @@ class LogCargaMasiva < ActiveRecord::Base
 		    	notas_alumno_hash = Hash[[header_notas, spreadsheet.row(ss_row)[5...(5 + notas_fields_count)]].transpose]
 		    	row_hash = Hash[[estudiante_header, spreadsheet.row(ss_row)].transpose]
 
-		    	carrera_obj = Carrera.select(:id).where(plan: row_hash[:plan].strip.downcase).first
-		    	estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
+		    	carrera_obj = Carrera.select(:id).where("LOWER(plan) = ?", row_hash[:plan].strip.downcase).first
 
-		    	if !estudiante_obj.nil?
-		    		detalle[:est_found] += 1
-		    		# Estudiante encontrado en la BD
+		    	if !carrera_obj.nil?
+		    		estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
 
-		    		# Hacer calzar SOLO las notas parciales, entre la fila de cada estudiante con el hash de las ponderaciones de las notas (ponderaciones_hash)
-		    		ponderaciones_hash.each do |tipo_nota, ponderacion|
-		    			nota = notas_alumno_hash[tipo_nota]
+			    	if !estudiante_obj.nil?
+			    		detalle[:est_found] += 1
+			    		# Estudiante encontrado en la BD
 
-		    			# Si la nota esta seteada en el excel,
-		    			# solo deberian calzar las notas 'n' y las 'oa'
-		    			if !nota.nil?
-		    				# Primero consultar si la nota del alumno ya existe en la BD,
-		    				# si existe, se actualiza la nota al alumno, sino se ingresa.
-		    				calificacion_obj = Calificacion.where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
+			    		# Hacer calzar SOLO las notas parciales, entre la fila de cada estudiante con el hash de las ponderaciones de las notas (ponderaciones_hash)
+			    		ponderaciones_hash.each do |tipo_nota, ponderacion|
+			    			nota = notas_alumno_hash[tipo_nota]
 
-		    				if calificacion_obj.nil?
-		    					puts "NOTA NUEVA"
-		    					# Se ingresa como una nueva calificacion
-			    				calificacion_obj = Calificacion.new({
-			    					estudiante_id: estudiante_obj.id,
-			    					asignatura_id: asignatura_obj.id,
-			    					valor_calificacion: nota,
-			    					nombre_calificacion: tipo_nota,
-			    					ponderacion: ponderacion,
-			    					periodo_academico: periodo_academico
-			    				})
+			    			# Si la nota esta seteada en el excel,
+			    			# solo deberian calzar las notas 'n' y las 'oa'
+			    			if !nota.nil?
+			    				# Primero consultar si la nota del alumno ya existe en la BD,
+			    				# si existe, se actualiza la nota al alumno, sino se ingresa.
+			    				calificacion_obj = Calificacion.where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
 
-			    				if calificacion_obj.save
-			    					# Se ingreso la calificacion con exito
-			    					puts "ingreso exitoso id: #{calificacion_obj.id}"
-			    					detalle[:new_notas] += 1
+			    				if calificacion_obj.nil?
+			    					puts "NOTA NUEVA"
+			    					# Se ingresa como una nueva calificacion
+				    				calificacion_obj = Calificacion.new({
+				    					estudiante_id: estudiante_obj.id,
+				    					asignatura_id: asignatura_obj.id,
+				    					valor_calificacion: nota,
+				    					nombre_calificacion: tipo_nota,
+				    					ponderacion: ponderacion,
+				    					periodo_academico: periodo_academico
+				    				})
+
+				    				if calificacion_obj.save
+				    					# Se ingreso la calificacion con exito
+				    					puts "ingreso exitoso id: #{calificacion_obj.id}"
+				    					detalle[:new_notas] += 1
+				    				else
+				    					# Fallo el ingreso
+				    					puts "ingreso NO exitoso"
+				    					detalle[:failed_notas] += 1
+				    					
+				    				end
+
 			    				else
-			    					# Fallo el ingreso
-			    					puts "ingreso NO exitoso"
-			    					detalle[:failed_notas] += 1
-			    					
-			    				end
+			    					puts "SE ACTUALIZA NOTA id: #{calificacion_obj.id}"
 
-		    				else
-		    					puts "SE ACTUALIZA NOTA id: #{calificacion_obj.id}"
+			    					# Se actualiza el valor de la calificacion
+			    					calificacion_obj.valor_calificacion = nota
+			    					if calificacion_obj.save
+			    						detalle[:upd_notas] += 1
+			    					else
+				    					detalle[:failed_notas] += 1
+			    						
+			    					end
+			    				end # END calificacion_obj.nil?
+			    			end # END !nota.nil?
+			    		end # END ponderaciones_hash.each
 
-		    					# Se actualiza el valor de la calificacion
-		    					calificacion_obj.valor_calificacion = nota
-		    					if calificacion_obj.save
-		    						detalle[:upd_notas] += 1
-		    					else
-			    					detalle[:failed_notas] += 1
-		    						
-		    					end
-		    				end # END calificacion_obj.nil?
-		    			end # END !nota.nil?
-		    		end # END ponderaciones_hash.each
+			    	else
+			    		# Estudiante no encontrado en la BD
+			    		detalle[:est_not_found] += 1
 
+			    	end
 		    	else
-		    		# Estudiante no encontrado en la BD
 		    		detalle[:est_not_found] += 1
-
 		    	end
+
+
 		    end # END notas_row_found
 
 		    # Armar el array de la cabecera de las notas, una vez que se haya encontrado.
@@ -440,7 +464,7 @@ class LogCargaMasiva < ActiveRecord::Base
 				# {:"nro."=>1, :dni=>13850352, :nombre=>"ALDUNATE MENGUAL, JAVIER IGNACIO", :plan=>"IC04", :expediente=>462, :"estilos honey"=>8, nil=>nil, :"estilos vark"=>nil, :definitiva=>nil, :calificaci_n=>nil}
 				row_hash = Hash[[header, spreadsheet.row(ss_row)].transpose]
 
-				carrera_obj = Carrera.select(:id).where(plan: row_hash[:plan].strip.downcase).first
+				carrera_obj = Carrera.select(:id).where("LOWER(plan) = ?", row_hash[:plan].strip.downcase).first
 
 				if !carrera_obj.nil?
 					estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first

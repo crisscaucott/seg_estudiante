@@ -18,29 +18,53 @@ class Estudiante < ActiveRecord::Base
 		return full_name
 	end
 
-	def self.getEstudiantesByUserType(user)
+	def self.getEstudiantesByUserType(user, filters = {})
 		estudiantes = []
 		case user.user_permission.name
 			when "Decano"
 				# Todos los estudiantes
-				estudiantes = getEstudiantes()
+				estudiantes = getEstudiantes(filters)
 			when "Director"
-				# Todos los estudiantes segun la carrera que tiene asignado el director.
-				if !user.carrera_id.nil?
-					estudiantes = getEstudiantes({carrera: user.carrera_id})
+				# Todos los estudiantes segun la escuela que tiene asignado el director.
+				if !user.escuela_id.nil?
+					# Aplicar filtros si los hay.
+					conditions = ""
+					if filters[:anio_ingreso].present?
+						since_date = self.sanitize("#{filters[:anio_ingreso]}-01-01")
+						until_date = self.sanitize("#{filters[:anio_ingreso].to_i + 1}-01-01")
+						conditions += " AND (e.fecha_ingreso >= #{since_date} AND e.fecha_ingreso < #{until_date})"
+					end
+
+					if filters[:carrera].present?
+						conditions += " AND e.carrera_id = #{filters[:carrera]}"
+					end
+
+					if filters[:estado_desercion].present?
+						conditions += " AND e.estado_desercion_id = #{filters[:estado_desercion]}"
+					end
+
+					estudiantes = self.find_by_sql("SELECT e.*
+					FROM estudiante AS e
+					INNER JOIN carrera AS c ON e.carrera_id = c.id
+					INNER JOIN escuela AS es ON c.escuela_id = es.id
+					INNER JOIN users AS u ON u.escuela_id = es.id
+					WHERE u.id = #{user.id}
+					#{conditions}
+					ORDER BY e.nombre ASC")
+
 				else
-					# Cuando es el usuario es director pero no tiene asignado su carrera,
+					# Cuando el usuario es director pero no tiene asignado su escuela,
 					# se debe mostrar error.
 					estudiantes = false
 				end
 
 			when "Tutor"
 				# Todos los estudiantes que tiene asociado su tutor.
-				estudiantes = user.estudiantes
+				estudiantes = user.estudiantes(filters)
 
 			else
 				# Todos los estudiantes (Usuario Normal)
-				estudiantes = getEstudiantes()
+				estudiantes = getEstudiantes(filters)
 		end
 
 		return estudiantes

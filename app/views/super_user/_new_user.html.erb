@@ -52,9 +52,9 @@
         <%= f.collection_select(:id_permission, users_permissions, :id, :name, {prompt: "Seleccione un tipo de usuario"}, {class: 'form-control'}) %>
       </div>
 
-      <div class="form-group" id="carrera_option">
-        <%= f.label :carrera %>
-        <%= f.collection_select(:carrera_id, carreras, :id, :nombre, {prompt: "Seleccione una carrera"}, {class: 'form-control'}) %>
+      <div class="form-group" id="escuela_field">
+        <%= f.label :escuela %>
+        <%= f.collection_select(:escuela_id, escuelas, :id, :nombre, {prompt: "Seleccione una escuela"}, {class: 'form-control'}) %>
       </div>
     
       <div class="actions text-center">

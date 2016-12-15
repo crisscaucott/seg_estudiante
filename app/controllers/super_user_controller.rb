@@ -123,17 +123,18 @@ class SuperUserController < ApplicationController
 
 	def new_user
 		users_permissions = UserPermission.getPermissions
-		carreras = Carrera.getCarreras
+		escuelas = Escuela.getEscuelas
 
-		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, carreras: carreras, context: CONTEXTS[:user]}
+		render action: :index, locals: {partial: 'new_user', resource: User.new, users_permissions: users_permissions, escuelas: escuelas, context: CONTEXTS[:user]}
 	end
 
 	def createUser
   	# Crear hash con los datos del usuario.
-  	new_user = User.new(sign_up_params)
+  	user_params = sign_up_params
+  	new_user = User.new(user_params)
 
     if new_user.valid?
-
+    	
     	# Campos de usuario validados.
 	    if new_user.save
 	    	# Usuario guardado en BD exitosamente.
@@ -405,7 +406,7 @@ class SuperUserController < ApplicationController
 		end
 
 		def sign_up_params
-	  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission, :carrera_id)
+	  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation, :id_permission, :escuela_id)
 	  end
 
 	  def update_user_params

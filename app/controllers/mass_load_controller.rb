@@ -208,7 +208,6 @@ class MassLoadController < ApplicationController
 			if e.backtrace[0] =~ /log_carga_masiva/i
 				render json: {msg: "Error de lectura del excel.", type: :danger}, status: :bad_request
 			else
-				# byebug
 				render json: {msg: "Error inesperado.", type: :danger}, status: :bad_request
 			end
 		end

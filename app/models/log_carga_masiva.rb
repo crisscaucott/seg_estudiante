@@ -464,7 +464,7 @@ class LogCargaMasiva < ActiveRecord::Base
 				# {:"nro."=>1, :dni=>13850352, :nombre=>"ALDUNATE MENGUAL, JAVIER IGNACIO", :plan=>"IC04", :expediente=>462, :"estilos honey"=>8, nil=>nil, :"estilos vark"=>nil, :definitiva=>nil, :calificaci_n=>nil}
 				row_hash = Hash[[header, spreadsheet.row(ss_row)].transpose]
 
-				carrera_obj = Carrera.select(:id).where(plan: row_hash[:plan].strip.downcase).first
+				carrera_obj = Carrera.select(:id).where("LOWER(plan) = ?", row_hash[:plan].strip.downcase).first
 
 				if !carrera_obj.nil?
 					estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first

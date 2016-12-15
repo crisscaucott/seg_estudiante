@@ -209,67 +209,74 @@ class LogCargaMasiva < ActiveRecord::Base
 		    	notas_alumno_hash = Hash[[header_notas, spreadsheet.row(ss_row)[5...(5 + notas_fields_count)]].transpose]
 		    	row_hash = Hash[[estudiante_header, spreadsheet.row(ss_row)].transpose]
 
-		    	carrera_obj = Carrera.select(:id).where(plan: row_hash[:plan].strip.downcase).first
-		    	estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
+		    	carrera_obj = Carrera.select(:id).where("LOWER(plan) = ?", row_hash[:plan].strip.downcase).first
 
-		    	if !estudiante_obj.nil?
-		    		detalle[:est_found] += 1
-		    		# Estudiante encontrado en la BD
+		    	if !carrera_obj.nil?
+		    		estudiante_obj = Estudiante.select(:id).where(rut: row_hash[:dni].to_s.strip).where(carrera_id: carrera_obj.id).first
 
-		    		# Hacer calzar SOLO las notas parciales, entre la fila de cada estudiante con el hash de las ponderaciones de las notas (ponderaciones_hash)
-		    		ponderaciones_hash.each do |tipo_nota, ponderacion|
-		    			nota = notas_alumno_hash[tipo_nota]
+			    	if !estudiante_obj.nil?
+			    		detalle[:est_found] += 1
+			    		# Estudiante encontrado en la BD
 
-		    			# Si la nota esta seteada en el excel,
-		    			# solo deberian calzar las notas 'n' y las 'oa'
-		    			if !nota.nil?
-		    				# Primero consultar si la nota del alumno ya existe en la BD,
-		    				# si existe, se actualiza la nota al alumno, sino se ingresa.
-		    				calificacion_obj = Calificacion.where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
+			    		# Hacer calzar SOLO las notas parciales, entre la fila de cada estudiante con el hash de las ponderaciones de las notas (ponderaciones_hash)
+			    		ponderaciones_hash.each do |tipo_nota, ponderacion|
+			    			nota = notas_alumno_hash[tipo_nota]
 
-		    				if calificacion_obj.nil?
-		    					puts "NOTA NUEVA"
-		    					# Se ingresa como una nueva calificacion
-			    				calificacion_obj = Calificacion.new({
-			    					estudiante_id: estudiante_obj.id,
-			    					asignatura_id: asignatura_obj.id,
-			    					valor_calificacion: nota,
-			    					nombre_calificacion: tipo_nota,
-			    					ponderacion: ponderacion,
-			    					periodo_academico: periodo_academico
-			    				})
+			    			# Si la nota esta seteada en el excel,
+			    			# solo deberian calzar las notas 'n' y las 'oa'
+			    			if !nota.nil?
+			    				# Primero consultar si la nota del alumno ya existe en la BD,
+			    				# si existe, se actualiza la nota al alumno, sino se ingresa.
+			    				calificacion_obj = Calificacion.where(estudiante_id: estudiante_obj.id).where(asignatura_id: asignatura_obj.id).where(nombre_calificacion: tipo_nota).where(periodo_academico: periodo_academico).first
 
-			    				if calificacion_obj.save
-			    					# Se ingreso la calificacion con exito
-			    					puts "ingreso exitoso id: #{calificacion_obj.id}"
-			    					detalle[:new_notas] += 1
+			    				if calificacion_obj.nil?
+			    					puts "NOTA NUEVA"
+			    					# Se ingresa como una nueva calificacion
+				    				calificacion_obj = Calificacion.new({
+				    					estudiante_id: estudiante_obj.id,
+				    					asignatura_id: asignatura_obj.id,
+				    					valor_calificacion: nota,
+				    					nombre_calificacion: tipo_nota,
+				    					ponderacion: ponderacion,
+				    					periodo_academico: periodo_academico
+				    				})
+
+				    				if calificacion_obj.save
+				    					# Se ingreso la calificacion con exito
+				    					puts "ingreso exitoso id: #{calificacion_obj.id}"
+				    					detalle[:new_notas] += 1
+				    				else
+				    					# Fallo el ingreso
+				    					puts "ingreso NO exitoso"
+				    					detalle[:failed_notas] += 1
+				    					
+				    				end
+
 			    				else
-			    					# Fallo el ingreso
-			    					puts "ingreso NO exitoso"
-			    					detalle[:failed_notas] += 1
-			    					
-			    				end
+			    					puts "SE ACTUALIZA NOTA id: #{calificacion_obj.id}"
 
-		    				else
-		    					puts "SE ACTUALIZA NOTA id: #{calificacion_obj.id}"
+			    					# Se actualiza el valor de la calificacion
+			    					calificacion_obj.valor_calificacion = nota
+			    					if calificacion_obj.save
+			    						detalle[:upd_notas] += 1
+			    					else
+				    					detalle[:failed_notas] += 1
+			    						
+			    					end
+			    				end # END calificacion_obj.nil?
+			    			end # END !nota.nil?
+			    		end # END ponderaciones_hash.each
 
-		    					# Se actualiza el valor de la calificacion
-		    					calificacion_obj.valor_calificacion = nota
-		    					if calificacion_obj.save
-		    						detalle[:upd_notas] += 1
-		    					else
-			    					detalle[:failed_notas] += 1
-		    						
-		    					end
-		    				end # END calificacion_obj.nil?
-		    			end # END !nota.nil?
-		    		end # END ponderaciones_hash.each
+			    	else
+			    		# Estudiante no encontrado en la BD
+			    		detalle[:est_not_found] += 1
 
+			    	end
 		    	else
-		    		# Estudiante no encontrado en la BD
 		    		detalle[:est_not_found] += 1
-
 		    	end
+
+
 		    end # END notas_row_found
 
 		    # Armar el array de la cabecera de las notas, una vez que se haya encontrado.

@@ -13,19 +13,19 @@ class User < ActiveRecord::Base
   validates_presence_of :rut
   validates_uniqueness_of :rut
   validates_with RUTValidator # Valida el rut a traves de la clase RUTValidator
-  validate :checkIdCarreraForDirector
+  validate :checkIdEscuelaForDirector
   attr_accessor :login
 
   # Se verifica que se tenga asignado la carrera solo cuando el tipo de usuario es director. Tambien se verifica que el id de la carrera exista en la BD.
-  def checkIdCarreraForDirector
+  def checkIdEscuelaForDirector
     if !self[:id_permission].nil? && self.user_permission.name == "Director"
-      if !self[:carrera_id].nil?
-        if !Carrera.exists?(id: self[:carrera_id])
-          self.errors[:carrera_id] = "La carrera seleccionada no se encuentra en el sistema."
+      if !self[:escuela_id].nil?
+        if !Escuela.exists?(id: self[:escuela_id])
+          self.errors[:carrera_id] = "La escuela seleccionada no se encuentra en el sistema."
         end
       else
         # El director creado no tiene una carrera asignada.
-        self.errors[:carrera_id] = "Debe seleccionar una carrera para el usuario director."
+        self.errors[:escuela_id] = "Debe seleccionar una escuela para el usuario director."
       end
     end
   end

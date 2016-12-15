@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161213233902) do
+ActiveRecord::Schema.define(version: 20161215004826) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,11 +76,10 @@ ActiveRecord::Schema.define(version: 20161213233902) do
   end
 
   create_table "escuela", force: :cascade do |t|
-    t.string   "nombre",      null: false
+    t.string   "nombre",     null: false
     t.string   "codigo"
-    t.integer  "director_id", null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "estado_desercion", force: :cascade do |t|
@@ -183,6 +182,7 @@ ActiveRecord::Schema.define(version: 20161213233902) do
     t.string   "rut",                                 null: false
     t.datetime "deleted_at"
     t.integer  "frec_alerta_id"
+    t.integer  "escuela_id"
   end
 
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
@@ -194,7 +194,6 @@ ActiveRecord::Schema.define(version: 20161213233902) do
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "carrera", "escuela"
-  add_foreign_key "escuela", "users", column: "director_id"
   add_foreign_key "estilos_aprendizaje", "estudiante"
   add_foreign_key "estudiante", "carrera"
   add_foreign_key "estudiante", "estado_desercion"
@@ -203,6 +202,7 @@ ActiveRecord::Schema.define(version: 20161213233902) do
   add_foreign_key "ficha_estudiante", "users", column: "tutor_id"
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
+  add_foreign_key "users", "escuela"
   add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"
 end

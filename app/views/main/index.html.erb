@@ -12,14 +12,12 @@
         </div>
       </div>
 
-      <% if !isUserType("Director") %>
-        <div class="form-group">
-          <%= f.label(:carrera, class: 'col-sm-4 control-label') %>
-          <div class="col-sm-8">
-            <%= f.collection_select(:carrera, filters[:carreras], :id, :nombre, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
-          </div>
+      <div class="form-group">
+        <%= f.label(:carrera, class: 'col-sm-4 control-label') %>
+        <div class="col-sm-8">
+          <%= f.collection_select(:carrera, filters[:carreras], :id, :nombre, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
-      <% end -%>
+      </div>
 
       <div class="form-group">
         <%= f.label(:estado_desercion, class: 'col-sm-4 control-label') %>

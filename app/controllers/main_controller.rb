@@ -3,10 +3,10 @@ class MainController < ApplicationController
 
 	def index
 		estudiantes = Estudiante.getEstudiantesByUserType(current_user)
-		estados = EstadoDesercion.getEstados
+
 		filters = {
-			carreras: Carrera.getCarreras,
-			estados_desercion: estados,
+			carreras: Carrera.getCarreras(escuela_id: current_user.escuela_id),
+			estados_desercion: EstadoDesercion.getEstados,
 			anios_ingreso: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
 
@@ -22,7 +22,7 @@ class MainController < ApplicationController
 			partial = 'estudiantes_table_editable'
 		end
 
-		render action: :index, locals: {estudiantes: estudiantes, estados: estados, filters: filters, partial: partial}
+		render action: :index, locals: {estudiantes: estudiantes, estados: filters[:estados_desercion], filters: filters, partial: partial}
 	end
 
 	def update_estados_estudiantes

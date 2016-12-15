@@ -25,11 +25,17 @@ class Estudiante < ActiveRecord::Base
 				# Todos los estudiantes
 				estudiantes = getEstudiantes()
 			when "Director"
-				# Todos los estudiantes segun la carrera que tiene asignado el director.
-				if !user.carrera_id.nil?
-					estudiantes = getEstudiantes({carrera: user.carrera_id})
+				# Todos los estudiantes segun la escuela que tiene asignado el director.
+				if !user.escuela_id.nil?
+					estudiantes = self.find_by_sql("SELECT e.*
+					FROM estudiante AS e
+					INNER JOIN carrera AS c ON e.carrera_id = c.id
+					INNER JOIN escuela AS es ON c.escuela_id = es.id
+					INNER JOIN users AS u ON u.escuela_id = es.id
+					WHERE u.id = #{user.id}
+					ORDER BY e.nombre ASC")
 				else
-					# Cuando es el usuario es director pero no tiene asignado su carrera,
+					# Cuando el usuario es director pero no tiene asignado su escuela,
 					# se debe mostrar error.
 					estudiantes = false
 				end

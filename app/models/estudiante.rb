@@ -4,6 +4,8 @@ class Estudiante < ActiveRecord::Base
 	has_many :calificacions, class_name: "Calificacion", foreign_key: "estudiante_id"
   has_and_belongs_to_many :users, class_name: "User", foreign_key: "estudiante_id", join_table: "tutor_estudiante", association_foreign_key: 'usuario_id'
 
+  has_one :info_estudiante, class_name: "InfoEstudiante", foreign_key: :estudiante_id
+
 	validates_presence_of :nombre, :apellido, :rut, :dv, :fecha_ingreso, :carrera_id, :estado_desercion_id
 	validate :validarRut
 	self.table_name = 'estudiante'

@@ -62,6 +62,20 @@ class Estudiante < ActiveRecord::Base
 				# Todos los estudiantes que tiene asociado su tutor.
 				estudiantes = user.estudiantes(filters)
 
+				if filters[:anio_ingreso].present?
+					since_date = "#{filters[:anio_ingreso]}-01-01"
+					until_date = "#{filters[:anio_ingreso].to_i + 1}-01-01"
+					estudiantes = estudiantes.where("(fecha_ingreso >= ? AND fecha_ingreso < ?)", since_date, until_date)
+				end
+
+				if filters[:carrera].present?
+					estudiantes = estudiantes.where(carrera_id: filters[:carrera])	
+				end
+
+				if filters[:estado_desercion].present?
+					estudiantes = estudiantes.where(estado_desercion_id: filters[:estado_desercion])
+				end
+
 			else
 				# Todos los estudiantes (Usuario Normal)
 				estudiantes = getEstudiantes(filters)

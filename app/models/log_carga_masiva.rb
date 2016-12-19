@@ -1,7 +1,7 @@
 class LogCargaMasiva < ActiveRecord::Base
 	self.table_name = 'log_carga_masiva'
 
-	def uploadAssistance()
+	def uploadAssistance(carrera_id)
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
 		req_data = {asignatura: nil, ids_carreras: nil}
 		header_assis = nil
@@ -39,7 +39,7 @@ class LogCargaMasiva < ActiveRecord::Base
 				# Guardar los ids de las carreras que pertenece la asignatura encontrada,
 				# esto es util para encontrar a que carrera pertenece cada alumno leido.
 				# Para que todo funcione, debe existir la relacion entre carrera y asignatura, osea debe estar la fila en la tabla 'asignatura-carrera'.
-				req_data[:ids_carreras] = req_data[:asignatura].carrera_ids
+				# req_data[:ids_carreras] = req_data[:asignatura].carrera_ids
 
 			end # END if curso
 
@@ -52,7 +52,8 @@ class LogCargaMasiva < ActiveRecord::Base
 				assis_hash = Hash[[header_assis, spreadsheet.row(ss_row)].transpose]
 
 				# Se agrega la condicion si el estudiante tiene uno de los ids de carreras asociado a la asignatura, en caso de que el estudiante este varias veces en la BD pero en distintas carreras.
-				estudiante_obj = Estudiante.select(:id).where(rut: assis_hash[:"nombre de usuario"].to_i.to_s).where(fecha_eliminacion: nil).where(carrera_id: req_data[:ids_carreras])
+				# estudiante_obj = Estudiante.select(:id).where(rut: assis_hash[:"nombre de usuario"].to_i.to_s).where(fecha_eliminacion: nil).where(carrera_id: req_data[:ids_carreras])
+				estudiante_obj = Estudiante.select(:id).where(rut: assis_hash[:"nombre de usuario"].to_i.to_s).where(fecha_eliminacion: nil).where(carrera_id: carrera_id)
 
 				if estudiante_obj.size > 1
 					# Hay mas de 1 estudiante activo cursando algunas de las carreras asociadas a la asignatura, no se sube su asitencia (mal).

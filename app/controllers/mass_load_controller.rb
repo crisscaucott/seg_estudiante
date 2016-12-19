@@ -73,7 +73,8 @@ class MassLoadController < ApplicationController
 
 	def asistencia
 		report = Reporte.new
-		render action: :index, locals: {partial: 'asistencia', report: report, context: 'asistencia'}
+		carreras = Carrera.getCarreras
+		render action: :index, locals: {partial: 'asistencia', report: report, context: 'asistencia', carreras: carreras}
 	end
 
 	def get_asistencia
@@ -114,25 +115,36 @@ class MassLoadController < ApplicationController
 	end
 
 	def uploadAssistance
-		uploaded_file = uploadFile(params[:reporte][:file])
+		if params[:asistencia][:carrera].present?
+			carrera_obj = Carrera.select(:id).find_by(id: params[:asistencia][:carrera])
 
-		if !uploaded_file[:file_path].nil?
-			# Subir excel con asistencia.
-			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
-			
-			res = mass_load_obj.uploadAssistance()
+			if !carrera_obj.nil?
+				uploaded_file = uploadFile(params[:asistencia][:file])
 
-			if !res[:error]
-				render json: {msg: render_to_string(partial: 'detalle_subida_asistencia', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
+				if !uploaded_file[:file_path].nil?
+					# Subir excel con asistencia.
+					mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+					
+					res = mass_load_obj.uploadAssistance(carrera_obj.id)
+
+					if !res[:error]
+						render json: {msg: render_to_string(partial: 'detalle_subida_asistencia', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
+					else
+						render json: {msg: res[:msg]}, status: :unprocessable_entity
+					end
+
+				else
+					# Problema con guardar el fichero
+					render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+				end
 			else
-				render json: {msg: res[:msg]}, status: :unprocessable_entity
+				render json: {msg: "Ha ocurrido un problema en encontrar la carrera seleccionada."}, status: :unprocessable_entity
 			end
 
 		else
-			# Problema con guardar el fichero
-			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+			render json: {msg: "Debe seleccionar una carrera para poder subir la asistencia."}, status: :unprocessable_entity
+			
 		end
-
 	end
 
 	def alumnos

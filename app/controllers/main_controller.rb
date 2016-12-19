@@ -45,7 +45,7 @@ class MainController < ApplicationController
 			end
 		end
 
-		estudiantes = Estudiante.getEstudiantes
+		estudiantes = Estudiante.getEstudiantesByUserType(current_user)
 		estados = EstadoDesercion.getEstados
 
 		render json: {msg: "Se han actualizado exitosamente <b>#{estudiantes_updated}</b> estudiante de los <b>#{total}</b> seleccionados.", type: "success", table: render_to_string(partial: 'estudiantes_table_editable', formats: [:html], layout: false, locals: {estudiantes: estudiantes, estados: estados})}

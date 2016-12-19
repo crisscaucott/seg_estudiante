@@ -37,7 +37,7 @@ $('div.funkyradio-primary > label').on('click', function(event){
   data.push({name: inputs.attr('name'), value: inputs.attr('value')})
 
   $.ajax({
-    url: '/admini/tutores/get_estudiantes',
+    url: '/carga_masiva/tutores/get_estudiantes',
     data: data,
     method: form[0].method,
     beforeSend: function()

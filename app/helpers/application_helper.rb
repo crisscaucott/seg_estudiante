@@ -48,7 +48,7 @@ module ApplicationHelper
 		puts "#{str}".colorize(:color => :white, :background => :green)
 	end
 
-	def isTutorOrDecanoHelper()
+	def isDirectorOrDecanoHelper()
 		if !(current_user.user_permission.name == "Decano" || current_user.user_permission.name == "Director")
 			return false
 		else

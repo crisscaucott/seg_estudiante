@@ -24,15 +24,8 @@ Rails.application.routes.draw do
   get '/admini/alertas/config', to: 'super_user#config_alertas', as: 'config_alertas'
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
-  get '/admini/tutores/asociar', to: 'super_user#asociar_tutores_est_index', as: 'asociar_tutores_est_index'
-  get '/admini/tutores/ver', to: 'super_user#ver_asociaciones', as: 'ver_asociaciones'
-  post '/admini/tutores/get_estudiantes', to: 'super_user#get_estudiantes_by_tutor', as: 'get_estudiantes_by_tutor'
-  post '/admini/tutores/set_asociations', to: 'super_user#set_associations_tutores', as: 'set_asociations_tutores'
-  post '/admini/tutores/set_desasociations', to: 'super_user#set_desasociations_tutores', as: 'set_desasociations_tutores'
-
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
-  
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'
   get '/carga_masiva/notas/ver', to: 'mass_load#get_notas', as: 'mass_load_get_notas'
   post '/carga_masiva/notas/ver/get_asignaturas', to: 'mass_load#getAsignaturasByCarrera'
@@ -51,6 +44,12 @@ Rails.application.routes.draw do
   
   post '/carga_masiva/notas/upload_xls', to: 'mass_load#uploadXls', as: 'upload_xls'
   post '/carga_masiva/notas/upload_assis', to: 'mass_load#uploadAssistance', as: 'upload_assis'
+
+  get '/carga_masiva/tutores/asociar', to: 'mass_load#asociar_tutores_est_index', as: 'asociar_tutores_est_index'
+  get '/carga_masiva/tutores/ver', to: 'mass_load#ver_asociaciones', as: 'ver_asociaciones'
+  post '/carga_masiva/tutores/get_estudiantes', to: 'mass_load#get_estudiantes_by_tutor', as: 'get_estudiantes_by_tutor'
+  post '/carga_masiva/tutores/set_asociations', to: 'mass_load#set_associations_tutores', as: 'set_asociations_tutores'
+  post '/carga_masiva/tutores/set_desasociations', to: 'mass_load#set_desasociations_tutores', as: 'set_desasociations_tutores'
 
 
   post '/estudiante/actualizar_estados', to: 'main#update_estados_estudiantes', as: 'update_estados_estudiantes'

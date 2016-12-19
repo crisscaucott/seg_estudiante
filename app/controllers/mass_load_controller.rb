@@ -20,7 +20,7 @@ class MassLoadController < ApplicationController
 	def get_notas
 		calificaciones = Calificacion.getCalificaciones
 		filtro_notas = {
-			carreras: Carrera.getCarreras,
+			carreras: Carrera.getCarreras(escuela_id: current_user.escuela_id),
 		}
 		render action: :index, locals: {partial: 'ver_notas', calificaciones: calificaciones, filtros: filtro_notas, context: 'notas'}
 	end
@@ -83,8 +83,7 @@ class MassLoadController < ApplicationController
 	def get_asistencia
 		asistencias = Asistencia.getAsistencias()
 		filtro_asistencia = {
-			carreras: Carrera.getCarreras,
-			asignaturas: Asignatura.getAsignaturas,
+			carreras: Carrera.getCarreras(escuela_id: current_user.escuela_id),
 			periodos: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
 		

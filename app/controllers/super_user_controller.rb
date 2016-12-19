@@ -251,126 +251,6 @@ class SuperUserController < ApplicationController
 
 	# --- FIN METODOS ALERTAS ---
 
-
-	# --- METODOS TUTORES ---
-
-	def asociar_tutores_est_index
-		estudiantes = Estudiante.getEstudiantes
-		tutores = User.getTutoresUsers
-		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new, estudiantes: estudiantes}
-	end
-
-	def set_associations_tutores
-		associations_params = tutores_est_params
-
-		if !associations_params[:id].nil? && !associations_params[:estudiantes].nil?
-			tutor_obj = User.find_by(id: associations_params[:id])
-
-			if !tutor_obj.nil?
-				# Hash con el detalle de las asociaciones,
-				# se guarda las asociaciones nuevas con exito, los estudiantes que ya estaban asociados
-				# y el total de estudiantes ingresados en el formulario
-				detail = {new: 0, not: 0, total: 0}
-				# Obtener un array con los ids de todos los estudiantes asociados al tutor,
-				# sirve para evitar asociar un estudiante ya asociado al tutor.
-				ids_estudiantes = tutor_obj.estudiante_ids
-				detail[:total] = associations_params[:estudiantes][:id].size
-
-				# Recorrer los ids de los estudiantes a asignar al tutor.
-				associations_params[:estudiantes][:id].each do |est_id|
-					if !ids_estudiantes.include?(est_id.to_i)
-						# Si no esta el estudiante en el array, quiere decir que ese estudiante no esta asociado al tutor.
-
-						# Verificar si el id del estudiante esta en la BD (SOLO POR SEGURIDAD).
-						est_obj = Estudiante.select(:id).find_by(id: est_id)
-						if !est_obj.nil?
-							# Asociar el estudiante al tutor (LA MAGIA).
-							tutor_obj.estudiantes << est_obj
-							detail[:new] += 1
-						end
-					else
-						detail[:not] += 1
-						# puts "El tutor id: #{tutor_obj.id} ya tiene asignado al estudiante id: #{est_id}".green
-					end
-				end
-
-				render json: {msg: render_to_string(partial: 'detalle_asociacion_tutor', formats: [:html], layout: false, locals: {detail: detail, tutor: tutor_obj}), type: :success}
-			else
-				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request
-			end
-		else
-			render json: {msg: "Debes seleccionar un tutor y estudiantes para poder realizar la asignación.", type: :danger}, status: :bad_request
-		end
-	end
-
-	def set_desasociations_tutores
-		desasociations_params = tutores_est_params
-
-		if !desasociations_params[:id].nil? && !desasociations_params[:estudiantes].nil?
-			tutor_obj = User.find_by(id: desasociations_params[:id])
-
-			if !tutor_obj.nil?
-				# Hash con el detalle de las desasociaciones,
-				# se guarda las desasociaciones nuevas con exito.
-				detail = {disassociated: 0, total: desasociations_params[:estudiantes][:id].size, associated: 0}
-
-				# Se recorre todos los estudiantes asignados del tutor...
-				tutor_obj.estudiantes.each do |est_obj|
-					# Si el id de alguno de ellos esta en el array de ids que se quiere desasociar...
-					if desasociations_params[:estudiantes][:id].include?(est_obj.id.to_s)
-						# Se borra la asociacion (borra tupla en la tabla intermedia).
-						tutor_obj.estudiantes.delete(est_obj)
-						detail[:disassociated] += 1
-					end
-				end
-
-				# Contar cuantos estudiantes asociados le quedan al tutor despues de la desasociacion.
-				detail[:associated] = tutor_obj.estudiantes.size
-
-				render json: {
-					msg: render_to_string(partial: 'detalle_desasociacion_tutor', formats: [:html], layout: false, locals: {detail: detail, tutor: tutor_obj}),
-					estudiantes_list: detail[:associated] != 0 ? render_to_string(partial: 'lista_estudiantes_by_tutor', formats: [:html], layout: false, locals: {estudiantes: tutor_obj.estudiantes}) : nil,
-					type: :success
-				}
-
-			else
-				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request
-
-			end			
-		else
-			render json: {msg: "Debes seleccionar un tutor y estudiantes para poder realizar la desasociación.", type: :danger}, status: :bad_request
-		end
-	end
-
-	def ver_asociaciones
-		tutores = User.getTutoresUsers
-		render action: :index, locals: {partial: 'ver_asociaciones', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new}
-	end
-
-	def get_estudiantes_by_tutor
-		tutor_params = get_estudiantes_params
-
-		if !tutor_params[:id].nil?
-			tutor_obj = User.find_by(id: tutor_params[:id])
-
-			if !tutor_obj.nil?
-				if !tutor_obj.estudiantes.empty?
-
-					render json: {msg: "Estudiantes obtenidos exitosamente.",estudiantes_list: render_to_string(partial: 'lista_estudiantes_by_tutor', formats: [:html], layout: false, locals: {estudiantes: tutor_obj.estudiantes}), type: :success}
-				else
-					render json: {msg: "El tutor seleccionado <b>no tiene estudiantes asignados.</b>".html_safe, type: :warning}, status: :bad_request				
-				end
-			else
-				render json: {msg: "Hubo un problema en encontrar al tutor seleccionado en el sistema.", type: :danger}, status: :bad_request				
-			end
-
-		else
-			render json: {msg: "Debe seleccionar un tutor para poder obtener sus estudiantes asociados.", type: :danger}, status: :bad_request
-		end
-	end
-
-	# --- FIN METODOS TUTORES ---
-
 	private
 		def isDecano
 			if current_user.user_permission.name != "Decano"
@@ -391,11 +271,7 @@ class SuperUserController < ApplicationController
 
 		def get_estudiantes_params
 			params.require(:users).permit(:id)
-		end
-
-		def tutores_est_params
-			params.require(:users).permit(:id, estudiantes: [id: []])
-		end
+		end	
 
 		def frec_alerta_params
 			params.require(:alerta_config).permit(:frec_alerta_id, :fecha_comienzo)

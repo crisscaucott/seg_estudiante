@@ -192,7 +192,7 @@ class MassLoadController < ApplicationController
 	# --- METODOS TUTORES ---
 
 	def asociar_tutores_est_index
-		estudiantes = Estudiante.getEstudiantes
+		estudiantes = Estudiante.getEstudiantesByUserType(current_user)
 		tutores = User.getTutoresUsers
 		render action: :index, locals: {partial: 'asociar_tutor_estudiante', context: CONTEXTS[:tutores], tutores: tutores, tutor_usr: User.new, estudiantes: estudiantes}
 	end

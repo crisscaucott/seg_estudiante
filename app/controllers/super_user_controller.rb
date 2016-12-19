@@ -267,10 +267,6 @@ class SuperUserController < ApplicationController
 			rescue StandardError => e
 				raise e
 			end
-		end
-
-		def get_estudiantes_params
-			params.require(:users).permit(:id)
 		end	
 
 		def frec_alerta_params

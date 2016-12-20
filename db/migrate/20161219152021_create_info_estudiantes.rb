@@ -11,6 +11,7 @@ class CreateInfoEstudiantes < ActiveRecord::Migration
     	t.date :fecha_nacimiento
     	t.string :direccion
     	t.string :comuna
+        t.string :telefono_fijo
     	t.string :telefono_movil
     	t.string :correo_google_ucen
     	t.string :codigo_colegio
@@ -20,7 +21,7 @@ class CreateInfoEstudiantes < ActiveRecord::Migration
     	t.string :comuna_colegio
     	t.string :region_colegio
     	t.date :anio_egreso
-    	t.string :tipo_egreso
+    	t.string :tipo_ingreso
     	t.date :anio_psu_ingreso
     	t.decimal :nota_nem_ingreso, precision: 4, scale: 2
     	t.integer :psu_lenguaje

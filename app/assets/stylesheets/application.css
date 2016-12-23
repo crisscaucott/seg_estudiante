@@ -37,6 +37,12 @@ div#content-container{
 .sub-active{
 	background-color: #d9edf7;
 }
+th.table-title{
+  background-color: black !important; 
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
 tr.asistencia-total{
   background-color: black !important; 
   color: white;

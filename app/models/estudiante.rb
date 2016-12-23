@@ -106,6 +106,10 @@ class Estudiante < ActiveRecord::Base
 		return estudiantes
 	end
 
+	def getSexo
+		return self.info_estudiante.sexo =~ /m/i ? "Masculino" : "Femenino"
+	end
+
 	def validarRut
 		rut = self.rut + self.dv.to_s
 		self.errors[:rut] << "Rut inválido." if !RUT::validar(rut)

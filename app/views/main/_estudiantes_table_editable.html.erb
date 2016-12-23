@@ -19,7 +19,7 @@
 		<tbody>
 			<% estudiantes.each_with_index do |e, index| %>
 				<%= fields_for 'estudiantes[]', e do |f2| %>
-					<tr>
+					<tr data-est-id="<%= e.id %>">
 						<%= f2.hidden_field(:id, value: e.id) %>
 						<%= f2.hidden_field(:row_edited, value: 0, class: 'row_edited', id: nil) %>
 						<td><%= index + 1 %></td>
@@ -42,7 +42,7 @@
 						</td>
 						<td class="text-center">
 							<%= button_tag('Editar', type: 'button', class: 'btn btn-primary edit_btn') %>
-							<%= button_tag('Ver', type: 'button', class: 'btn btn-success') %>
+							<%= button_tag('Ver', type: 'button', class: 'btn btn-success ver-btn') %>
 						</td>
 					</tr>
 				<% end %>

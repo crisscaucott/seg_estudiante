@@ -49,3 +49,9 @@ tr.asistencia-total{
   text-decoration: underline;
   font-weight: bold;
 }
+table.no-margin{
+  margin-bottom: 0px;
+}
+th.header-middle{
+  vertical-align: middle !important;
+}

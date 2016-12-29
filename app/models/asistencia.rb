@@ -5,6 +5,10 @@ class Asistencia < ActiveRecord::Base
 	def self.getAsistencias(filters = {})
 		query = self.includes(:asignatura, :estudiante).select([:estudiante_id, :asignatura_id]).group(:estudiante_id, :asignatura_id)
 
+		if !filters[:estudiante_id].nil?
+			query = query.where(estudiante_id: filters[:estudiante_id])
+		end
+
 		# if !filters[:carrera].nil?
 		# 	query = query.where('carrera.id = ?', filters[:carrera]).references(:carrera)
 		# end

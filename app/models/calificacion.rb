@@ -16,4 +16,30 @@ class Calificacion < ActiveRecord::Base
 		end
 		return query
 	end
+
+	def self.getCalificacionesSemestreActual(id_usr)
+		data = self.where(estudiante_id: id_usr).where("now() >= periodo_academico AND now() - INTERVAL '6 months' <= periodo_academico").order(asignatura_id: :asc)
+		
+		if data.present?
+			notas_data = []
+			asignaturas = data.select([:asignatura_id]).order(asignatura_id: :asc).uniq{|c| c.asignatura_id}
+
+			asignaturas.each do |a|
+				hash_data = {
+					nombre_asignatura: a.asignatura.nombre,
+					notas: data.select{|d| d.asignatura_id == a.asignatura_id}
+				}
+				notas_data << hash_data
+			end
+
+			response = {
+				notas: notas_data,
+				max_count_notas: self.where(estudiante_id: id_usr).where("now() >= periodo_academico AND now() - INTERVAL '6 months' <= periodo_academico").select(:nombre_calificacion).distinct(:nombre_calificacion).order(nombre_calificacion: :asc)
+			}
+		else
+			response = nil
+		end
+
+		return response
+	end
 end

@@ -48,4 +48,8 @@ class FichaEstudiante < ActiveRecord::Base
 
 	end
 
+	def self.getFichaByEstudiante(estudiante_id)
+		return self.includes(:tutor, :estado_desercion, :motivo_desercion, :destino).where(estudiante_id: estudiante_id)
+	end
+
 end

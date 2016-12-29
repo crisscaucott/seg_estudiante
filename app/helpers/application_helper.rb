@@ -1,4 +1,5 @@
 module ApplicationHelper
+  require 'rut_chileno'
 	def header(text)
 	  content_for(:header) { text.to_s }
 	end
@@ -62,5 +63,9 @@ module ApplicationHelper
 		else
 			return false
 		end
+	end
+
+	def getFormattedRut(rut)
+		return RUT::formatear(rut)
 	end
 end

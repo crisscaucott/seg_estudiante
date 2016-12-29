@@ -54,6 +54,7 @@ Rails.application.routes.draw do
 
   post '/estudiante/actualizar_estados', to: 'main#update_estados_estudiantes', as: 'update_estados_estudiantes'
   post '/estudiante/filtrar', to: 'main#get_estudiantes_filtering', as: 'get_filter_estudiantes'
+  post '/estudiante/ver_detalle', to: 'main#getDetalleEstudiante'
 
   get '/reportes', to: 'main#reportes', as: 'reportes'
   get '/caracteristicas', to: 'caracteristicas#index', as: 'caracteristicas'

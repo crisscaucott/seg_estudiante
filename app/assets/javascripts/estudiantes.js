@@ -35,6 +35,51 @@ function initVariables() {
 	initDataTable(data_table, datatable_options);
 }
 
+$('div#estudiantes_container').on('click', 'button.ver-btn', function (event){
+	event.preventDefault();
+	var btn = $(event.target);
+	var data = {id: $(event.target).parents('tr').data('est-id')}
+  var noti_params = {msg: null, type: 'info'};
+
+	$.ajax({
+    url: "/estudiante/ver_detalle",
+    data: data,
+    method: "post",
+    beforeSend: function()
+    {
+      showNotification({msg: "Obteniendo información del estudiante...", type: 'info', closeAll: true});
+      btn.toggleClass('disabled');
+    }
+  }).done(function(data, textStatus, jqXHR) {
+      noti_params.msg = data.msg;
+      noti_params.type = data.type;
+
+      bootbox.alert({
+        size: 'large',
+        title: "Información del estudiante",
+        message: data.table
+      });
+
+      enableButtonClickListener();
+
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+
+      noti_params.msg = errorThrown;
+      noti_params.type = 'danger';
+
+      if (jqXHR.responseJSON !== undefined)
+      {
+        noti_params.msg = jqXHR.responseJSON.msg;
+        noti_params.type = jqXHR.responseJSON.type;
+      }
+
+  }).always(function(data, textStatus, errorThrown) {
+      btn.toggleClass('disabled');
+      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+  }); 
+
+});
+
 $('div#estudiantes_container').on('click', 'button.edit_btn', function(event){
 	var tr = $(this).parents('tr');
 	var trs = $(this).parents('tbody').children();
@@ -174,3 +219,46 @@ $('form#estudiantes_filter').on('submit', function(event){
 
 });
 
+function enableButtonClickListener(){
+	$('div.bootbox').on('click', 'button.assis-btn', function(event){
+		var btn = $(this);
+		var td = $(this).parents('td');
+  	var data = {estudiante_id: td.data('est-id'), asignatura_id: td.data('asig-id')};
+  	var noti_params = {msg: null, type: 'info'};
+
+		console.log("ASFASFAS");
+		$.ajax({
+		  url: "/carga_masiva/asistencia/asistencia_detalle",
+		  data: data,
+		  method: "post",
+		  beforeSend: function()
+		  {
+		  	btn.prop('disabled', true);
+      	showNotification({msg: "Obteniendo asistencia...", type: 'info', closeAll: true, important: true});
+		  }
+		}).done(function(data, textStatus, jqXHR) {
+		    noti_params.msg = data.msg;
+		    noti_params.type = data.type;
+
+		    bootbox.alert({
+		      size: 'large',
+		      title: data.title,
+		      message: data.table
+		    });
+
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+		    noti_params.msg = errorThrown;
+		    noti_params.type = 'danger';
+
+		    if (jqXHR.responseJSON !== undefined)
+		    {
+		      noti_params.msg = jqXHR.responseJSON.msg;
+		      noti_params.type = jqXHR.responseJSON.type;
+		    }
+
+		}).always(function(data, textStatus, errorThrown) {
+		  	btn.prop('disabled', false);
+		    showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true, important: true})
+		}); 
+	});
+}

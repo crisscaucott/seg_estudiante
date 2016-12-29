@@ -370,14 +370,56 @@ class LogCargaMasiva < ActiveRecord::Base
 					estado_desercion_id: estado_desercion_obj.id # Todos los estudiantes se inicializan con estado de desercion "ninguno".
 				}
 
+				info_est_hash = {
+					anio_matricula: row_hash[:ano_matricula],
+					fecha_matricula: row_hash[:fecha_matricula],
+					sede: row_hash[:sede],
+					situacion: row_hash[:situacion],
+					sexo: row_hash[:sexo].downcase,
+					nacionalidad: row_hash[:nacionalidad_tabla_clientes],
+					fecha_nacimiento: row_hash[:fecha_nacimiento],
+					direccion: row_hash[:direccion],
+					comuna: row_hash[:comuna],
+					telefono_fijo: row_hash[:telefono_fijo],
+					telefono_movil: row_hash[:telefono_movil],
+					correo_google_ucen: row_hash[:correo_google_ucen],
+					codigo_colegio: row_hash[:codigo_colegio],
+					nombre_colegio: row_hash[:nombre_colegio],
+					tipo_colegio: row_hash[:tipo_colegio],
+					tipo_ensenanza: row_hash[:tipo_ensenanza],
+					comuna_colegio: row_hash[:comuna_colegio],
+					region_colegio: row_hash[:region_colegio],
+					anio_egreso: row_hash[:ano_egreso],
+					tipo_ingreso: row_hash[:tipo_ingreso],
+					anio_psu_ingreso: row_hash[:ano_psu_ingreso],
+					nota_nem_ingreso: row_hash[:nota_nem_ingreso],
+					psu_lenguaje: row_hash[:puntaje_leng_ingreso],
+					psu_matematica: row_hash[:puntaje_mat_ingreso],
+					psu_historia: row_hash[:puntaje_cs_soc_hist_ingreso],
+					psu_ciencias: row_hash[:puntaje_ciencias_ingreso],
+					puntaje_nem_ingreso: row_hash[:puntaje_nem_ingreso],
+					puntaje_pond_ingreso: row_hash[:puntaje_ponderado_ingreso],
+					tipo_programa: row_hash[:"tipo programa"],
+					facultad: row_hash[:facultad],
+					jornada: row_hash[:jornada],
+				}
+
+
 				# Se tiene que encontrar la carrera primero
 				if !carrera_obj.nil?
 					# Verificar si el estudiante ya esta en la bd.
 					estudiante_obj = Estudiante.where(rut: est_hash[:rut]).where(dv: est_hash[:dv]).where(carrera_id: est_hash[:carrera_id]).first
 
 					if !estudiante_obj.nil?
-						# Esta en la BD, se pasa a actualizar sus datos.
-						estudiante_obj.assign_attributes(est_hash)
+						# Esta en la BD, se pasa a actualizar los datos basicos del estudiante.
+						# Luego se actualiza los datos extra del estudiante.
+						if !estudiante_obj.info_estudiante.nil?
+							estudiante_obj.info_estudiante.update_attributes(info_est_hash)
+						else
+							info_estudiante_obj = InfoEstudiante.new(info_est_hash)
+							estudiante_obj.info_estudiante = info_estudiante_obj
+						end
+
 
 						if estudiante_obj.valid?
 							puts "Estudiante encontrado valido".green
@@ -393,6 +435,8 @@ class LogCargaMasiva < ActiveRecord::Base
 					else
 						# No esta en la BD, se agrega como nuevo.
 						estudiante_obj = Estudiante.new(est_hash)
+						info_estudiante_obj = InfoEstudiante.new(info_est_hash)
+						estudiante_obj.info_estudiante = info_estudiante_obj
 						
 						if estudiante_obj.valid?
 							# Cumple con todas las validaciones.

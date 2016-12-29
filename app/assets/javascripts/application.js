@@ -33,6 +33,7 @@ function showNotification(options)
 	type = options.type === null ? 'info' : options.type;
 	title = options.title === null ? null : options.title;
 	dismissable = options.dismiss === null ? true : options.dismiss;
+	z_index = options.important == null || options.important === false ? 1031 : 99999
 
 	// Cambiar el icono del mensaje en base a su tipo (info, danger, etc).
 	switch(type)
@@ -81,6 +82,7 @@ function showNotification(options)
 			y: 68,
 			x: 5
 		},
+		z_index: z_index,
 		spacing: 10,
 		delay: 0,
 		timer: 1000,

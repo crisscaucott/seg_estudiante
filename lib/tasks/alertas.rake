@@ -20,16 +20,18 @@ namespace :alertas do
 	task :enviar_alertas => :environment do
 		ActiveRecord::Base.logger = Logger.new(STDOUT)
 		hoydia = DateTime.now.to_date
-		alertas_pendientes = Alerta.where(estado: "Pendiente").where(tipo_alerta: "email").where("DATE(fecha_envio) = ?", hoydia)
+		alertas_pendientes = Alerta.includes(:user).where(estado: "Pendiente").where(tipo_alerta: "email").where("DATE(fecha_envio) = ?", hoydia)
 
 		if alertas_pendientes.present?
 			# Hay alertas pendientes que enviar para hoydia
 			alertas_pendientes.each do |ap|
-				if !ap.user.estudiantes.empty?
+				estudiantes = Estudiante.getEstudiantesByUserType(ap.user)
+
+				if (estudiantes != false || estudiantes.present?)
 					# Tiene estudiantes asignados al usuario (tutor).
 					estudiantes_notif = []
 					# Se revisa cual de todos los estudiantes tiene un estado de desercion que se tenga que notificar.
-					ap.user.estudiantes.each do |est|
+					estudiantes.each do |est|
 						estudiantes_notif << est if est.estado_desercion.notificar
 					end
 
@@ -41,7 +43,16 @@ namespace :alertas do
 							ap.save
 
 							puts "Email enviado con exito a usuario id: #{ap.user.id}"
-							
+
+							# Agregar los estudiantes enviados a la tabla 'estudiantes_alerta'
+							estudiantes_notif.each do |en|
+								estudiante_alerta = EstudiantesAlerta.new(
+									alerta_id: ap.id,
+									estudiante_id: en.id
+								)
+								ap.estudiantes << estudiante_alerta
+							end
+
 						rescue StandardError => e
 							# Si falla el envio del mail, se marca como fallido la alerta.
 							ap.estado = "Fallido"
@@ -53,7 +64,12 @@ namespace :alertas do
 						ap.estado = "No enviado"
 						ap.save
 					end # END estudiantes_notif.size
-				end # END ap.user.estudiantes.empty?
+				else
+					# El usuario (director o tutor) no tiene estudiantes designados.
+					# Se setea la alerta como no enviado ya que no hay estudiantes.
+					ap.estado = "No enviado"
+					ap.save
+				end
 			end # END alertas_pendientes.each
 		else
 			puts "No hay alertas pendientes que enviar."

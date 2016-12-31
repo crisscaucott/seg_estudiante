@@ -222,7 +222,7 @@ class SuperUserController < ApplicationController
 						# Fecha de envio validada.
 						# Setear la frencuencia de alertas de todos los usuarios, menos el usuario actual osea el decano.
 						User.setFrecAlertaId(current_user.id, frec_alerta_obj.id)
-						users = User.getUsers({except_user_id: current_user.id})
+						users = User.getTutoresAndDirectores()
 
 						# Generar las alertas para todos los usuarios.
 						Alerta.setAlertaToUsers(users, fecha_envio)

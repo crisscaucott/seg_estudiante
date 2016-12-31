@@ -59,8 +59,9 @@ class MainController < ApplicationController
 			asistencias = Asistencia.getAsistencias(estudiante_id: est_obj.id)
 			estilos = EstilosAprendizaje.getEstilosByEstudiante(est_obj.id)
 			fichas = FichaEstudiante.getFichaByEstudiante(est_obj.id)
+			alertas_count = EstudiantesAlerta.timesEstudiantesInAlerta(est_obj.id)
 
-			render json: {msg: "Información del estudiante obtenida exitosamente.", type: :success, table: render_to_string(partial: 'estudiantes_info', formats: [:html], layout: false, locals: {estudiante: est_obj, calificaciones: calificaciones, asistencias: asistencias, estilos: estilos, fichas: fichas})}
+			render json: {msg: "Información del estudiante obtenida exitosamente.", type: :success, table: render_to_string(partial: 'estudiantes_info', formats: [:html], layout: false, locals: {estudiante: est_obj, calificaciones: calificaciones, asistencias: asistencias, estilos: estilos, fichas: fichas, alertas: alertas_count})}
 
 		else
 			render json: {msg: "Hubo un error en encontrar el estudiante en el sistema.", type: :danger}, status: :bad_request

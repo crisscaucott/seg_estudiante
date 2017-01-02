@@ -1,5 +1,9 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "reporte", "data-turbolinks-track" => true  %>
+<% end %>
 <div class="container col-sm-12">
-  <form action="" class="form-horizontal">
+  <%= form_for(:reporte, url: generate_pdf_path, html: {id: 'reporte_form', class: 'form-horizontal'}) do |f| %>
+
     <div class="col-sm-6 col-sm-offset-3 form-box">
       <div class="form-top">
         <div class="form-top-left">
@@ -13,39 +17,27 @@
       <div class="form-group">
         <label class="col-sm-4 control-label">Año ingreso</label>
         <div class="col-sm-8">
-          <select name="" class="form-control">
-            <option value="">2009</option>
-            <option value="">2010</option>
-            <option value="">2011</option>
-          </select>
+          <%= f.select(:anio_ingreso, filters[:anios_ingreso], {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
       
       <div class="form-group">
         <label class="col-sm-4 control-label">Carrera</label>
         <div class="col-sm-8">
-          <select name="" class="form-control">
-            <option value="">Ing. en Computación</option>
-            <option value="">Ing. en Construcción</option>
-            <option value="">Arquitectura</option>
-          </select>
+          <%= f.collection_select(:carrera, filters[:carreras], :id, :nombre, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
 
       <div class="form-group">
         <label class="col-sm-4 control-label">Estado deserción</label>
         <div class="col-sm-8">
-          <select name="" class="form-control">
-            <option value="">Bueno</option>
-            <option value="">Malo</option>
-            <option value="">Critico</option>
-          </select>
+          <%= f.collection_select(:estado_desercion, filters[:estados_desercion], :id, :nombre_estado, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
         </div>
       </div>
 
       <div class="text-center">
-        <a href="#" class="btn btn-default">Generar</a>
+        <%= f.submit(:Generar, class: 'btn btn-default') %>
       </div>
     </div>
-  </form>
+  <% end -%>
 </div>

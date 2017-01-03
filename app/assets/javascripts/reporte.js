@@ -14,13 +14,14 @@ $('form#reporte_form').submit(function(event){
     {
       btn.val('Generando...');
       btn.toggleClass('disabled');
+      showNotification({msg: "Generando reporte...", type: 'info', closeAll: true})
     }
   }).done(function(data, textStatus, jqXHR) {
 
       noti_params.msg = data.msg;
       noti_params.type = data.type;
 
-      // window.location.href = data.pdf_url;
+      window.location.href = data.pdf_url;
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
 

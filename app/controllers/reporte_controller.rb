@@ -19,7 +19,7 @@ class ReporteController < ApplicationController
     file_path = Rails.root.join('public', 'pdfs', 'prueba.pdf')
     pdf.render_file(file_path)
 
-		render json: {msg: "bien", type: :success, pdf_url: '/reportes/download_pdf?file=prueba'}
+		render json: {msg: "Reporte generado exitosamente.", type: :success, pdf_url: '/reportes/download_pdf?file=prueba'}
 	end
 
 	def download_pdf

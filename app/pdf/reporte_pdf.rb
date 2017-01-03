@@ -3,22 +3,7 @@ class ReportePdf < Prawn::Document
   # require "open-uri"
   # require 'scruffy'
   # include ActionView::Helpers::NumberHelper
-  # Variables constantes
-  ANY_TYPE = 0
-  SALE = 1
-  RENT = 2
-  ANY_ROOMS = 0
-  ANY_MODE = 0
-  DONT_CARE = 0
-  UF = 2
-  CL_PESOS = 1
-  HOUSE = 1
-  APARTMENT = 2
-  OFFICE = 3
-  HOUSE_MIN_ROOMS = 2
-  MAX_ROOMS = 5
-  OFFER = 1
-  DEMAND = 2
+
   # DATOS DE ESTILO PARA LOS GRAFICOS, COMO COLOR
   GRAPH_STYLE = {background_colors: "transparent", :marker_color => 'black', colors: ['#86c386' ,'#b8e9a1' ,'#f4ffc3','#f5e3ad' ,'#f5cba3' ,'#f2af98' ,'#e88e88']}
   # DATOS DE POSICIONAMIENTO DE LOS GRAFICOS,
@@ -32,11 +17,23 @@ class ReportePdf < Prawn::Document
   PADDING = 15
   MONTHS_AGO = 12
 
-  def initialize()
+  def initialize(options)
     super()
 
     @num_title = 1
     @num_subtitle = 1
+    @carreras = options[:carrera].present? ? Carrera.select([:id, :nombre]).where(id: options[:carrera]) : Carrera.getCarreras()
+    @anios_ingreso = options[:anio_ingreso].present? ? [options[:anio_ingreso].to_i] : Date.today.year.downto(Date.today.year - ReporteController::ANIOS_ATRAS).to_a
+    @total_estudiantes = []
+
+    @carreras.each do |carrera|
+      hash_data = {carrera: carrera.id, anios: []} 
+      @anios_ingreso.each do |anio|
+        hash_data[:anios] << {anio: anio, total: carrera.estudiantes.where(fecha_ingreso: "#{anio}-01-01"..."#{anio + 1}-01-01").size}
+      end
+      @total_estudiantes << hash_data
+    end
+
     # @index = {:oferta => {sections: [], page: nil, title: nil, format_title: nil}, :demanda => {sections: [], page: nil, title: nil, format_title: nil}}
     # @stats = statistic
     # @dates = filters.dates
@@ -63,25 +60,23 @@ class ReportePdf < Prawn::Document
     titulo
     subtitulo
     intro
-    # indice
-    # oferta(methods)
-    # demanda(methods)
-    # buildIndex
+    content
+
     
     # numero de paginas
     number_pages "<page> de <total>",{
       :start_count_at => 1,
-      :page_filter => lambda{|pg| pg > 2},  # Solo coloca nº de pagina desde la pagina 3.
+      :page_filter => lambda{|pg| pg > 1},  # Solo coloca nº de pagina desde la pagina 3.
       :at => [bounds.right - 50, 0], 
       :align => :right, 
       :size => 10,
-      total_pages: page_count - 2
+      total_pages: page_count - 1
     }
   end
 
   def header
     #This inserts an image in the pdf file and sets the size of the image
-    image "#{Rails.root}/app/assets/images/central.png", height: 60, position: :left
+    image "#{Rails.root}/app/assets/images/central.png", height: 40, position: :left
     move_up 35
     time = Time.new
     text "#{time.strftime('%d-%m-%Y')}", align: :right
@@ -90,7 +85,7 @@ class ReportePdf < Prawn::Document
 
   def titulo
     # font "Custom", style: :bold
-    text "Reporte de Estadistica", {size: TEXT_TITLE_CONFIG[:size], style: TEXT_TITLE_CONFIG[:style], align: :center}
+    text "Reporte", {size: TEXT_TITLE_CONFIG[:size], style: TEXT_TITLE_CONFIG[:style], align: :center}
     move_down 10
     text "Titulo", {size: TEXT_TITLE_CONFIG[:size], style: TEXT_TITLE_CONFIG[:style], align: :center}
     stroke_horizontal_rule
@@ -113,6 +108,18 @@ class ReportePdf < Prawn::Document
   def indice
     start_new_page
     start_new_page
+  end
+
+  def content
+    @carreras.each do |carrera|
+      start_new_page
+      desercion_retencion(carrera)
+      @num_subtitle += 1
+
+      @num_title += 1
+      @num_subtitle = 1
+      puts "Cursor: #{cursor}".green
+    end
   end
 
   # Dibuja la pagina de indice con los contenidos del pdf.
@@ -164,75 +171,129 @@ class ReportePdf < Prawn::Document
     end
   end
 
-  def oferta(methods)
-    offer_title = @num_title.to_s + ".Oferta"
+  def desercion_retencion(carrera)
+    parts = []
+    title = @num_title.to_s + ". " + carrera.nombre
+    sub_title = @num_title.to_s + "." + @num_subtitle.to_s + " Deserción - Retención"
 
-    if methods[:cat] == 'grafico'
-      ofertaMethods.each do |om|
-        if om[:graficos].include?(methods[:tipo])
-          om[:method].call(offer_title, methods[:tipo])
-          offer_title = nil
+    data = []
+    @total_estudiantes.each do |te|
+      if carrera.id == te[:carrera]
+        te[:anios].each do |te_anio|
+          hash_data = {
+            anio: te_anio[:anio],
+            total: te_anio[:total],
+            desertores: carrera.getEstudiantesDesertores(te_anio[:anio], true)
+          }
+          data << hash_data
         end
-      end
-    elsif methods[:cat] == 'tasacion'
-      ofertaMethods.each do |om|
-        if om[:tasacion].include?(methods[:tipo])
-          om[:method].call
-        end
-      end
-    end
-
-    @num_subtitle = 1
-    @num_title += 1
-  end
-
-  def demanda(methods)
-    demand_title = @num_title.to_s + ".Demanda"
-
-    if methods[:cat] == 'grafico'
-      demandaMethods.each do |dm|
-        if dm[:graficos].include?(methods[:tipo])
-          puts "#{dm[:name]}"
-          dm[:method].call(demand_title, methods[:tipo])
-          demand_title = nil
-        end
-      end
-    elsif methods[:cat] == 'tasacion'
-      demandaMethods.each do |dm|
-        if dm[:tasacion].include?(methods[:tipo])
-          dm[:method].call(demand_title)
-          demand_title = nil
-        end
+        break
       end
     end
-  end
 
-  # Retorna un array con los nombres, descripciones y los mismos metodos para llamar con respecto a la oferta.
-  def ofertaMethods
-    [
-      { name: 'Oferta modalidad', method: self.method(:oferta_modalidad), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Oferta habitaciones', method: self.method(:oferta_habitaciones), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Promedio area', method: self.method(:promedio_area), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Promedio metro cuadrado', method: self.method(:promedio_metro_cuadrado), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Promedio valor', method: self.method(:promedio_valor), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Promedio precio por metro cuadrado', method: self.method(:promedioPM2), desc: '', graficos: ['completo', 'basico'], tasacion:['completo']},
-      { name: 'Decada construccion', method: self.method(:decada_construccion), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Tasa vacancia', method: self.method(:tasa_vacancia), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Grafico x', method: self.method(:grafico), desc: '', graficos: ['completo', 'basico'], tasacion:[]},
-      { name: 'Propiedades cercanas', method: self.method(:propiedades_cercanas), desc: '', graficos: ['completo', 'basico'], tasacion:[]}
-    ]
-  end
+    parts << {type: :title, content: title}
+    parts << {type: :sub_title, content: sub_title}
+    # space_points += getTotalHeight(parts)
+    # checkPageSkip(space_points)
 
-  # Retorna un array con los nombres, descripciones y los mismos metodos para llamar con respecto a la demanda.
-  def demandaMethods
-    [
-      { name: 'Distribucion genero', method: self.method(:distribucion_genero), desc: '', graficos:['completo', 'basico'], tasacion:[]},
-      { name: 'Distribucion edad', method: self.method(:distribucion_edad), desc: '', graficos:['completo', 'basico'], tasacion:[]},
-      { name: 'Demanda habitaciones', method: self.method(:demanda_habitaciones), desc: '', graficos:['completo', 'basico'], tasacion:[]},
-      { name: 'Demanda modalidad', method: self.method(:demanda_modalidad), desc: '', graficos:['completo', 'basico'], tasacion:[]},
-      { name: 'Min area', method: self.method(:min_area), desc: '', graficos:['completo', 'basico'], tasacion:[]},
-      { name: 'Max precios', method: self.method(:max_precios), desc: '', graficos:['completo', 'basico'], tasacion:[]}
-    ]
+    # Dibujar titulo.
+    drawTitle(title)
+
+    # Dibujar subtitulo.
+    drawSubTitle(sub_title)
+
+    # Dibujar tabla.
+    table_style = {position: :center, row_colors: ['d0d6dc', 'ffffff'], cell_style: {border_style: :none, :overflow => :shrink_to_fit, :min_font_size => 5}}
+
+    # Header de la tabla.
+    rows = [[make_cell(content: "Cohorte", align: :center, size: 9, font_style: :bold)]]
+    @anios_ingreso.each do |anio|
+      rows[0] << make_cell(content: "#{anio}", align: :center, size: 9, font_style: :bold, align: :center)
+    end
+
+    # Fila de % de desercion.
+    rows_aux = [make_cell(content: "% Deserción", align: :center, size: 9, font_style: :bold)]
+    data.each do |d|
+      if d[:total] != 0
+        desertores_perc = ((d[:desertores] * 100) / d[:total])
+      else
+        desertores_perc = 0
+      end
+      rows_aux << make_cell(content: "#{desertores_perc}%", size: 7, align: :center)
+    end
+    rows << rows_aux
+
+    # Fila de % de retencion
+    rows_aux = [make_cell(content: "% Retención", align: :center, size: 9, font_style: :bold)]
+    data.each do |d|
+      retencion_num = d[:total] - d[:desertores]
+      if d[:total] != 0
+        retencion_perc = ((retencion_num * 100) / d[:total])
+      else
+        retencion_perc = 0
+      end
+      rows_aux << make_cell(content: "#{retencion_perc}%", size: 7, align: :center)
+    end
+    rows << rows_aux
+
+    # Fila de cantidad de desertores
+    rows_aux = [make_cell(content: "Nº desertores", align: :center, size: 9, font_style: :bold)]
+    data.each do |d|
+      rows_aux << make_cell(content: "#{d[:desertores]}", size: 7, align: :center)
+    end
+    rows << rows_aux
+
+    # Fila total cohorte
+    rows_aux = [make_cell(content: "Total Cohorte", align: :center, size: 9, font_style: :bold)]
+    data.each do |d|
+      rows_aux << make_cell(content: "#{d[:total]}", size: 7, align: :center, font_style: :bold)
+    end
+    rows << rows_aux
+
+    t = make_table(rows, table_style)
+    pad(PADDING) do
+      t.draw
+    end
+
+    # Sumar la altura del header.
+    # space_points += t.row_heights.last
+
+    # Grafico
+    g = Gruff::Bar.new
+    g.title = 'Desercion - Retencion'
+    g.minimum_value = 0
+    g.maximum_value = 100
+    g.x_axis_label = 'Periodo académico'
+    g.y_axis_label = '%'
+    g.show_labels_for_bar_values = true
+    g.label_formatting = "%.0f"
+    labels = {}
+    desercions = []
+    reten = []
+    data.each_with_index do |d, index|
+      labels[index] = d[:anio].to_s
+      if d[:total] != 0
+        desertores_perc = ((d[:desertores] * 100) / d[:total])
+      else
+        desertores_perc = 0
+      end
+
+      if d[:total] != 0
+        retencion_perc = (((d[:total] - d[:desertores]) * 100) / d[:total])
+      else
+        retencion_perc = 0
+      end
+
+      desercions << desertores_perc
+      reten << retencion_perc
+    end
+    g.labels = labels
+    g.data(:Desercion, desercions)
+    g.data(:Retencion, reten)
+
+    pad_bottom(PADDING * 2) do
+      image StringIO.new(g.to_blob), GRAPH_POS
+    end
   end
 
 ################################################################################
@@ -1622,15 +1683,37 @@ class ReportePdf < Prawn::Document
       end
     end
 
+    def removeTildes(str)
+      tildes = {'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'Á' => 'a', 'É' => 'e', 'Í' => 'i', 'Ó' => 'o', 'Ú' => 'u'}
+      str = str.gsub(/[áéíóúÁÉÍÓÚ]/, tildes)
+      str
+    end
+
+    def drawTitle(title)
+      if !title.nil?
+        drawHeader
+        # Titulo formateado, ayuda para los vinculos del indice.
+        format_offer_title = removeTildes(title.downcase)
+        add_dest format_offer_title, dest_xyz(bounds.absolute_left, y)
+        # OFERTA TITULO
+        pad(PADDING) do
+          text title, TEXT_TITLE_CONFIG
+        end
+        # @index[:oferta][:page] = page_number
+        # @index[:oferta][:title] = title
+        # @index[:oferta][:format_title] = format_offer_title
+      end
+    end
+
     # Dibujar los subtitulos de los distintos graficos.
-    def drawSubTitle(title, mode, not_sub = true, to_index = true, fake = false)
+    def drawSubTitle(sub_title, not_sub = true, to_index = true, fake = false)
       # Agregar punto de destino a este modulo para los enlaces del indice.
-      add_dest removeTildes(title.downcase), dest_xyz(bounds.absolute_left, y)
+      add_dest removeTildes(sub_title.downcase), dest_xyz(bounds.absolute_left, y)
       # Agregar la seccion al array para usarlo en el indice.
-      addContentToIndex(title, mode, fake) if to_index
+      # addContentToIndex(sub_title, mode, fake) if to_index
       # Dibujar el subtitulo.
       pad(PADDING) do
-        text title, TEXT_SUBTITLE_CONFIG
+        text sub_title, TEXT_SUBTITLE_CONFIG
       end
       @num_subtitle += 1 if not_sub
     end
@@ -1689,7 +1772,7 @@ class ReportePdf < Prawn::Document
             end
 
           # Titulo (Oferta o Demanda)
-          when :offer_title
+          when :title
             if !part[:content].nil?
               # puts "OFFER TITLE HEIGHT".purple
               space_points += height_of(part[:content], TEXT_TITLE_CONFIG) + PADDING * 2
@@ -1716,42 +1799,10 @@ class ReportePdf < Prawn::Document
       if cursor == bounds.top
         bounding_box([bounds.left, bounds.top], width: bounds.right, height: 30) do
           transparent(0.5) do 
-            float{image "#{Rails.root}/app/assets/images/GoPlaceIt.png", height: 30, position: :left, vposition: :center}
+            float{image "#{Rails.root}/app/assets/images/central.png", height: 30, position: :left, vposition: :center}
             text "#{Time.new.strftime('%d-%m-%Y')}", align: :right, valign: :center
           end
         end
-      end
-    end
-
-    def drawOfferTitle(offer_title)
-      if !offer_title.nil?
-        drawHeader
-        # Titulo formateado, ayuda para los vinculos del indice.
-        format_offer_title = removeTildes(offer_title.downcase)
-        add_dest format_offer_title, dest_xyz(bounds.absolute_left, y)
-        # OFERTA TITULO
-        pad(PADDING) do
-          text offer_title, TEXT_TITLE_CONFIG
-        end
-        @index[:oferta][:page] = page_number
-        @index[:oferta][:title] = offer_title
-        @index[:oferta][:format_title] = format_offer_title
-      end
-    end
-
-    def drawDemandTitle(demand_title)
-      if !demand_title.nil?
-        drawHeader
-        # Titulo formateado, ayuda para los vinculos del indice.
-        format_demand_title = removeTildes(demand_title.downcase)
-        add_dest format_demand_title, dest_xyz(bounds.absolute_left, y)
-        # DEMANDA TITULO
-        pad(PADDING) do
-          text demand_title, TEXT_TITLE_CONFIG
-        end
-        @index[:demanda][:page] = page_number
-        @index[:demanda][:title] = demand_title
-        @index[:demanda][:format_title] = format_demand_title
       end
     end
 

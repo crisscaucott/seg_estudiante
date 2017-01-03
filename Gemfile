@@ -57,6 +57,10 @@ gem 'mailgun_rails'
 gem 'prawn'
 gem 'prawn-table'
 
+gem 'gruff'
+gem 'rmagick'
+gem 'magic'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

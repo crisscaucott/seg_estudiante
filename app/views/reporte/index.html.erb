@@ -28,13 +28,6 @@
         </div>
       </div>
 
-      <div class="form-group">
-        <label class="col-sm-4 control-label">Estado deserción</label>
-        <div class="col-sm-8">
-          <%= f.collection_select(:estado_desercion, filters[:estados_desercion], :id, :nombre_estado, {prompt: false, include_blank: "Cualquiera"}, {class: 'form-control'}) %>
-        </div>
-      </div>
-
       <div class="text-center">
         <%= f.submit(:Generar, class: 'btn btn-default') %>
       </div>

@@ -12,6 +12,16 @@ class Carrera < ActiveRecord::Base
 		return carreras
 	end
 
+	def getEstudiantesDesertores(fecha_ingreso, only_count = false)
+		query = self.estudiantes.joins(:estado_desercion).merge(EstadoDesercion.where(nombre_estado: "Desertó")).where(fecha_ingreso: "#{fecha_ingreso}-01-01"..."#{fecha_ingreso + 1}-01-01")
+
+		if only_count
+			query = query.size
+		end
+
+		return query
+	end
+
 	def nombre=(new_nombre)
 		self[:nombre] = new_nombre.strip.capitalize
 	end

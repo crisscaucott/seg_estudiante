@@ -20,7 +20,7 @@ $('form#reporte_form').submit(function(event){
       noti_params.msg = data.msg;
       noti_params.type = data.type;
 
-      window.location.href = data.pdf_url;
+      // window.location.href = data.pdf_url;
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
 

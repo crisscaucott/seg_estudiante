@@ -47,6 +47,10 @@ es:
         not_saved:
           one: "1 error evitó que este %{resource} fuera guardado:"
           other: "%{count} errores evitaron que este %{resource} fuera guardado:"
+  devise:
+    sessions:
+      user:
+        invalid: 'Rut o contraseña incorrectas.'
 
   my_devises:
     failure:

@@ -53,6 +53,14 @@ gem 'bootstrap3-datetimepicker-rails'
 gem 'figaro'
 gem 'mailgun_rails'
 
+# Prawn for PDF generation
+gem 'prawn'
+gem 'prawn-table'
+
+gem 'gruff'
+gem 'rmagick'
+gem 'magic'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

@@ -56,7 +56,10 @@ Rails.application.routes.draw do
   post '/estudiante/filtrar', to: 'main#get_estudiantes_filtering', as: 'get_filter_estudiantes'
   post '/estudiante/ver_detalle', to: 'main#getDetalleEstudiante'
 
-  get '/reportes', to: 'main#reportes', as: 'reportes'
+  get '/reportes', to: 'reporte#index', as: 'reportes'
+  post '/reportes/generate_pdf', to: 'reporte#generate_pdf', as: 'generate_pdf'
+  get '/reportes/download_pdf', to: 'reporte#download_pdf'
+
   get '/caracteristicas', to: 'caracteristicas#index', as: 'caracteristicas'
   get '/caracteristicas/perfiles/subir', to: 'caracteristicas#perfiles_index', as: 'perfiles_index'
   post '/caracteristicas/perfiles/upload', to: 'caracteristicas#subir_perfiles', as: 'subir_perfiles'

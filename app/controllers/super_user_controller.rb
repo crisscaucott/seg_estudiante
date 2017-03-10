@@ -36,7 +36,7 @@ class SuperUserController < ApplicationController
 			# Guardar el nuevo estado de desercion a la BD.
 			if !ed_obj.getEstadoDesercion
 				ed_obj.save
-				render json: {msg: "El nuevo de deserción se ha agregado exitosamente.", type: "success", estado_obj: ed_obj}
+				render json: {msg: "El nuevo estado de deserción se ha agregado exitosamente.", type: "success", estado_obj: ed_obj}
 
 			else
 				render json: {msg: "El estado de deserción ya se encuentra ingresado.", type: "danger"}, status: 422

@@ -1,0 +1,349 @@
+<table class="table table-striped table-bordered">
+  <thead>
+    <th colspan="2" class="text-center table-title">Información básica</th>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Nombre:</td>
+      <td><%= estudiante.nombre %></td>
+    </tr>
+    <tr>
+      <td>Apellido:</td>
+      <td><%= estudiante.apellido %></td>
+    </tr>
+    <tr>
+      <td>Rut:</td>
+      <td><%= getFormattedRut(estudiante.rut + estudiante.dv) %></td>
+    </tr>
+    <tr>
+      <td>Carrera:</td>
+      <td><%= estudiante.carrera.nombre %></td>
+    </tr>
+    <tr>
+      <td>Estado Deserción:</td>
+      <td><%= estudiante.estado_desercion.nombre_estado %></td>
+    </tr>
+    <tr>
+      <td>Fecha Ingreso:</td>
+      <td><%= estudiante.fecha_ingreso.strftime("%Y-%m-%d") %></td>
+    </tr>
+  </tbody>
+</table><br>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <th colspan="2" class="text-center table-title">Información avanzada</th>
+  </thead>
+  <tbody>
+    <% if !estudiante.info_estudiante.nil? %>
+      <tr>
+        <td>Año matrícula:</td>
+        <td><%= estudiante.info_estudiante.anio_matricula.strftime("%Y-%m-%d") %></td>
+      </tr>
+      <tr>
+        <td>Fecha matrícula:</td>
+        <td><%= estudiante.info_estudiante.fecha_matricula.strftime("%Y-%m-%d") %></td>
+      </tr>
+      <tr>
+        <td>Sede:</td>
+        <td><%= estudiante.info_estudiante.sede %></td>
+      </tr>
+      <tr>
+        <td>Situación:</td>
+        <td><%= estudiante.info_estudiante.situacion %></td>
+      </tr>
+      <tr>
+        <td>Sexo:</td>
+        <td><%= estudiante.getSexo %></td>
+      </tr>
+      <tr>
+        <td>Nacionalidad:</td>
+        <td><%= estudiante.info_estudiante.nacionalidad %></td>
+      </tr>
+      <tr>
+        <td>Fecha nacimiento:</td>
+        <td><%= estudiante.info_estudiante.fecha_nacimiento.strftime("%Y-%m-%d") %></td>
+      </tr>
+      <tr>
+        <td>Dirección:</td>
+        <td><%= estudiante.info_estudiante.direccion %></td>
+      </tr>
+      <tr>
+        <td>Comuna:</td>
+        <td><%= estudiante.info_estudiante.comuna %></td>
+      </tr>
+      <tr>
+        <td>Teléfono fijo:</td>
+        <td><%= estudiante.info_estudiante.telefono_fijo %></td>
+      </tr>
+      <tr>
+        <td>Teléfono móvil:</td>
+        <td><%= estudiante.info_estudiante.telefono_movil %></td>
+      </tr>
+      <tr>
+        <td>Correo Ucen:</td>
+        <td><%= estudiante.info_estudiante.correo_google_ucen %></td>
+      </tr>
+      <tr>
+        <td>Código colegio:</td>
+        <td><%= estudiante.info_estudiante.codigo_colegio %></td>
+      </tr>
+      <tr>
+        <td>Nombre colegio:</td>
+        <td><%= estudiante.info_estudiante.nombre_colegio %></td>
+      </tr>
+      <tr>
+        <td>Tipo colegio:</td>
+        <td><%= estudiante.info_estudiante.tipo_colegio %></td>
+      </tr>
+      <tr>
+        <td>Tipo enseñanza:</td>
+        <td><%= estudiante.info_estudiante.tipo_ensenanza %></td>
+      </tr>
+      <tr>
+        <td>Comuna colegio:</td>
+        <td><%= estudiante.info_estudiante.comuna_colegio %></td>
+      </tr>
+      <tr>
+        <td>Región colegio:</td>
+        <td><%= estudiante.info_estudiante.region_colegio %></td>
+      </tr>
+      <tr>
+        <td>Año de egreso:</td>
+        <td><%= estudiante.info_estudiante.anio_egreso.strftime("%Y") %></td>
+      </tr>
+      <tr>
+        <td>Tipo de ingreso:</td>
+        <td><%= estudiante.info_estudiante.tipo_ingreso %></td>
+      </tr>
+      <tr>
+        <td>Año psu rendida para ingreso:</td>
+        <td><%= estudiante.info_estudiante.anio_psu_ingreso.strftime("%Y") %></td>
+      </tr>
+      <tr>
+        <td>Nota NEM ingreso:</td>
+        <td><%= estudiante.info_estudiante.nota_nem_ingreso %></td>
+      </tr>
+      <tr>
+        <td>Puntaje PSU lenguaje:</td>
+        <td><%= estudiante.info_estudiante.psu_lenguaje %></td>
+      </tr>
+      <tr>
+        <td>Puntaje PSU matemática:</td>
+        <td><%= estudiante.info_estudiante.psu_matematica %></td>
+      </tr>
+      <tr>
+        <td>Puntaje PSU historia:</td>
+        <td><%= estudiante.info_estudiante.psu_historia %></td>
+      </tr>
+      <tr>
+        <td>Puntaje PSU ciencias:</td>
+        <td><%= estudiante.info_estudiante.psu_ciencias %></td>
+      </tr>
+      <tr>
+        <td>Puntaje NEM ingreso:</td>
+        <td><%= estudiante.info_estudiante.puntaje_nem_ingreso %></td>
+      </tr>
+      <tr>
+        <td>Puntaje ponderado ingreso:</td>
+        <td><%= estudiante.info_estudiante.puntaje_pond_ingreso %></td>
+      </tr>
+      <tr>
+        <td>Tipo programa:</td>
+        <td><%= estudiante.info_estudiante.tipo_programa %></td>
+      </tr>
+      <tr>
+        <td>Facultad:</td>
+        <td><%= estudiante.info_estudiante.facultad %></td>
+      </tr>
+      <tr>
+        <td>Jornada:</td>
+        <td><%= estudiante.info_estudiante.jornada %></td>
+      </tr>
+    <% else %>
+      <tr colspan="2" class="text-center">
+        <td>No se encontró información para esta sección.</td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table><br>
+
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <% if !calificaciones.nil? %>
+      <tr>
+        <th colspan="<%= calificaciones[:max_count_notas].size * 2 %>" class="text-center table-title">Calificaciones</th>
+      </tr>
+      <tr>
+        <th rowspan="<%= calificaciones[:max_count_notas].size %>" class="header-middle text-center">Asignatura</th>
+        <th colspan="<%= calificaciones[:max_count_notas].size %>" scope="colgroup" class="text-center">Notas</th>
+      </tr>
+      <tr>
+        <% calificaciones[:max_count_notas].each do |nota| %>
+          <th scope="col" class="text-center"><%= nota.nombre_calificacion.upcase %></th>
+        <% end -%>
+      </tr>
+    <% else %>
+      <tr>
+        <th colspan="2" class="text-center table-title">Calificaciones</th>
+      </tr>
+    <% end -%>
+  </thead>
+
+  <tbody>
+    <% if !calificaciones.nil? %>
+      <% calificaciones[:notas].each do |nota| %>
+        <tr>
+          <th scope="row"><%= nota[:nombre_asignatura] %></th>
+          <% nota[:notas].each do |n| %>
+            <td class="text-center"><%= n.valor_calificacion %></td>
+          <% end -%>
+        </tr>
+      <% end -%>
+    <% else %>
+      <tr colspan="2" class="text-center">
+        <td>No se encontró información para esta sección.</td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table><br>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th colspan="2" class="text-center table-title">Asistencias</th>
+    </tr>
+    <% if asistencias.present? %>
+      <tr>
+        <th class="text-center">Asignatura</th>
+        <th class="text-center">Boton</th>
+      </tr>
+    <% end -%>
+  </thead>
+
+  <tbody>
+    <% if asistencias.present? %>
+      <% asistencias.each do |a| %>
+        <tr>
+          <td><%= a.asignatura.nombre %></td>
+          <td class="text-center" data-est-id="<%= a.estudiante_id %>" data-asig-id="<%= a.asignatura_id %>"><%= button_tag('Ver', type: 'button', class: 'btn btn-success assis-btn') %></td>
+        </tr>
+      <% end -%>
+    <% else %>
+      <tr colspan="2" class="text-center">
+        <td>No se encontró información para esta sección.</td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table><br>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <% if estilos.present? %>
+      <tr>
+        <th colspan="10" class="text-center table-title">Estilos de aprendizaje</th>
+      </tr>
+
+      <tr>
+        <th rowspan="4" class="text-center header-middle">#</th>
+        <th rowspan="4" class="text-center header-middle">Fecha creación</th>
+      </tr>
+
+      <tr>
+        <th colspan="4" class="text-center">Honey</th>
+        <th colspan="4" class="text-center">Vark</th>
+      </tr>
+
+      <tr>
+        <th class="text-center">Activo</th>
+        <th class="text-center">Reflexivo</th>
+        <th class="text-center">Teórico</th>
+        <th class="text-center">Práctico</th>
+        <th class="text-center">Visual</th>
+        <th class="text-center">Auditivo</th>
+        <th class="text-center">LE</th>
+        <th class="text-center">Kinestésico</th>
+      </tr>
+    <% else %>
+      <tr>
+        <th colspan="2" class="text-center table-title">Estilos de aprendizaje</th>
+      </tr>
+    <% end -%>
+  </thead>
+
+  <tbody>
+    <% if estilos.present? %>
+      <% estilos.each_with_index do |e, index| %>
+        <tr>
+          <th class="text-center"><%= index + 1 %></th>
+          <td class="text-center"><%= e.created_at.strftime("%Y-%m-%d") %></td>
+          <td class="text-center"><%= e.honey_activo %></td>
+          <td class="text-center"><%= e.honey_reflexivo %></td>
+          <td class="text-center"><%= e.honey_teorico %></td>
+          <td class="text-center"><%= e.honey_practico %></td>
+          <td class="text-center"><%= e.vark_visual %></td>
+          <td class="text-center"><%= e.vark_auditivo %></td>
+          <td class="text-center"><%= e.vark_le %></td>
+          <td class="text-center"><%= e.vark_kinestesico %></td>
+        </tr>
+      <% end -%>
+    <% else %>
+      <tr colspan="2" class="text-center">
+        <td>No se encontró información para esta sección.</td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table><br>
+
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th colspan="7" class="text-center table-title">Ficha estudiante</th>
+    </tr>
+    <% if fichas.present? %>
+      <tr>
+        <th class="text-center">#</th>
+        <th class="text-center">Tutor</th>
+        <th class="text-center">Estado deserción</th>
+        <th class="text-center">Motivo deserción</th>
+        <th class="text-center">Destino</th>
+        <th class="text-center">Fecha registro</th>
+        <th class="text-center">Comentario</th>
+      </tr>
+    <% end -%>
+  </thead>
+
+  <tbody>
+    <% if fichas.present? %>
+      <% fichas.each_with_index do |f, index| %>
+        <tr>
+          <th class="text-center"><%= index + 1 %></th>
+          <td class="text-center"><%= f.tutor.name %> <%= f.tutor.last_name %></td>
+          <td class="text-center"><%= f.estado_desercion.nombre_estado %></td>
+          <td class="text-center"><%= f.motivo_desercion.nil? ? '-' : f.motivo_desercion.nombre %></td>
+          <td class="text-center"><%= f.destino.nil? ? '-' : f.destino.nombre %></td>
+          <td class="text-center"><%= f.fecha_registro.strftime("%Y-%m-%d") %></td>
+          <td class="text-center"><%= f.comentario %></td>
+        </tr>
+      <% end -%>
+    <% else %>
+      <tr colspan="7" class="text-center">
+        <td>No se encontró información para esta sección.</td>
+      </tr>
+    <% end -%>
+  </tbody>
+</table><br>
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th colspan="7" class="text-center table-title">Alerta estudiantes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Cantidad de alertas de este estudiante:</th>
+      <td><%= alertas.length %></td>
+    </tr>
+  </tbody>
+</table>

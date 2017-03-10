@@ -1,0 +1,8 @@
+<b>Resumen subida de estilos de aprendizaje:</b><br>
+<ul>
+	<li><b><%= detail[:new] %></b> de <b><%= detail[:total] %></b> estudiantes se han ingresado sus estilos de aprendizaje como nuevos.</li>
+	<li><b><%= detail[:upd] %></b> de <b><%= detail[:total] %></b> estudiantes se han actualizado sus estilos de aprendizaje.</li>
+	<% if detail[:not_found] != 0 %>
+		<li><b><%= detail[:not_found] %></b> de <b><%= detail[:total] %></b> estudiantes no se pudieron encontrar en el sistema.</li>
+	<% end -%>
+</ul>

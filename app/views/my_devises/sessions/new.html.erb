@@ -1,5 +1,6 @@
 <%= content_for :javascript do %>   
   <%= javascript_include_tag "sign_in", "data-turbolinks-track" => true  %>
+  <%= javascript_include_tag "validar_rut", "data-turbolinks-track" => true  %>
 <% end %>
 <div class="row">
   <div class="col-sm-6 col-sm-offset-3 form-box">
@@ -13,8 +14,8 @@
     </div>
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'login-form', id: 'sign_in_user'}) do |f| %>
       <div class="form-group">
-        <%= f.label :email, class: 'sr-only' %><br />
-        <%= f.email_field :email, autofocus: true, class: 'form-username form-control', placeholder: 'Email' %>
+        <%= f.label :rut, class: 'sr-only' %><br />
+        <%= f.text_field :rut, autofocus: true, class: 'form-username form-control', placeholder: 'Rut' %>
       </div>
     
       <div class="form-group">
@@ -28,12 +29,14 @@
           <%= f.label :remember_me %>
         </div>
       <% end %>
+
+      <div class="field">
+        <%= link_to "Recuperar contraseña",  new_password_path(resource), class: '' %>
+      </div>
     
       <div class="actions text-center">
         <%= f.submit 'Ingresar', class: 'btn btn-primary' %>
-        <%= link_to "Registrarse", new_user_registration_path, class: 'btn btn-default' %>
       </div>
-
     <% end %>
   </div>
 </div>

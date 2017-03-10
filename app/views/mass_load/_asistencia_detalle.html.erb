@@ -1,0 +1,23 @@
+<table class="table table-striped table-bordered">
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Asistencia</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% asistencia.each do |a| %>
+      <tr>
+        <td><%= a.fecha_asistida.strftime("%Y/%m/%d %H:%M") %></td>
+        <td><%= a.valor_asistencia %></td>
+      </tr>
+    <% end %>
+
+    <tr class="asistencia-total">
+      <td>Total asistencias:</td>
+      <td><%= asistencia.size %></td>
+    </tr>
+
+  </tbody>
+</table>

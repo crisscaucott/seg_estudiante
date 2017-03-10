@@ -1,0 +1,52 @@
+<%= content_for :css do %>   
+  <%= stylesheet_link_tag 'estados_desercion', media: 'all', 'data-turbolinks-track' => true %>
+<% end %>
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "estados_desercion", "data-turbolinks-track" => true  %>
+<% end %>
+<div class="row">
+  <div class="col-sm-8 form-box">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h3>Agregar nuevo estado de deserción</h3>
+      </div>
+      <div class="form-top-right">
+        <i class="fa fa-lock"></i>
+      </div>
+    </div>
+    <%= form_for(estado_desercion, url: create_estados_desercion_path, html: {id: 'estado_desercion_form', format: :json}) do |f| %>
+
+      <div class="form-group">
+          <%= f.label :nombre_estado %><br />
+          <%= f.text_field :nombre_estado, autofocus: true, class: 'form-username form-control', placeholder: 'Nombre estado' %>
+      </div>
+
+      <div class="form-group">
+        <%= f.check_box :notificar, class: 'form-username form-control' %>
+        <div class="[ btn-group ]">
+          <label for="fancy-checkbox-default" class="[ btn btn-info ]">
+              <span class="[ glyphicon glyphicon-ok ]"></span>
+              <span> </span>
+          </label>
+          <%= f.label :notificar, class: "[ btn btn-default active ]" %>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <%= f.check_box :riesgoso, class: 'form-username form-control' %>
+        <div class="[ btn-group ]">
+          <label for="fancy-checkbox-default" class="[ btn btn-danger ]">
+              <span class="[ glyphicon glyphicon-ok ]"></span>
+              <span> </span>
+          </label>
+          <%= f.label :riesgoso, class: "[ btn btn-default active ]" %>
+        </div>
+      </div>
+
+      <div class="actions text-center">
+        <%= f.submit 'Agregar', class: 'btn btn-primary' %>
+      </div>
+
+    <% end %>
+  </div>
+</div>

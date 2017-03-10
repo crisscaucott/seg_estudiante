@@ -1,0 +1,49 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "ver_asociaciones", "data-turbolinks-track" => true  %>
+<% end %>
+<%= content_for :css do %>   
+  <%= stylesheet_link_tag 'asociar_tutores_estudiantes', media: 'all', 'data-turbolinks-track' => true %>
+<% end %>
+
+<%= form_for(tutor_usr, url: set_desasociations_tutores_path, html: {id: 'tutores_form', format: :json}) do |f| %>
+	<div class="row">
+	  <div class="form-box">
+	    <div class="form-top text-center">
+	      <h3>Ver estudiantes de tutores</h3>
+	    </div>
+
+    <%= fields_for(:users) do |ff| %>
+			<div class="col-sm-12">
+				<div class="text-center">
+					<%= f.submit("Guardar", class: 'btn btn-success', disabled: true) %>
+					<input type="button", class="btn btn-danger", id="desasociar_btn", disabled="disabled", value="Desasociar">
+				</div>
+				<div class="col-sm-6">
+					<div class="form-top text-center">
+			    	<h3>Tutores</h3>
+			    </div>
+			    	<%= fields_for(:users) do |ff| %>
+					    <div class="funkyradio tutor_est_containers">
+								<% tutores.each_with_index do |tutor, index| %>
+						      <div class="funkyradio-primary">
+						      	<%= ff.radio_button(:id, tutor.id, id: tutor.class.name.downcase + '_' + index.to_s) %>
+						      	<%= ff.label(:bla, tutor.name, for: tutor.class.name.downcase + '_' + index.to_s) %>
+						      </div>
+								<% end %>
+					    </div>
+				    <% end -%>
+				</div>
+
+				<div class="col-sm-6">
+					<div class="form-top text-center">
+				    	<h3>Estudiantes</h3>
+				    </div>
+
+				    <div class="tutor_est_containers" id="estudiantes_list">
+				    </div>
+			  	</div>
+				</div>
+			</div>
+		<% end -%>
+	</div> <!-- row -->
+<% end -%>

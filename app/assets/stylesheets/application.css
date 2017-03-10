@@ -12,6 +12,7 @@
  *
  *= require bootstrap.min.css
  *= require animate.css
+ *= require bootstrap-datetimepicker
  */
 
 div#main-navbar > div.container-fluid > nav > div > a > img{
@@ -19,4 +20,38 @@ div#main-navbar > div.container-fluid > nav > div > a > img{
 }
 div#main-navbar > div.container-fluid > nav a.navbar-link{
 	text-decoration: none;
+}
+.progress-wrapper {
+  margin-top: 10px;
+}
+div#content-container{
+	margin-top: 20px;
+}
+.list-group.panel > .list-group-item {
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px
+}
+.list-group-submenu {
+  margin-left:20px;
+}
+.sub-active{
+	background-color: #d9edf7;
+}
+th.table-title{
+  background-color: black !important; 
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
+tr.asistencia-total{
+  background-color: black !important; 
+  color: white;
+  text-decoration: underline;
+  font-weight: bold;
+}
+table.no-margin{
+  margin-bottom: 0px;
+}
+th.header-middle{
+  vertical-align: middle !important;
 }

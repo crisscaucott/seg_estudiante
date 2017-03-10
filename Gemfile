@@ -34,7 +34,32 @@ gem 'sprockets-rails', :require => 'sprockets/railtie'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
+gem 'remotipart', '~> 1.2'
+gem 'jquery-fileupload-rails', github: 'Springest/jquery-fileupload-rails'
+
+# Leer excel
+gem 'roo'
+gem 'roo-xls'
+
+# Validador de rut
+gem 'rut_chileno'
+
 gem 'devise-i18n'
+
+# Para libreria de calendario JS
+gem 'momentjs-rails'
+gem 'bootstrap3-datetimepicker-rails'
+
+gem 'figaro'
+gem 'mailgun_rails'
+
+# Prawn for PDF generation
+gem 'prawn'
+gem 'prawn-table'
+
+gem 'gruff'
+gem 'rmagick'
+gem 'magic'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -42,10 +67,10 @@ group :development, :test do
 end
 
 group :development do
-  # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
-
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'colorize'
+  # Ayuda a optimizar queries
+  gem 'bullet'
 end
 

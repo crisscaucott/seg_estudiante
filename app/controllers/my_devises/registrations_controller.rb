@@ -15,24 +15,26 @@ class MyDevises::RegistrationsController < Devise::RegistrationsController
     if resource.valid?
     	# Campos de usuario validados.
 	    if resource.save
-	    	# Guardar el usuario en BD exitosamente.
-	      if resource.active_for_authentication?
-	        set_flash_message :notice, :signed_up if is_navigational_format?
-	        sign_up(resource_name, resource)
-	        # return render :json => {:success => true}
+	    	# Usuario guardado en BD exitosamente.
 
-	      else
-	        set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_navigational_format?
-	        expire_session_data_after_sign_in!
-	        # return render :json => {:success => true}
-	      end
 
-    		return render :js => windowLocation(root_path)
+	     #  if resource.active_for_authentication?
+	     #    set_flash_message :notice, :signed_up if is_navigational_format?
+	     #    sign_up(resource_name, resource)
+	     #    # return render :json => {:success => true}
+
+	     #  else
+	     #    set_flash_message :notice, :"signed_up_but_#{resource.inactive_message}" if is_navigational_format?
+	     #    expire_session_data_after_sign_in!
+	     #    # return render :json => {:success => true}
+	     #  end
+
+    		# return render :js => windowLocation(root_path)
 
 	    else
 	    	# Fallo con guardar en la BD
 	      clean_up_passwords resource
-	      return render :json => {errors: "Ha ocurrido un error en registrar el usuario ingresado."}, status: 422
+	      return render :json => {errors: "Ha ocurrido un error en registrar el usuario."}, status: 422
 	    end
 
     else
@@ -43,7 +45,7 @@ class MyDevises::RegistrationsController < Devise::RegistrationsController
   end
 
   def sign_up_params
-  	params.require(:user).permit(:name, :last_name, :email, :password, :password_confirmation)
+  	params.require(:user).permit(:name, :rut, :last_name, :email, :password, :password_confirmation)
   end
 
 end

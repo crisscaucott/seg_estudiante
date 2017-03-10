@@ -1,0 +1,14 @@
+<%= fields_for(:users) do |f| %>
+	<%= f.fields_for(:estudiantes) do |ff| %>
+		<ul id="check-list-box" class="list-group checked-list-box">
+			<%= ff.collection_check_boxes(:id, estudiantes, :id, :nombre, {:include_hidden => false}) do |c| %>
+		      <li class="list-group-item">
+						<span class="state-icon glyphicon glyphicon-unchecked hidden">
+						</span>
+						<%= c.label %>
+						<%= c.check_box(class: 'hidden') %>
+					</li>
+			<% end -%>
+		</ul>
+	<% end -%>
+<% end -%>

@@ -18,4 +18,8 @@
 # Ignorar archivo de configuracion de BD
 /config/database.yml
 # Ignorar archivo de byebug
-*.byebug_history
+/.byebug_history
+# Ignorar achivos excel subidos.
+/public/uploaded/*
+# Ignore application configuration
+/config/application.yml

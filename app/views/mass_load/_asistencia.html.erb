@@ -1,0 +1,22 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "asistencia.js", "data-turbolinks-track" => true  %>
+<% end %>
+<h1>Asistencia</h1>
+
+<%= form_for(:asistencia, url: upload_assis_path(report), html: {id: 'asistencia_form'}) do |f| %>
+
+	<div class="form-group">
+	  <%= f.label :carrera %><br />
+	  <%= f.collection_select(:carrera, carreras, :id, :nombre, {prompt: "Selecciona una carrera"}, {class: 'form-control'}) %>
+	</div>
+
+	<%= f.file_field(:file, data: {buttonName: 'btn-primary', buttonBefore: 'true'}) %>
+
+	<div class="progress-wrapper">
+	  <div class="progress">
+	    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+	      0%
+	    </div>
+	  </div>
+	</div>
+<% end %>

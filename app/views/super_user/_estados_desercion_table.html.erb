@@ -1,0 +1,49 @@
+<%= form_for(:estado_desercion, url: update_estado_desercion_path, html: {id: 'edit_estado_desercion_form', format: :json}) do |f| %>
+
+    <table id="estados_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre estado</th>
+                <th>Notifica</th>
+                <th>Riesgoso</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <% estados.each_with_index do |e, index| %>
+                <tr>
+                    <%= f.hidden_field(:id, value: e.id) %>
+                    <%= hidden_field_tag(:row_edited, 0, class: 'row_edited', id: nil) %>
+                    <%= hidden_field_tag(:to_delete, 0, class: 'row_delete', id: nil) %>
+
+                    <td>
+                      <div class="radio">
+                        <label>
+                          <%= radio_button_tag(:replace_estado, true, false, class: 'hidden', id: nil, disabled: true) %>
+                          <%= index + 1 %>
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                        <span><%= e.nombre_estado %></span>
+                        <%= f.text_field(:nombre_estado, value: e.nombre_estado, class: 'form-control hidden', placeholder: :nombre_estado) %>
+                    </td>
+                    <td>
+                        <span><%= e.notificar ? "Si" : "No" %></span>
+                        <%= f.check_box :notificar, checked: e.notificar, class: 'form-control hidden' %>
+                    </td>
+                    <td>
+                        <span><%= e.riesgoso ? "Si" : "No" %></span>
+                        <%= f.check_box :riesgoso, checked: e.riesgoso, class: 'form-control hidden' %>
+                    </td>
+                    <td class="text-center">
+                        <%= button_tag('Editar', type: 'button', class: 'btn btn-primary edit_btn') %>
+                        <%= button_tag('Eliminar', type: 'button', class: 'btn btn-danger delete_btn') %>
+                    </td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+    <%= f.submit("Finalizar", disabled: true, class: 'btn btn-success') %>
+<% end %>

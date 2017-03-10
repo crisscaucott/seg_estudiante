@@ -21,3 +21,29 @@
 
 es:
   hello: "Hola mundo"
+  invalid_rut: "Rut no válido."
+
+  activerecord:
+    models:
+      attributes:
+        
+    errors:
+      models:
+        ficha_estudiante:
+          attributes:
+            comentario:
+              blank: "No puede estar en blanco."
+            estudiante_id:
+              blank: "No puede estar en blanco."
+        estudiante:
+          attributes:
+            fecha_ingreso:
+              blank: "No puede estar en blanco."
+        user:
+          attributes:
+            reset_password_token:
+              invalid: "Contraseña inválida."
+        estado_desercion:
+            attributes:
+              nombre_estado:
+                blank: "Este campo no puede estar vacío."

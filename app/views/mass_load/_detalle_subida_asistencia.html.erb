@@ -1,0 +1,15 @@
+<b>Resumen subida de asistencias:</b><br>
+<ul>
+	<li>Se han subido/actualizado con éxito las asistencias de <b><%= detail[:success] %></b> estudiantes de los <b><%= detail[:total] %></b> contenidos en el excel.</li>
+
+	<% if detail[:est_not_found] != 0 %>
+		<li>Existen <b><%= detail[:est_not_found] %></b> estudiantes que no fueron encontrados en el sistema.</li>
+		<% if detail[:est_multiple] != 0 %>
+			<li>De los <b><%= detail[:est_not_found] %></b> no encontrados, <b><%= detail[:est_multiple] %></b> de ellos tuvieron problemas en encontrar su carrera asociada.</li>
+		<% end -%>
+	<% end -%>
+
+	<% if detail[:failed] != 0 %>
+		<li>Existen <b><%= detail[:failed] %></b> estudiantes que tuvieron problemas en subir/actualizar sus asistencias.</li>
+	<% end -%>
+</ul>

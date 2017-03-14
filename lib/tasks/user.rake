@@ -21,13 +21,20 @@ namespace :user do
   desc "Crea un super usuario. Sirve para tener un usuario base inicial para crear a los demás usuarios del sistema."
   task :create_super_user => :environment do
     up = UserPermission.select(:id).where(name: "Decano").first
+    check_user = User.select(:id).find_by(rut: '111111111')
 
-    user = User.new(name: "Super Usuario", last_name: "de prueba", email: 'criss.acv@gmail.com', encrypted_password: '123456', password: '123456', rut: '111111111', id_permission: up.id)
+    if check_user.nil?
+      # No existe el super usuario inicial.
+      user = User.new(name: "Super Usuario", last_name: "de prueba", email: 'criss.acv@gmail.com', encrypted_password: '123456', password: '123456', rut: '111111111', id_permission: up.id)
 
-    if user.save
-      puts "Usuario creado exitosamente con id: #{user.id}"
+      if user.save
+        puts "Usuario creado exitosamente con id: #{user.id}"
+      else
+        puts "Fallo en crear el usuario."
+      end
     else
-      puts "Fallo en crear el usuario."
+      # Si existe el super usuario inicial en la BD.
+      puts "Ya existe el super usuario inicial en el sistema."
     end
   end
 end

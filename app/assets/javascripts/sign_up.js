@@ -52,9 +52,9 @@ $( "form#sign_up_user" ).submit(function( event ) {
 
 // Cada vez que se cambia una opcion en el combo de estados de desercion.
 $("select#user_id_permission").on('change', function(event){
-  var escuela_id = $("option:selected", this).val();
+  var escuela_id = $("option:selected", this).text();
 
-  if (escuela_id == 2) {
+  if (escuela_id == 'Director') {
     $('div#escuela_field').html(carrera_options);
   }else{
     $('div#escuela_field').empty();

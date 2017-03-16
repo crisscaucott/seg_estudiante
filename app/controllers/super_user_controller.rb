@@ -188,7 +188,7 @@ class SuperUserController < ApplicationController
 			end
 		else
 			# No se encontro el usuario en la bd con el id dado.
-			render json: {msg: "Hubo en actualizar el usuario."}, status: :bad_request
+			render json: {msg: "Hubo un error en encontrar el usuario en el sistema."}, status: :bad_request
 		end
 	end
 
@@ -293,6 +293,128 @@ class SuperUserController < ApplicationController
 		end
 	end
 
+	def gestion_carreras
+		render action: :index, locals: {partial: 'gestion_carreras', context: CONTEXTS[:carreras], escuelas: Escuela.getEscuelas, carreras: []}
+	end
+
+	def get_carreras_by_escuela
+		escuela_params = carrera_by_escuela_params
+
+		if escuela_params[:escuela].present?
+			carreras = Carrera.where(escuela_id: escuela_params[:escuela])
+			res = {msg: "Carreras obtenidas exitosamente.", type: :success}
+			if !carreras.present?
+				res[:msg] = "No se encontraron carreras para la escuela seleccionada."
+				res[:type] = :warning 
+			end
+
+			render json: {msg: res[:msg], type: res[:type], table: render_to_string(partial: 'carreras_table', formats: [:html], layout: false, locals: {carreras: carreras})}
+
+		else
+			render json: {msg: "La opción seleccionada es inválida", type: :warning}, status: :unprocessable_entity
+		end
+	end
+
+	def update_carrera
+		carrera_data = update_carrera_params
+		carrera_obj = Carrera.find_by(id: carrera_data[:id])
+
+		if !carrera_obj.nil?
+			if params[:to_delete] == "1"
+				# Eliminar carrera.
+				# Primero se borran las asociaciones de la carrera con sus asignaturas.
+				carrera_obj.asignaturas.clear
+				# Ver opcion de que hacer con los estudiantes asociados a la carrera a borrar.
+				
+				render json: {msg: "Pueden haber estudiantes vinculados a la carrera a eliminar.", type: :warning}, status: 422
+
+			elsif params[:row_edited] == "1"
+				# Editar carrera.
+				carrera_obj.assign_attributes(carrera_data.except(:id, :escuela_id))
+
+				if carrera_obj.save
+					# Cumplio con las validaciones y se actualiza los datos de la carrera.
+					carreras = Carrera.where(escuela_id: carrera_data[:escuela_id])
+
+					render json: {msg: "Datos de carrera actualizadas exitosamente.", type: :success, table: render_to_string(partial: 'carreras_table', formats: [:html], layout: false, locals: {carreras: carreras})}
+
+				else
+					# No paso las validaciones.
+					render json: {msg: getFormattedAttrObjErrors(carrera_obj.errors.messages, Carrera), type: "danger"}, status: :bad_request
+				end
+
+			else
+				# Error de opcion.
+				render json: {msg: "Ha ocurrido un error con la opción ingresada.", type: 'danger'}, status: 422
+			end
+
+		else
+			# No se encontro la carrera en la bd con el id dado.
+			render json: {msg: "Hubo un error en encontrar la carrera en el sistema."}, status: :bad_request
+		end
+
+	end
+
+	def update_asignatura
+		asignatura_data = update_asignatura_params
+		asignatura_obj = Asignatura.find_by(id: asignatura_data[:id])
+
+		if !asignatura_obj.nil?
+			if params[:to_delete] == "1"
+				# Eliminar asignatura.
+				
+				render json: {msg: "Pueden haber estudiantes vinculados a la carrera a eliminar.", type: :warning}, status: 422
+
+			elsif params[:row_edited] == "1"
+				# Editar asignatura.
+				asignatura_obj.assign_attributes(asignatura_data.except(:id, :carrera_id))
+
+				if asignatura_obj.save
+					# Cumplio con las validaciones y se actualiza los datos de la carrera.
+					asignaturas = Carrera.find_by(id: asignatura_data[:carrera_id]).asignaturas
+
+					render json: {msg: "Datos de asignatura actualizadas exitosamente.", type: :success, table: render_to_string(partial: 'asignaturas_table', formats: [:html], layout: false, locals: {asignaturas: asignaturas, carrera_id: asignatura_data[:carrera_id]})}
+
+				else
+					# No paso las validaciones.
+					render json: {msg: getFormattedAttrObjErrors(asignatura_obj.errors.messages, Asignatura), type: "danger"}, status: :bad_request
+				end
+
+			else
+				# Error de opcion.
+				render json: {msg: "Ha ocurrido un error con la opción ingresada.", type: 'danger'}, status: 422
+			end
+		else
+			# No se encontro la asignatura en la bd con el id dado.
+			render json: {msg: "Hubo un error en encontrar la asignatura en el sistema."}, status: :bad_request
+		end
+	end
+
+	def get_asignaturas_by_carrera
+
+		if params[:id].present?
+			carrera_obj = Carrera.select([:id, :nombre]).find_by(id: params[:id])
+			
+			if !carrera_obj.nil?
+				asignaturas = carrera_obj.asignaturas
+
+				if asignaturas.present?
+					render json: {msg: "Asignaturas obtenidas exitosamente.", type: :success, carrera: carrera_obj.nombre, table: render_to_string(partial: 'asignaturas_table', formats: [:html], layout: false, locals: {asignaturas: asignaturas, carrera_id: carrera_obj.id})}
+
+				else
+					render json: {msg: "No se encontraron asignaturas para la carrera seleccionada.", type: :warning}, status: :unprocessable_entity
+				end
+				
+			else
+				render json: {msg: "Hubo un error en encontrar las asignaturas con la carrera seleccionada.", type: :warning}, status: :unprocessable_entity
+			end
+
+		else
+			render json: {msg: "Hubo un error en encontrar las asignaturas con la carrera seleccionada.", type: :warning}, status: :unprocessable_entity
+		end
+		
+	end
+
 	# --- FIN METODOS CARRERAS ---
 
 	private
@@ -332,5 +454,16 @@ class SuperUserController < ApplicationController
 	  def new_carrera_params
 	  	params.require(:carrera).permit(:escuela, :file)
 	  end
+
+	  def carrera_by_escuela_params
+	  	params.require(:escuela).permit(:escuela)
+	  end
+
+	  def update_carrera_params
+	  	params.require(:carrera).permit(:id, :nombre, :duracion_formal, :codigo, :escuela_id)
+	  end
 	  
+	  def update_asignatura_params
+	  	params.require(:asignaturas).permit(:id, :nombre, :codigo, :creditos, :carrera_id)
+	  end
 end

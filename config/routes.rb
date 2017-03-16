@@ -26,6 +26,11 @@ Rails.application.routes.draw do
 
   get '/admini/carreras/', to: 'super_user#new_carrera', as: 'new_carrera'
   post '/admini/carreras/subir', to: 'super_user#upload_carrera', as: 'upload_carrera'
+  get '/admini/carreras/gestion', to: 'super_user#gestion_carreras', as: 'gestion_carreras'
+  post '/admini/carreras/gestion/carreras_by_escuela', to: 'super_user#get_carreras_by_escuela', as: 'carreras_by_escuela'
+  post '/admini/carreras/gestion/update_carrera', to: 'super_user#update_carrera', as: 'update_carrera'
+  post '/admini/carreras/gestion/update_asignatura', to: 'super_user#update_asignatura', as: 'update_asignatura'
+  post '/admini/carreras/gestion/asignaturas_by_carrera', to: 'super_user#get_asignaturas_by_carrera', as: 'asignaturas_by_carrera'
 
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'

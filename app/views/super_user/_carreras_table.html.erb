@@ -1,0 +1,48 @@
+<%= form_for(:carrera, url: update_carrera_path, html: {id: 'carreras_form', format: :json}) do |f| %>
+  <div class="form-group">
+    <%= f.label :carreras %>
+    <%= f.submit("Guardar", disabled: true, class: 'btn btn-success pull-right') %>
+  </div>
+  <table id="carreras_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nombre</th>
+        <th>Duracion formal</th>
+        <th>Código</th>
+        <th>Asignaturas</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% carreras.each_with_index do |c, index| %>
+        <tr data-carrera-id="<%= c.id %>">
+          <%= f.hidden_field(:id, value: c.id) %>
+          <%= f.hidden_field(:escuela_id, value: c.escuela_id) %>
+          <%= hidden_field_tag(:row_edited, 0, class: 'row_edited', id: nil) %>
+          <%= hidden_field_tag(:to_delete, 0, class: 'row_delete', id: nil) %>
+          <td><%= index + 1 %></td>
+          <td>
+            <span><%= c.nombre %></span>
+            <%= f.text_field(:nombre, value: c.nombre, class: 'form-control hidden', placeholder: :nombre) %>
+          </td>
+          <td>
+            <span><%= c.duracion_formal %></span>
+            <%= f.number_field(:duracion_formal, value: c.duracion_formal, class: 'form-control hidden', placeholder: :duracion_formal) %>
+          </td>
+          <td>
+            <span><%= c.codigo %></span>
+            <%= f.text_field(:codigo, value: c.codigo, class: 'form-control hidden', placeholder: :codigo) %>
+          </td>
+          <td>
+            <%= button_tag('Ver', type: 'button', class: 'btn btn-sm btn-primary asignaturas_btn') %>
+          </td>
+          <td class="text-center">
+            <%= button_tag('Editar', type: 'button', class: 'btn btn-sm btn-primary edit_btn') %>
+            <%= button_tag('Eliminar', type: 'button', class: 'btn btn-sm btn-danger delete_btn') %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

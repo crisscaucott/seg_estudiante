@@ -1,0 +1,10 @@
+<b>Resumen subida de carrera y asignaturas:</b><br>
+<ul>
+	<% if !detail[:carrera_inserted].nil? %>
+		<li>Se ha ingresado al sistema la carrera '<%= detail[:carrera_inserted] %>'.</li>
+	<% end -%>
+	<li>Se han ingresado <b><%= detail[:asignaturas_inserted] %></b> nuevas asignaturas al sistema.</li>
+	<% if detail[:asignaturas_found] != 0 %>
+		<li><b><%= detail[:asignaturas_found] %></b> asignaturas del excel ya se encontraban ingresadas en el sistema.</li>
+	<% end -%>
+</ul>

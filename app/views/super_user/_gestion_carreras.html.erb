@@ -1,0 +1,14 @@
+<%= content_for :javascript do %>   
+  <%= javascript_include_tag "gestion_carreras.js", "data-turbolinks-track" => true  %>
+<% end %>
+<h1>Gestionar carreras y asignaturas</h1>
+<%= form_for(:escuela, url: carreras_by_escuela_path, html: {id: 'escuela_form'}) do |f| %>
+	<div class="form-group">
+	  <%= f.label :escuelas %><br />
+	  <%= f.collection_select(:escuela, escuelas, :id, :nombre, {prompt: "Selecciona una escuela..."}, {class: 'form-control'}) %>
+	</div>
+<% end -%>
+
+<div id="carreras_container">
+	<%= render partial: 'carreras_table', locals: local_assigns %>
+</div>

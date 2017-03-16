@@ -3,7 +3,7 @@ namespace :desercion do
 	desc "Llena la tabla de deserciones con los estados iniciales."
 	task :fill_deserciones => :environment do
 		# Truncar la tabla antes de insertar
-		ActiveRecord::Base.connection.execute("TRUNCATE #{EstadoDesercion.table_name} RESTART IDENTITY")
+		ActiveRecord::Base.connection.execute("TRUNCATE #{EstadoDesercion.table_name} CASCADE")
 
 		estados = [
 			{nombre_estado: "Deserción Segura", notificar: false, riesgoso: false},
@@ -24,7 +24,7 @@ namespace :desercion do
 
 	desc "Llena la tabla de motivos de deserciones con sus tipos."
 	task :fill_motivos_desercion => :environment do
-		ActiveRecord::Base.connection.execute("TRUNCATE #{MotivoDesercion.table_name} RESTART IDENTITY")
+		ActiveRecord::Base.connection.execute("TRUNCATE #{MotivoDesercion.table_name} CASCADE")
 		motivos = [
 			{nombre: "Economico"},
 			{nombre: "Academico"},
@@ -41,7 +41,7 @@ namespace :desercion do
 
 	desc "Llena la tabla de motivos de deserciones con sus tipos."
 	task :fill_destinos => :environment do
-		ActiveRecord::Base.connection.execute("TRUNCATE #{Destino.table_name} RESTART IDENTITY")
+		ActiveRecord::Base.connection.execute("TRUNCATE #{Destino.table_name} CASCADE")
 		destinos = [
 			{nombre: "CC-FING"},
 			{nombre: "CC-UCEN"},

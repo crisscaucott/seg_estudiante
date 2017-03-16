@@ -588,6 +588,140 @@ class LogCargaMasiva < ActiveRecord::Base
 		return response
 	end
 
+	def uploadCarreraAsignaturas(escuela_id)
+		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
+		response = {error: false, msg: nil}
+		detail = {asignaturas_inserted: 0, asignaturas_failed: 0, asignaturas_found: 0, carrera_inserted: nil}
+
+		begin
+			# ENCONTRAR DURACION FORMAL DE LA CARRERA
+			spreadsheet.sheet("Malla General")
+			carrera_duracion = 0
+
+			(1..spreadsheet.last_row).each do |row_num|
+				# Por cada fila del excel, se intenta crear un array que contenga con la palabra 'semestre' en sus celdas.
+				semestres_arr = spreadsheet.row(row_num).grep(/semestre/i)
+				if semestres_arr.count != 0
+					carrera_duracion = semestres_arr.count
+					break
+				end
+			end
+
+			# FIN ENCONTRAR DURACION FORMAL DE LA CARRERA
+			if carrera_duracion != 0
+				# Se encontro la duracion de la carrera.
+				# Seleccionar la hoja con la carrera y las asignaturas.
+				spreadsheet.sheet("PLAN DE ESTUDIOS")
+
+				# El nombre de la carrera del excel.
+				carrera_cell = spreadsheet.row(6)[2]
+
+				if !carrera_cell.nil?
+					carrera_cell = carrera_cell.strip
+					# Se encontro el nombre de la carrera dentro del excel.
+					# Se busca la carrera en la BD por su nombre e id de escuela.
+					carrera_obj = Carrera.find_by(nombre: Carrera.new(nombre: carrera_cell).nombre, escuela_id: escuela_id)
+
+					if carrera_obj.nil?
+						# No existe, se crea.
+						carrera_obj = Carrera.new(nombre: carrera_cell, escuela_id: escuela_id, duracion_formal: carrera_duracion)
+						detail[:carrera_inserted] = carrera_obj.nombre
+
+						if !carrera_obj.save
+							# Si hay problemas en crear la carrera en la BD.
+							carrera_obj = nil
+							response[:error] = true
+							response[:msg] = "Ha ocurrido un problema en crear la carrera en el sistema. No se suben asignaturas."
+						end
+					end
+
+					if !carrera_obj.nil?
+						asignaturas_arr = []
+						# RECORRER LAS ASIGNATURAS
+						(1..spreadsheet.last_row).each do |row_num|
+							# Para considerar la asignatura se cuenta:
+							# 1.- La columna B debe tener un 1 (La fila que no tiene asignatura tiene NIL).
+							# 2.- Las columnas de horas semanales presenciales (D,E,F) de la fila, al menos una de ellas debe ser distinto de 0.
+							if spreadsheet.row(row_num)[1] == 1 && (spreadsheet.row(row_num)[3] != 0||spreadsheet.row(row_num)[4] != 0||spreadsheet.row(row_num)[5] != 0)
+								asignatura_cell = spreadsheet.row(row_num)[2].sub(/\(.*\)/, '').strip
+
+								if asignatura_cell !=~ /tutor(i|í)a/i
+									# No contar las asignaturas con nombre 'tutoria'.
+									# Buscar la asignatura en la BD por su nombre.
+									asignatura_obj = Asignatura.find_by(nombre: asignatura_cell)
+
+									if asignatura_obj.nil?
+										asignatura_obj = Asignatura.new(nombre: asignatura_cell)
+										# Se deja como NIL el objeto asignatura si no pasa las validaciones.
+										if !asignatura_obj.valid?
+											asignatura_obj = nil
+										end
+									end
+
+									# Por ahora solo se van a guardar los objetos asignatura 
+									if !asignatura_obj.nil?
+										asignaturas_arr << asignatura_obj
+									end
+
+								end
+							end
+						end
+						# FIN RECORRER LAS ASIGNATURAS
+
+						if asignaturas_arr.size != 0
+							# Guardar los ids de las asignaturas asociadas a la carrera para evitar generar asociaciones duplicadas.
+							carrera_asig_ids = carrera_obj.asignatura_ids
+
+							# Si se encontraron asignaturas.
+							# Se pasa a insertar las asignaturas a la BD.
+							asignaturas_arr.each do |a|
+								if a.id.nil?
+									# La asignatura no esta en la BD, se pasa a tratar de insertar.
+									if a.save
+										detail[:asignaturas_inserted] += 1
+										carrera_obj.asignaturas << a unless carrera_asig_ids.include?(a.id)
+									else
+										detail[:asignaturas_failed] += 1
+									end
+								else
+									# La asignatura ya esta en la BD, solo se asocia la carrera.
+									detail[:asignaturas_found] += 1
+									carrera_obj.asignaturas << a unless carrera_asig_ids.include?(a.id)
+								end
+							end
+						else
+							# No se encontraron asignaturas.
+							response[:error] = true
+							response[:msg] = "Se han encontrado 0 asignaturas dentro del excel."
+						end
+
+						if !response[:error]
+							# Si no hay errores, se registra la carga masiva del usuario.
+							self.tipo_carga = "carrera-asignatura"
+							self.detalle = detail
+							self.save
+							response[:msg] = detail
+						end
+					end # carrera_obj.nil?
+				else
+					# No se encontro el nombre de la carrera en el excel.
+					response[:error] = true
+					response[:msg] = "Hubo un problema en encontrar el nombre de la carrera. Por favor revise el formato del excel."
+				end
+			else
+				# No se encontro la duracion de la carrera.
+				response[:error] = true
+				response[:msg] = "Ha ocurrido un problema en encontrar la duración formal de la carrera."
+			end # carrera_duracion != 0
+		rescue RangeError => e
+			# Error al no encontrar la hoja 'plan de estudios'
+			response[:error] = true
+			response[:msg] = "Ha ocurrido un problema en encontrar la hoja 'plan de estudios' del excel."
+		end
+
+		return response
+	end
+
 	def openSpreadsheet(file)
 	  case file.extname
 		  when '.csv' then Roo::Csv.new(file.realpath, packed: false, file_warning: :ignore)

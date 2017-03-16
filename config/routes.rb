@@ -24,6 +24,14 @@ Rails.application.routes.draw do
   get '/admini/alertas/config', to: 'super_user#config_alertas', as: 'config_alertas'
   post '/admini/alertas/set_config', to: 'super_user#set_config_alertas', as: 'set_config_alertas'
 
+  get '/admini/carreras/', to: 'super_user#new_carrera', as: 'new_carrera'
+  post '/admini/carreras/subir', to: 'super_user#upload_carrera', as: 'upload_carrera'
+  get '/admini/carreras/gestion', to: 'super_user#gestion_carreras', as: 'gestion_carreras'
+  post '/admini/carreras/gestion/carreras_by_escuela', to: 'super_user#get_carreras_by_escuela', as: 'carreras_by_escuela'
+  post '/admini/carreras/gestion/update_carrera', to: 'super_user#update_carrera', as: 'update_carrera'
+  post '/admini/carreras/gestion/update_asignatura', to: 'super_user#update_asignatura', as: 'update_asignatura'
+  post '/admini/carreras/gestion/asignaturas_by_carrera', to: 'super_user#get_asignaturas_by_carrera', as: 'asignaturas_by_carrera'
+
 
   get '/carga_masiva', to: 'mass_load#index', as: 'mass_load'
   get '/carga_masiva/notas/subir', to: 'mass_load#notas', as: 'mass_load_notas'

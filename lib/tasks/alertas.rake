@@ -2,7 +2,7 @@ namespace :alertas do
 
 	desc "Task description"
 	task :fill_frec_alertas => :environment do
-		ActiveRecord::Base.connection.execute("TRUNCATE #{FrecAlerta.table_name} RESTART IDENTITY")
+		ActiveRecord::Base.connection.execute("TRUNCATE #{FrecAlerta.table_name} CASCADE")
 
 		frec_alertas = [
 			{dias: 7, mensaje: "1 semana"},

@@ -226,7 +226,6 @@ function enableButtonClickListener(){
   	var data = {estudiante_id: td.data('est-id'), asignatura_id: td.data('asig-id')};
   	var noti_params = {msg: null, type: 'info'};
 
-		console.log("ASFASFAS");
 		$.ajax({
 		  url: "/carga_masiva/asistencia/asistencia_detalle",
 		  data: data,

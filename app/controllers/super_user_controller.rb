@@ -362,6 +362,8 @@ class SuperUserController < ApplicationController
 		if !asignatura_obj.nil?
 			if params[:to_delete] == "1"
 				# Eliminar asignatura.
+				# Primero se debe desasociar las carreras de la asignatura
+				# asignatura_obj.carreras.clear
 				
 				render json: {msg: "Pueden haber estudiantes vinculados a la carrera a eliminar.", type: :warning}, status: 422
 

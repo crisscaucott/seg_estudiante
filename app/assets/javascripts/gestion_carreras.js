@@ -376,7 +376,7 @@ function enableEventListener(){
 			  {
 			    btn.val('Guardando...');
 			    btn.toggleClass('disabled');
-			    showNotification({msg: "Guardando cambios...", type: 'info', closeAll: true});
+			    showNotification({msg: "Guardando cambios...", type: 'info', closeAll: true, important: true});
 
 			  }
 			}).done(function(data, textStatus, jqXHR) {

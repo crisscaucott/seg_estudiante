@@ -8,7 +8,8 @@ class SuperUserController < ApplicationController
 		user: 'usuario',
 		estudiantes: 'estudiantes',
 		alertas: 'alertas',
-		tutores: 'tutores'
+		tutores: 'tutores',
+		carreras: 'carreras'
 	}
 
 	def index
@@ -251,6 +252,49 @@ class SuperUserController < ApplicationController
 
 	# --- FIN METODOS ALERTAS ---
 
+
+	# --- METODOS CARRERAS ---
+	def new_carrera
+		render action: :index, locals: {partial: 'new_carrera', context: CONTEXTS[:carreras], escuelas: Escuela.getEscuelas}
+	end
+
+	def upload_carrera
+		upload_params = new_carrera_params
+
+		if upload_params[:escuela].present?
+			escuela_obj = Escuela.select(:id).find_by(id: upload_params[:escuela])
+
+			if !escuela_obj.nil?
+				uploaded_file = uploadFile(upload_params[:file])
+
+				if !uploaded_file[:file_path].nil?
+					# Subir excel con la carrera y las asignaturas.
+					mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
+
+					res = mass_load_obj.uploadCarreraAsignaturas(escuela_obj.id)
+
+					if !res[:error]
+						render json: {msg: render_to_string(partial: 'detalle_subida_carrera', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
+						
+					else
+						render json: {msg: res[:msg], type: :danger}, status: :bad_request
+					end
+
+				else
+					# Problema con guardar el fichero
+					render json: {msg: "Ha ocurrido un problema en subir el archivo excel."}, status: :unprocessable_entity
+				end
+
+			else
+				render json: {msg: "Ha ocurrido un problema en encontrar la escuela seleccionada."}, status: :unprocessable_entity
+			end
+		else
+			render json: {msg: "Debe seleccionar una escuela para poder subir la carrera y las asignaturas.", type: :warning}, status: :unprocessable_entity
+		end
+	end
+
+	# --- FIN METODOS CARRERAS ---
+
 	private
 		def isDecano
 			if current_user.user_permission.name != "Decano"
@@ -283,6 +327,10 @@ class SuperUserController < ApplicationController
 
 	  def update_user_params
 	  	params.require(:user).permit(:id, :name, :rut, :last_name, :email, :id_permission, :deleted_at)
+	  end
+
+	  def new_carrera_params
+	  	params.require(:carrera).permit(:escuela, :file)
 	  end
 	  
 end

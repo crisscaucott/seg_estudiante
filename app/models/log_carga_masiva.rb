@@ -620,7 +620,7 @@ class LogCargaMasiva < ActiveRecord::Base
 					carrera_cell = carrera_cell.strip
 					# Se encontro el nombre de la carrera dentro del excel.
 					# Se busca la carrera en la BD por su nombre e id de escuela.
-					carrera_obj = Carrera.find_by(nombre: Carrera.new(nombre: carrera_cell).nombre, escuela_id: escuela_id)
+					carrera_obj = Carrera.find_by(nombre_formateado: Carrera.new(nombre: carrera_cell).nombre_formateado, escuela_id: escuela_id)
 
 					if carrera_obj.nil?
 						# No existe, se crea.
@@ -648,10 +648,11 @@ class LogCargaMasiva < ActiveRecord::Base
 								if asignatura_cell !=~ /tutor(i|í)a/i
 									# No contar las asignaturas con nombre 'tutoria'.
 									# Buscar la asignatura en la BD por su nombre.
-									asignatura_obj = Asignatura.find_by(nombre: asignatura_cell)
+									asignatura_obj_aux = Asignatura.new(nombre: asignatura_cell)
+									asignatura_obj = Asignatura.find_by(nombre_formateado: asignatura_obj_aux.nombre_formateado)
 
 									if asignatura_obj.nil?
-										asignatura_obj = Asignatura.new(nombre: asignatura_cell)
+										asignatura_obj = asignatura_obj_aux
 										# Se deja como NIL el objeto asignatura si no pasa las validaciones.
 										if !asignatura_obj.valid?
 											asignatura_obj = nil

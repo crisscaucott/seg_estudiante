@@ -1,4 +1,5 @@
 class Carrera < ActiveRecord::Base
+	include StrFormats
 	self.table_name = 'carrera'
 	has_and_belongs_to_many :asignaturas
 	has_many :estudiantes, class_name: "Estudiante", foreign_key: "carrera_id"
@@ -23,6 +24,13 @@ class Carrera < ActiveRecord::Base
 	end
 
 	def nombre=(new_nombre)
-		self[:nombre] = new_nombre.strip.capitalize
+		new_nombre = new_nombre.strip
+		self[:nombre] = new_nombre.capitalize
+		self[:nombre_formateado] = getFormattedLike(new_nombre)
 	end
+
+	def nombre_formateado=(new_nombre)
+		self[:nombre_formateado] = getFormattedLike(new_nombre)
+	end
+
 end

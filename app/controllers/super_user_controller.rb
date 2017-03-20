@@ -301,7 +301,7 @@ class SuperUserController < ApplicationController
 		escuela_params = carrera_by_escuela_params
 
 		if escuela_params[:escuela].present?
-			carreras = Carrera.where(escuela_id: escuela_params[:escuela])
+			carreras = Carrera.getCarreras(escuela_id: escuela_params[:escuela])
 			res = {msg: "Carreras obtenidas exitosamente.", type: :success}
 			if !carreras.present?
 				res[:msg] = "No se encontraron carreras para la escuela seleccionada."
@@ -322,11 +322,12 @@ class SuperUserController < ApplicationController
 		if !carrera_obj.nil?
 			if params[:to_delete] == "1"
 				# Eliminar carrera.
-				# Primero se borran las asociaciones de la carrera con sus asignaturas.
-				carrera_obj.asignaturas.clear
-				# Ver opcion de que hacer con los estudiantes asociados a la carrera a borrar.
-				
-				render json: {msg: "Pueden haber estudiantes vinculados a la carrera a eliminar.", type: :warning}, status: 422
+				carrera_obj.fecha_eliminacion = DateTime.now
+				carrera_obj.save
+
+				carreras = Carrera.getCarreras(escuela_id: carrera_data[:escuela_id])
+
+				render json: {msg: "Carrera eliminada exitosamente.", type: :success, table: render_to_string(partial: 'carreras_table', formats: [:html], layout: false, locals: {carreras: carreras})}
 
 			elsif params[:row_edited] == "1"
 				# Editar carrera.
@@ -362,10 +363,18 @@ class SuperUserController < ApplicationController
 		if !asignatura_obj.nil?
 			if params[:to_delete] == "1"
 				# Eliminar asignatura.
-				# Primero se debe desasociar las carreras de la asignatura
-				# asignatura_obj.carreras.clear
-				
-				render json: {msg: "Pueden haber estudiantes vinculados a la carrera a eliminar.", type: :warning}, status: 422
+
+				# Comprobar que la carrera de la asignatura asociada existe.
+				carrera_obj = Carrera.select([:id, :nombre]).find_by(id: asignatura_data[:carrera_id])
+				if !carrera_obj.nil?
+					# Se borra la asociacion de la asignatura con su carrera.
+					carrera_obj.asignaturas.delete(asignatura_obj)
+					
+					asignaturas = carrera_obj.asignaturas
+					render json: {msg: "Asignatura eliminada exitosamente.", type: :success, carrera: carrera_obj.nombre, table: render_to_string(partial: 'asignaturas_table', formats: [:html], layout: false, locals: {asignaturas: asignaturas, carrera_id: carrera_obj.id})}
+				else
+					render json: {msg: "Hubo un problema con el borrado de la asignatura. No existe la carrera asociada.", type: :danger}, status: 422
+				end
 
 			elsif params[:row_edited] == "1"
 				# Editar asignatura.

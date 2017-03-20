@@ -6,10 +6,16 @@ class Carrera < ActiveRecord::Base
 	belongs_to :escuela, class_name: "Escuela", foreign_key: :escuela_id
 
 	def self.getCarreras(filters = {})
-		carreras = self.select([:id, :nombre]).order(nombre: :asc)
+		carreras = self.order(nombre: :asc)
+
 		if filters[:escuela_id].present?
 			carreras = carreras.where(escuela_id: filters[:escuela_id])
 		end
+
+		if !(filters[:borrado].present? && filters[:borrado])
+			carreras = carreras.where(fecha_eliminacion: nil)
+		end
+
 		return carreras
 	end
 

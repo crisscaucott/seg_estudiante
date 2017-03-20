@@ -12,6 +12,7 @@ estudiantes_form.fileupload({
     types = /(\.|\/)(xlsx?)$/i;
     file = data.files[0];
     if (types.test(file.type) || types.test(file.name)) {
+      $(this).find('input:text')[0].value = file.name;
       data.submit();
     }
     else{

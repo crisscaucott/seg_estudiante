@@ -636,10 +636,10 @@ class LogCargaMasiva < ActiveRecord::Base
 				carrera_cell = spreadsheet.row(6)[2]
 
 				if !carrera_cell.nil?
-					carrera_cell = carrera_cell.strip
 					# Se encontro el nombre de la carrera dentro del excel.
+					carrera_cell = carrera_cell.strip
 					# Se busca la carrera en la BD por su nombre e id de escuela.
-					carrera_obj = Carrera.find_by(nombre_formateado: Carrera.new(nombre: carrera_cell).nombre_formateado, escuela_id: escuela_id)
+					carrera_obj = Carrera.find_by(nombre_formateado: Carrera.new(nombre: carrera_cell).nombre_formateado, escuela_id: escuela_id, fecha_eliminacion: nil)
 
 					if carrera_obj.nil?
 						# No existe, se crea.

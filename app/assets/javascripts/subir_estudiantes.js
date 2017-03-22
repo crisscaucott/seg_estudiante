@@ -39,6 +39,12 @@ estudiantes_form.fileupload({
   done: function(e, data){
   	var res = data.jqXHR.responseJSON;
   	showNotification({msg: res.msg, type: 'success', closeAll: true});
+
+    // Descargar el archivo de resumen con la subida de los estudiantes.
+    if (res.resumen_url) {
+      window.location.href = res.resumen_url;
+    }
+
   },
   // Falla la subida.
   fail: function(e, data){

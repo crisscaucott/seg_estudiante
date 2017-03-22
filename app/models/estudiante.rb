@@ -120,11 +120,11 @@ class Estudiante < ActiveRecord::Base
 	end
 
 	def nombre=(new_nombre)
-		self[:nombre] = new_nombre.strip.titleize
+		self[:nombre] = new_nombre.strip.mb_chars.titleize.to_s
 	end
 
 	def apellido=(new_apellido)
-		self[:apellido] = new_apellido.strip.titleize
+		self[:apellido] = new_apellido.strip.mb_chars.titleize.to_s
 	end
 
 	def rut=(new_rut)

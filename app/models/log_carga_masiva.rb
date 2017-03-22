@@ -444,7 +444,7 @@ class LogCargaMasiva < ActiveRecord::Base
 						if estudiante_obj.valid?
 							puts "Estudiante encontrado valido".green
 							est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
-							# estudiante_obj.save
+							estudiante_obj.save
 
 						else
 							puts "Estudiante encontrado no valido".green
@@ -461,7 +461,7 @@ class LogCargaMasiva < ActiveRecord::Base
 						if estudiante_obj.valid?
 							# Cumple con todas las validaciones.
 							puts "Estudiante nuevo valido".green
-							# estudiante_obj.save
+							estudiante_obj.save
 							est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
 
 						else

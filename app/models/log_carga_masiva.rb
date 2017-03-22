@@ -384,7 +384,7 @@ class LogCargaMasiva < ActiveRecord::Base
 					nombre: row_hash[:nombres],
 					apellido: row_hash[:a_paterno] + " " + row_hash[:a_materno],
 					rut: row_hash[:rut].to_i.to_s.strip,
-					dv: row_hash[:dv].to_i.to_s.strip,
+					dv: row_hash[:dv].to_s.strip,
 					fecha_ingreso: formatPeriodoAcademico(row_hash[:periodo_academico].to_i.to_s),
 					carrera_id: carrera_obj.nil? ? nil : carrera_obj.id,
 					estado_desercion_id: estado_desercion_obj.id # Todos los estudiantes se inicializan con estado de desercion "ninguno".

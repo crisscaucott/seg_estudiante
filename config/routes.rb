@@ -44,6 +44,8 @@ Rails.application.routes.draw do
   post '/carga_masiva/asistencia/asistencia_detalle', to: 'mass_load#get_asistencia_detail', as: 'mass_load_asistencia_detail'
   post '/carga_masiva/asistencia/filtering', to: 'mass_load#get_asistencia_filtering', as: 'filtering_asistencia'
 
+
+  get '/carga_masiva/alumnos/resumen_subida/:id', to: 'mass_load#resumen_subida_estudiantes', as: 'resumen_subida'
   get '/carga_masiva/alumnos/subir', to: 'mass_load#subir_estudiantes', as: 'mass_load_alumnos'
   get '/carga_masiva/alumnos/ver', to: 'mass_load#get_alumnos', as: 'mass_load_get_alumnos'
 

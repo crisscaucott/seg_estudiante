@@ -176,13 +176,60 @@ class MassLoadController < ApplicationController
 			res = mass_load_obj.uploadEstudiantes()
 
 			if !res[:error]
-				render json: {msg: render_to_string(partial: 'detalle_subida_estudiante', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
+				render json: {resumen_url: url_for(resumen_subida_path(mass_load_obj.id)),msg: render_to_string(partial: 'detalle_subida_estudiante', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}
 				
 			else
 				render json: {msg: res[:msg], type: "danger"}, status: :bad_request
 			end
 		else
 			render json: {msg: "Ha ocurrido un problema en guardar el archivo."}, status: :unprocessable_entity
+		end
+	end
+
+	def resumen_subida_estudiantes
+		carga_masiva_obj = LogCargaMasiva.find_by(id: params[:id])
+
+		if !carga_masiva_obj.nil?
+			file_name = "Resumen_carga_de_estudiantes(#{carga_masiva_obj.id})-#{carga_masiva_obj.created_at.strftime("%Y-%m-%d")}.txt"
+			file = File.new(file_name, "w")
+
+			# Escribir el nombre del usuario que subio el excel.
+			file.puts("Subido por: #{carga_masiva_obj.usuario.name} #{carga_masiva_obj.usuario.last_name}")
+
+			# Escribir la fecha y hora de cuando se subio el excel. 
+			file.puts("Subido a las: #{carga_masiva_obj.created_at.strftime("%Y-%m-%d %H:%M")}")
+
+			# Total estudiantes dentro del excel.
+			file.puts("Nº total de estudiantes del excel: #{carga_masiva_obj.detalle['total']}")
+
+			# Estudiantes nuevos.
+			file.puts("Nº de estudiantes subidos como nuevos: #{carga_masiva_obj.detalle['new'].size}")
+
+			if carga_masiva_obj.detalle['new'].size != 0
+				file.puts("#{carga_masiva_obj.detalle["new"].join(", ")}\n")
+			end
+
+			# Estudiantes actualizados.
+			file.puts("Nº de estudiantes encontrados en el sistema y actualizados: #{carga_masiva_obj.detalle['upd'].size}")
+
+			if carga_masiva_obj.detalle['upd'].size != 0
+				file.puts("#{carga_masiva_obj.detalle["upd"].join(", ")}\n")
+			end
+
+			# Estudiantes no subidos por error.
+			file.puts("Nº de estudiantes que no se subieron: #{carga_masiva_obj.detalle['failed'].size}")
+
+			if carga_masiva_obj.detalle['failed'].size != 0
+				file.puts("#{carga_masiva_obj.detalle["failed"].join(", ")}\n")
+			end
+
+			file.close()
+
+			File.open(Rails.root.join(file_name) ,'r') do |f|
+		  	send_data f.read, :type => "application/text", :disposition => "attachment", filename: file_name
+			end
+
+			File.delete(Rails.root.join(file_name))
 		end
 	end
 

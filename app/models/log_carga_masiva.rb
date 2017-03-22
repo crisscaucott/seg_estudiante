@@ -1,5 +1,6 @@
 class LogCargaMasiva < ActiveRecord::Base
 	self.table_name = 'log_carga_masiva'
+	belongs_to :usuario, class_name: "User", foreign_key: :usuario_id
 
 	def uploadAssistance(carrera_id)
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
@@ -363,7 +364,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		response = {error: false, msg: nil}
 		header = spreadsheet.row(1).map{|h| h.gsub(/ñ/i, 'n').downcase.to_sym }
 		estado_desercion_obj = EstadoDesercion.select(:id).find_by(nombre_estado: EstadoDesercion::DESERTO_NINGUNO)
-		est_detail = {total: 0, new: 0, upd: 0, failed: 0}
+		est_detail = {total: 0, new: [], upd: [], failed: []}
 
 		# Se verifica que el estado de desercion 'ninguno' exista.
 		if estado_desercion_obj.nil?
@@ -442,12 +443,12 @@ class LogCargaMasiva < ActiveRecord::Base
 
 						if estudiante_obj.valid?
 							puts "Estudiante encontrado valido".green
-							est_detail[:upd] += 1
-							estudiante_obj.save
+							est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
+							# estudiante_obj.save
 
 						else
 							puts "Estudiante encontrado no valido".green
-							est_detail[:failed] += 1
+							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 							
 						end
 
@@ -456,24 +457,24 @@ class LogCargaMasiva < ActiveRecord::Base
 						estudiante_obj = Estudiante.new(est_hash)
 						info_estudiante_obj = InfoEstudiante.new(info_est_hash)
 						estudiante_obj.info_estudiante = info_estudiante_obj
-						
+
 						if estudiante_obj.valid?
 							# Cumple con todas las validaciones.
 							puts "Estudiante nuevo valido".green
-							est_detail[:new] += 1
-							estudiante_obj.save
+							# estudiante_obj.save
+							est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
 
 						else
 							# No cumple.
 							puts "Estudiante nuevo no valido".green
-							est_detail[:failed] += 1
+							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 							
 						end
 					end
 				else
 					# No se encontro la carrera.
 					puts "No se encontro la carrera.".green
-					est_detail[:failed] += 1
+					est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
 
 				end
 			end # END if [0].nil?

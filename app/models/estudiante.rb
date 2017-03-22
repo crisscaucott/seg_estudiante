@@ -115,6 +115,10 @@ class Estudiante < ActiveRecord::Base
 		self.errors[:rut] << "Rut inválido." if !RUT::validar(rut)
 	end
 
+	def getFormattedRut
+		return RUT::formatear(self.rut + self.dv)
+	end
+
 	def nombre=(new_nombre)
 		self[:nombre] = new_nombre.strip.titleize
 	end

@@ -1,6 +1,7 @@
 class Asistencia < ActiveRecord::Base
 	belongs_to :estudiante, class_name: "Estudiante"
 	belongs_to :asignatura, class_name: "Asignatura"
+	has_one :estado_asistencia, class_name: "EstadosAsistencia", foreign_key: :id, primary_key: :estado_asistencia_id
 
 	def self.getAsistencias(filters = {})
 		query = self.includes(:asignatura, :estudiante).select([:estudiante_id, :asignatura_id]).group(:estudiante_id, :asignatura_id)

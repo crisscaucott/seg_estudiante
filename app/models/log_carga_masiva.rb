@@ -8,14 +8,16 @@ class LogCargaMasiva < ActiveRecord::Base
 		header_assis = nil
 		response = {error: false, msg: nil}
 		assis_detail = {success: 0, failed: 0, est_not_found: 0, total: 0, est_multiple: 0}
+		estados_asistencia = EstadosAsistencia.all
 
 		(1..spreadsheet.last_row).each do |ss_row|
 			# Fila 'curso'
 			if spreadsheet.row(ss_row)[0] =~ /curso/i
-				asig_match = /\[.*\]/.match(spreadsheet.row(ss_row)[1])
+				asig_match = /[0-9]+/.match(spreadsheet.row(ss_row)[1].strip)
 
 				if !asig_match.nil?
-					asig_code = asig_match[0].gsub(/(\[|\]|\s)/, '').strip
+					# Encontro el codigo de la asignatura en el excel.
+					asig_code = asig_match[0].strip
 					req_data[:asignatura] = Asignatura.select(:id).where(codigo: asig_code).where(fecha_borrado: nil).first
 
 					if req_data[:asignatura].nil?
@@ -80,6 +82,25 @@ class LogCargaMasiva < ActiveRecord::Base
 							assis_value = assis_value.strip.downcase
 							assis_obj = Asistencia.select([:id, :valor_asistencia]).where(asignatura_id: req_data[:asignatura].id).where(estudiante_id: estudiante_obj.id).where(fecha_asistida: fecha_assis).first
 
+							# Se busca el objeto en el array de estados de asistencia.
+							estado_assis_obj = nil
+							estados_asistencia.each do |ea|
+								if ea.estado_corto == assis_value
+									estado_assis_obj = ea
+									break
+								end
+							end
+
+							# Si el valor de la asistencia no esta en la BD, se deja como ausente.
+							if estado_assis_obj.nil?
+								estados_asistencia.each do |ea|
+									if ea.estado_corto == "a"
+										estado_assis_obj = ea
+										break
+									end
+								end								
+							end
+
 							if assis_obj.nil?
 								# Si no existe el registro de asistencia para el alumno x cursando la asignatura x en la fecha x, 
 								# se ingresa como una nueva asistencia a la BD.
@@ -87,7 +108,7 @@ class LogCargaMasiva < ActiveRecord::Base
 									asignatura_id: req_data[:asignatura].id,
 									estudiante_id: estudiante_obj.id,
 									fecha_asistida: fecha_assis,
-									valor_asistencia: assis_value
+									estado_asistencia_id: estado_assis_obj.id
 								)
 
 								if assis_obj.save
@@ -101,9 +122,10 @@ class LogCargaMasiva < ActiveRecord::Base
 								end
 
 							else
-								# Sino, se actualiza el valor de la asistencia.
-								assis_obj.valor_asistencia = assis_value
-								if assis_obj.save!
+								# Si existe en la BD, se actualiza el estado de la asistencia.
+								assis_obj.estado_asistencia_id = estado_assis_obj.id
+								
+								if assis_obj.save
 									# Se actualiza la asistencia exitosamente.
 									puts "SE ACTUALIZA ASISTENCIA ID: #{assis_obj.id} para estudiante: #{estudiante_obj.id}".green
 

@@ -28,7 +28,7 @@ class Asistencia < ActiveRecord::Base
 	end
 
 	def self.getAsistenciaDetail(filters)
-		return self.select(:estudiante_id, :asignatura_id, :fecha_asistida, :valor_asistencia).where(estudiante_id: filters[:estudiante_id]).where(asignatura_id: filters[:asignatura_id])
+		return self.includes(:estado_asistencia).select(:estudiante_id, :asignatura_id, :fecha_asistida, :estado_asistencia_id).where(estudiante_id: filters[:estudiante_id]).where(asignatura_id: filters[:asignatura_id])
 	end
 
 end

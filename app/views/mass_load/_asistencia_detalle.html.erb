@@ -10,7 +10,7 @@
     <% asistencia.each do |a| %>
       <tr>
         <td><%= a.fecha_asistida.strftime("%Y/%m/%d %H:%M") %></td>
-        <td><%= a.valor_asistencia %></td>
+        <td><%= a.estado_asistencia.nombre_estado %></td>
       </tr>
     <% end %>
 

@@ -86,16 +86,19 @@ class MassLoadController < ApplicationController
 			carreras: Carrera.getCarreras(escuela_id: current_user.escuela_id),
 			periodos: years_ago = Date.today.year.downto(Date.today.year - ANIOS_ATRAS).to_a
 		}
-		
-		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias, filtros: filtro_asistencia}
+
+		render action: :index, locals: {partial: 'get_asistencia', context: 'asistencia', asistencias: asistencias, filtros: filtro_asistencia, periodo: -1}
 	end
 
 	def get_asistencia_filtering
 		filter_params = asistencia_filter_params
 		asistencias = Asistencia.getAsistencias(filter_params)
+		periodo = filter_params[:periodo].present? ? filter_params[:periodo] : -1
 
 		if asistencias.present?
-			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", type: :success, asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
+			render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", type: :success, table: render_to_string(partial: 'asistencia_table', formats: [:html], layout: false, locals: {asistencias: asistencias, periodo: periodo})}
+
+			# render json: {msg: "Datos de estudiantes con sus asistencias obtenidos exitosamente.", type: :success, asistencias: asistencias}, include: [:asignatura, estudiante: {include: :carrera}]
 
 		else
 			render json: {msg: "No se han encontrado estudiantes con los filtros definidos.", type: :warning, asistencias: asistencias}
@@ -371,7 +374,7 @@ class MassLoadController < ApplicationController
 	end
 
 	def asistencia_detail_filter_params
-		params.permit(:estudiante_id, :asignatura_id)
+		params.permit(:asignatura_id, :estudiante_id, :periodo)
 	end
 
 	def subir_estudiante_params

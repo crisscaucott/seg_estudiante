@@ -1,20 +1,5 @@
 var table = $('table#asis_table');
 var datatable_options = {
-    created_row: function( row, data, dataIndex ) {
-      if (/\|/.test(data.estudiante)){
-        aux_est = data.estudiante.split("|")
-        $(row).find('td:eq(1)').html(aux_est[0]);
-        $(row).find('td:eq(1)').attr('data-estudiante-id', aux_est[1]);
-      }
-      if (/\|/.test(data.asignatura)) {
-        aux_asig = data.asignatura.split("|")
-        $(row).find('td:eq(2)').html(aux_asig[0]);
-        $(row).find('td:eq(2)').attr('data-asignatura-id', aux_asig[1]);
-      }
-      if (data.accion == null) {
-        $(row).find('td:eq(3)').html("<button name='button' type='submit' class='btn btn-primary ver-detail'>Ver</button>");
-      }
-    },
     dom: 'ftip',
     columns: [
       {"data": "num"}, 
@@ -25,58 +10,49 @@ var datatable_options = {
   }
 initDataTable(table, datatable_options);
 
-table.on('click', 'button.ver-detail', function(event){
+
+$('div#asistencia_container').on('click', 'button.ver-detail', function (event){
   var btn = $(this);
-  var btn_text = btn.val();
-  var tds = $(this).parent().parent().find('td');
-  var data = {estudiante_id: null, asignatura_id: null};
+  var btn_text = btn.text();
+  // var tds = $(this).parent().parent().find('td');
+  var data = $(this).parents('tr').data();
   var noti_params = {msg: null, type: 'info'};
 
-  for (var i = 0; i < tds.length; i++) {
-    if ($(tds[i]).data('estudianteId') !== undefined)
-      data.estudiante_id = $(tds[i]).data('estudiante-id');
+  $.ajax({
+    url: "/carga_masiva/asistencia/asistencia_detalle",
+    data: {periodo: data.periodo, estudiante_id: data.estudianteId, asignatura_id: data.asignaturaId},
+    method: "post",
+    beforeSend: function()
+    {
+      btn.text('Cargando...');
+      btn.toggleClass('disabled');
+    }
+  }).done(function(data, textStatus, jqXHR) {
+      noti_params.msg = data.msg;
+      noti_params.type = data.type;
 
-    if ($(tds[i]).data('asignaturaId') !== undefined)
-      data.asignatura_id = $(tds[i]).data('asignatura-id');
-  }
+      bootbox.alert({
+        size: 'large',
+        title: data.title,
+        message: data.table
+      });
 
-  if (data.estudiante_id !== null && data.asignatura_id !== null) {
-    $.ajax({
-      url: "/carga_masiva/asistencia/asistencia_detalle",
-      data: data,
-      method: "post",
-      beforeSend: function()
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+
+      noti_params.msg = errorThrown;
+      noti_params.type = 'danger';
+
+      if (jqXHR.responseJSON !== undefined)
       {
-        btn.val('Cargando...');
-        btn.toggleClass('disabled');
+        noti_params.msg = jqXHR.responseJSON.msg;
+        noti_params.type = jqXHR.responseJSON.type;
       }
-    }).done(function(data, textStatus, jqXHR) {
-        noti_params.msg = data.msg;
-        noti_params.type = data.type;
 
-        bootbox.alert({
-          size: 'large',
-          title: data.title,
-          message: data.table
-        });
-
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-
-        noti_params.msg = errorThrown;
-        noti_params.type = 'danger';
-
-        if (jqXHR.responseJSON !== undefined)
-        {
-          noti_params.msg = jqXHR.responseJSON.msg;
-          noti_params.type = jqXHR.responseJSON.type;
-        }
-
-    }).always(function(data, textStatus, errorThrown) {
-        btn.toggleClass('disabled');
-        btn.val(btn_text);
-        showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
-    }); 
-  }
+  }).always(function(data, textStatus, errorThrown) {
+      btn.toggleClass('disabled');
+      btn.text(btn_text);
+      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+  }); 
 });
 
 // Envio formulario con los filtros de las asistencias.
@@ -98,19 +74,14 @@ $('form#filters_form').submit(function(event){
     }
   }).done(function(data, textStatus, jqXHR) {
       // Borrar los datos de la tabla.
-      var dt = table.DataTable();
-      dt.clear();
-      for (var i = 0; i < data.asistencias.length; i++)
-      {
-        // var pa = new Date(Date.parse(data.calificaciones[i].periodo_academico));
-        dt.row.add({
-          "num": i + 1,
-          "estudiante": data.asistencias[i].estudiante.nombre + " " + data.asistencias[i].estudiante.apellido + "|" +data.asistencias[i].estudiante_id,
-          "asignatura": data.asistencias[i].asignatura.nombre + "|" +data.asistencias[i].asignatura_id,
-          "accion": null
-        });
-      }
-      dt.draw();
+      table.DataTable().clear();
+      $('div#asistencia_container').html(data.table);
+      table.DataTable().draw();
+
+      table = $('table#asis_table');
+      if (data.table !== undefined)
+        initDataTable(table, datatable_options);
+
       noti_params.msg = data.msg;
       noti_params.type = data.type;
 
@@ -138,41 +109,50 @@ $("select#filters_carrera").on('change', function(event){
   var noti_params = {msg: null, type: 'info'};
   var asignatura_select = $('select#filters_asignatura');
 
-  $.ajax({
-    url: '/carga_masiva/notas/ver/get_asignaturas',
-    data: {carrera_id: carrera_id},
-    method: 'post',
-    beforeSend: function()
-    {
-      // Quitar todas las opciones de asignaturas.
-      asignatura_select.empty();
-      // Agregar la primera de "cualquiera"
-      asignatura_select.append('<option value>Cualquiera</option>');
-
-      asignatura_select.prop('disabled', true);
-      showNotification({msg: "Obteniendo asignaturas por carrera...", type: 'info', closeAll: true});
-    }
-  }).done(function(data, textStatus, jqXHR) {
-      noti_params.msg = data.msg;
-      noti_params.type = data.type;
-
-      // Agregar las asignaturas obtenidas del servidor.
-      for (var i = 0; i < data.asignaturas.length; i++) {
-        asignatura_select.append('<option value="' + data.asignaturas[i].id +'">' + data.asignaturas[i].nombre + '</option>');
-      }
-
-  }).fail(function(jqXHR, textStatus, errorThrown) {
-      noti_params.msg = errorThrown;
-      noti_params.type = 'danger';
-
-      if (jqXHR.responseJSON !== undefined)
+  if (carrera_id.length != 0) {
+    $.ajax({
+      url: '/carga_masiva/notas/ver/get_asignaturas',
+      data: {carrera_id: carrera_id},
+      method: 'post',
+      beforeSend: function()
       {
-        noti_params.msg = jqXHR.responseJSON.msg;
-        noti_params.type = jqXHR.responseJSON.type;
+        prepareAsignaturaCombo();
+        asignatura_select.prop('disabled', true);
+        showNotification({msg: "Obteniendo asignaturas por carrera...", type: 'info', closeAll: true});
       }
+    }).done(function(data, textStatus, jqXHR) {
+        noti_params.msg = data.msg;
+        noti_params.type = data.type;
 
-  }).always(function(data, textStatus, errorThrown) {
-      asignatura_select.prop('disabled', false);
-      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
-  });
+        // Agregar las asignaturas obtenidas del servidor.
+        for (var i = 0; i < data.asignaturas.length; i++) {
+          asignatura_select.append('<option value="' + data.asignaturas[i].id +'">' + data.asignaturas[i].nombre + '</option>');
+        }
+
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        noti_params.msg = errorThrown;
+        noti_params.type = 'danger';
+
+        if (jqXHR.responseJSON !== undefined)
+        {
+          noti_params.msg = jqXHR.responseJSON.msg;
+          noti_params.type = jqXHR.responseJSON.type;
+        }
+
+    }).always(function(data, textStatus, errorThrown) {
+        asignatura_select.prop('disabled', false);
+        showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+    });
+  }else{
+    prepareAsignaturaCombo();
+  }
 });
+
+function prepareAsignaturaCombo()
+{
+  var asignatura_select = $('select#filters_asignatura');
+  // Quitar todas las opciones de asignaturas.
+  asignatura_select.empty();
+  // Agregar la primera de "cualquiera"
+  asignatura_select.append('<option value>Cualquiera</option>');
+}

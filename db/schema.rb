@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170318090749) do
+ActiveRecord::Schema.define(version: 20170324185515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,12 +42,13 @@ ActiveRecord::Schema.define(version: 20170318090749) do
   end
 
   create_table "asistencia", force: :cascade do |t|
-    t.integer  "asignatura_id",    null: false
-    t.integer  "estudiante_id",    null: false
-    t.datetime "fecha_asistida",   null: false
+    t.integer  "asignatura_id",        null: false
+    t.integer  "estudiante_id",        null: false
+    t.datetime "fecha_asistida",       null: false
     t.string   "valor_asistencia"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.integer  "estado_asistencia_id", null: false
   end
 
   create_table "calificacion", force: :cascade do |t|
@@ -88,6 +89,11 @@ ActiveRecord::Schema.define(version: 20170318090749) do
     t.string  "nombre_estado",                 null: false
     t.boolean "notificar",     default: false
     t.boolean "riesgoso",      default: false, null: false
+  end
+
+  create_table "estados_asistencia", force: :cascade do |t|
+    t.string "nombre_estado", null: false
+    t.string "estado_corto",  null: false
   end
 
   create_table "estilos_aprendizaje", force: :cascade do |t|
@@ -236,6 +242,7 @@ ActiveRecord::Schema.define(version: 20170318090749) do
 
   add_foreign_key "alerta", "users", column: "usuario_id"
   add_foreign_key "asistencia", "asignatura"
+  add_foreign_key "asistencia", "estados_asistencia", column: "estado_asistencia_id"
   add_foreign_key "asistencia", "estudiante"
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"

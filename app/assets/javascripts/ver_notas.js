@@ -81,41 +81,50 @@ $("select#filters_carrera").on('change', function(event){
   var noti_params = {msg: null, type: 'info'};
   var asignatura_select = $('select#filters_asignatura');
 
-  $.ajax({
-    url: '/carga_masiva/notas/ver/get_asignaturas',
-    data: {carrera_id: carrera_id},
-    method: 'post',
-    beforeSend: function()
-    {
-      // Quitar todas las opciones de asignaturas.
-      asignatura_select.empty();
-      // Agregar la primera de "cualquiera"
-      asignatura_select.append('<option value>Cualquiera</option>');
-
-      asignatura_select.prop('disabled', true);
-      showNotification({msg: "Obteniendo asignaturas por carrera...", type: 'info', closeAll: true});
-    }
-  }).done(function(data, textStatus, jqXHR) {
-      noti_params.msg = data.msg;
-      noti_params.type = data.type;
-
-      // Agregar las asignaturas obtenidas del servidor.
-      for (var i = 0; i < data.asignaturas.length; i++) {
-        asignatura_select.append('<option value="' + data.asignaturas[i].id +'">' + data.asignaturas[i].nombre + '</option>');
-      }
-
-  }).fail(function(jqXHR, textStatus, errorThrown) {
-      noti_params.msg = errorThrown;
-      noti_params.type = 'danger';
-
-      if (jqXHR.responseJSON !== undefined)
+  if (carrera_id.length != 0) {
+    $.ajax({
+      url: '/carga_masiva/notas/ver/get_asignaturas',
+      data: {carrera_id: carrera_id},
+      method: 'post',
+      beforeSend: function()
       {
-        noti_params.msg = jqXHR.responseJSON.msg;
-        noti_params.type = jqXHR.responseJSON.type;
+        prepareAsignaturaCombo();
+        asignatura_select.prop('disabled', true);
+        showNotification({msg: "Obteniendo asignaturas por carrera...", type: 'info', closeAll: true});
       }
+    }).done(function(data, textStatus, jqXHR) {
+        noti_params.msg = data.msg;
+        noti_params.type = data.type;
 
-  }).always(function(data, textStatus, errorThrown) {
-      asignatura_select.prop('disabled', false);
-      showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
-  });
+        // Agregar las asignaturas obtenidas del servidor.
+        for (var i = 0; i < data.asignaturas.length; i++) {
+          asignatura_select.append('<option value="' + data.asignaturas[i].id +'">' + data.asignaturas[i].nombre + '</option>');
+        }
+
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        noti_params.msg = errorThrown;
+        noti_params.type = 'danger';
+
+        if (jqXHR.responseJSON !== undefined)
+        {
+          noti_params.msg = jqXHR.responseJSON.msg;
+          noti_params.type = jqXHR.responseJSON.type;
+        }
+
+    }).always(function(data, textStatus, errorThrown) {
+        asignatura_select.prop('disabled', false);
+        showNotification({msg: noti_params.msg, type: noti_params.type, closeAll: true})
+    });
+  }else{
+    prepareAsignaturaCombo();
+  }
 });
+
+function prepareAsignaturaCombo()
+{
+  var asignatura_select = $('select#filters_asignatura');
+  // Quitar todas las opciones de asignaturas.
+  asignatura_select.empty();
+  // Agregar la primera de "cualquiera"
+  asignatura_select.append('<option value>Cualquiera</option>');
+}

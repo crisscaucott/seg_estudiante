@@ -318,6 +318,15 @@ class LogCargaMasiva < ActiveRecord::Base
 				    						
 				    					end
 				    				end # END calificacion_obj.nil?
+				    			else
+				    				# Como no hay valor para este tipo de nota (n1, n2) se consulta en la BD si existe para borrarlo.
+				    				calificacion_obj = Calificacion.select(:id).find_by(estudiante_id: estudiante_obj.id, asignatura_id: asignatura_obj.id, periodo_academico: periodo_academico, nombre_calificacion: tipo_nota)
+
+				    				if !calificacion_obj.nil?
+				    					# Existe este tipo de nota en la BD, se elimina.
+				    					calificacion_obj.delete
+				    				end
+
 				    			end # END !nota.nil?
 				    		end # END ponderaciones_hash.each
 

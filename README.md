@@ -23,3 +23,5 @@ rake 'desercion:fill_destinos'
 
 # Crear las opciones de frecuencias de alertas
 rake 'alertas:fill_frec_alertas'
+
+rake 'asistencias:fill_estados_asistencias'

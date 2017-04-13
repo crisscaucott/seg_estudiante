@@ -158,11 +158,11 @@ function init2() {
       // Event Handlers
       $checkbox.prop('checked', !$checkbox.is(':checked'));
       $checkbox.triggerHandler('change');
-      updateDisplay($checkbox, $widget, style, color);      
+      updateDisplay($checkbox, $widget, style, color, true);      
     }
 
     $checkbox.on('change', function (event) {
-        updateDisplay($checkbox, $widget, style, color);
+        updateDisplay($checkbox, $widget, style, color, true);
     });
       
     
@@ -210,7 +210,7 @@ function updateAllDisplays(checkboxes) {
 }
 
 // Actions
-function updateDisplay(checkbox, widget, style, color, set_icon = true) {
+function updateDisplay(checkbox, widget, style, color, set_icon) {
   var isChecked = checkbox.is(':checked');
 
   // Set the button's state

@@ -442,6 +442,10 @@ class SuperUserController < ApplicationController
 			rescue ActionController::ParameterMissing => e
 				render json: {msg: "Faltan datos.", type: :danger}, status: :bad_request
 			rescue StandardError => e
+				puts "Around ERROR:"
+				puts e
+				puts "Around ERROR backtrace:"
+				puts e.backtrace
 				raise e
 			end
 		end	

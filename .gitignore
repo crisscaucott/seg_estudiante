@@ -21,5 +21,6 @@
 /.byebug_history
 # Ignorar achivos excel subidos.
 /public/uploaded/*
+/tmp/uploaded/*
 # Ignore application configuration
 /config/application.yml

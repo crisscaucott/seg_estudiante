@@ -74,3 +74,8 @@ group :development do
   gem 'bullet'
 end
 
+group :production do
+	gem 'pg'
+	gem 'rails_12factor'
+
+end

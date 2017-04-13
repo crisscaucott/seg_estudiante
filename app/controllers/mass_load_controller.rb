@@ -395,6 +395,10 @@ class MassLoadController < ApplicationController
 		begin
 			yield
 		rescue StandardError => e
+			puts "Around ERROR:"
+			puts e
+			puts "Around ERROR backtrace:"
+			puts e.backtrace
 			if e.backtrace[0] =~ /log_carga_masiva/i
 				render json: {msg: "Error de lectura del excel.", type: :danger}, status: :bad_request
 			else

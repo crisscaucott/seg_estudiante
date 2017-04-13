@@ -3,7 +3,7 @@ module MassLoadHelper
 		uploaded_io = file
 		res = {file_path: nil}
 		begin
-			excel_file = Rails.root.join('tmp', 'uploaded', uploaded_io.original_filename)
+			excel_file = Rails.root.join('tmp', uploaded_io.original_filename)
 			File.open(excel_file, 'wb') do |file|
 			  file.write(uploaded_io.read)
 			end

@@ -9,7 +9,6 @@ module MassLoadHelper
 			end
 			res[:file_path] = excel_file
 		rescue StandardError => e
-			byebug
 			res[:file_path] = nil
 		end
 		return res

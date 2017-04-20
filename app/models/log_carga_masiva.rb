@@ -113,11 +113,11 @@ class LogCargaMasiva < ActiveRecord::Base
 
 								if assis_obj.save
 									# Se ingreso la asistencia exitosamente.
-									puts "SE INGRESO ASISTENCIA ID: #{assis_obj.id} para estudiante: #{estudiante_obj.id}".green
+									puts "SE INGRESO ASISTENCIA ID: #{assis_obj.id} para estudiante: #{estudiante_obj.id}"
 
 								else
 									# Fallo el ingreso de la asistencia.
-									puts "FALLO INGRESO ASISTENCIA PARA ESTUDIANTE: #{estudiante_obj.id}".green
+									puts "FALLO INGRESO ASISTENCIA PARA ESTUDIANTE: #{estudiante_obj.id}"
 									pass = false
 								end
 
@@ -127,11 +127,11 @@ class LogCargaMasiva < ActiveRecord::Base
 								
 								if assis_obj.save
 									# Se actualiza la asistencia exitosamente.
-									puts "SE ACTUALIZA ASISTENCIA ID: #{assis_obj.id} para estudiante: #{estudiante_obj.id}".green
+									puts "SE ACTUALIZA ASISTENCIA ID: #{assis_obj.id} para estudiante: #{estudiante_obj.id}"
 
 								else
 									# Hubo un error al actualizar la asistencia.
-									puts "FALLO ACTUALIZACION DE ASISTENCIA para estudiante: #{estudiante_obj.id}".green
+									puts "FALLO ACTUALIZACION DE ASISTENCIA para estudiante: #{estudiante_obj.id}"
 									pass = false
 								end
 							end
@@ -473,12 +473,12 @@ class LogCargaMasiva < ActiveRecord::Base
 
 
 						if estudiante_obj.valid?
-							puts "Estudiante encontrado valido".green
+							puts "Estudiante encontrado valido"
 							est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
 							estudiante_obj.save
 
 						else
-							puts "Estudiante encontrado no valido".green
+							puts "Estudiante encontrado no valido"
 							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 							
 						end
@@ -491,20 +491,20 @@ class LogCargaMasiva < ActiveRecord::Base
 
 						if estudiante_obj.valid?
 							# Cumple con todas las validaciones.
-							puts "Estudiante nuevo valido".green
+							puts "Estudiante nuevo valido"
 							estudiante_obj.save
 							est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
 
 						else
 							# No cumple.
-							puts "Estudiante nuevo no valido".green
+							puts "Estudiante nuevo no valido"
 							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 							
 						end
 					end
 				else
 					# No se encontro la carrera.
-					puts "No se encontro la carrera.".green
+					puts "No se encontro la carrera."
 					est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
 
 				end

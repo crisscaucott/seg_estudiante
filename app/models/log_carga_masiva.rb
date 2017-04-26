@@ -405,7 +405,7 @@ class LogCargaMasiva < ActiveRecord::Base
 			return response
 		end
 
-		File.delete(ESTUDIANTE_LOG_PATH)
+		File.delete(ESTUDIANTE_LOG_PATH) if File.exists?(ESTUDIANTE_LOG_PATH)
 		estudiante_log = Logger.new(ESTUDIANTE_LOG_PATH)
 		estudiante_log.info("Empieza subida...")
 

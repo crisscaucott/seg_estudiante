@@ -1,6 +1,7 @@
 class LogCargaMasiva < ActiveRecord::Base
 	self.table_name = 'log_carga_masiva'
 	belongs_to :usuario, class_name: "User", foreign_key: :usuario_id
+	ESTUDIANTE_LOG_PATH = Rails.root.join('tmp', 'estudiante_log.log')
 
 	def uploadAssistance(carrera_id)
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
@@ -404,6 +405,10 @@ class LogCargaMasiva < ActiveRecord::Base
 			return response
 		end
 
+		File.delete(ESTUDIANTE_LOG_PATH)
+		estudiante_log = Logger.new(ESTUDIANTE_LOG_PATH)
+		estudiante_log.info("Empieza subida...")
+
 		(2..spreadsheet.last_row).each do |ss_row|
 			if !spreadsheet.row(ss_row)[0].nil?
 				est_detail[:total] += 1
@@ -483,6 +488,7 @@ class LogCargaMasiva < ActiveRecord::Base
 							else
 								puts "Estudiante encontrado no valido"
 								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								estudiante_log.error("Error 'estudiante encontrado no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
 								
 							end
 
@@ -502,6 +508,7 @@ class LogCargaMasiva < ActiveRecord::Base
 								# No cumple.
 								puts "Estudiante nuevo no valido"
 								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								estudiante_log.error("Error 'estudiante nuevo no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
 								
 							end
 						end
@@ -509,11 +516,13 @@ class LogCargaMasiva < ActiveRecord::Base
 					rescue StandardError => e
 						# Hubo un problema inesperado con este estudiante.
 						est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
+						estudiante_log.error("Error 'inesperado' estudiante-> #{est_hash[:rut]}-#{est_hash[:dv]}: '#{e}' | '#{e.backtrace[0]}'")
 
 					end
 				else
 					# No se encontro la carrera.
 					est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
+					estudiante_log.error("Error 'no se encontro carrera' estudiante-> #{est_hash[:rut]}-#{est_hash[:dv]}")
 
 				end
 			end # END if [0].nil?

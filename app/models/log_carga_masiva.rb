@@ -416,7 +416,8 @@ class LogCargaMasiva < ActiveRecord::Base
 					apellido: row_hash[:a_paterno] + " " + row_hash[:a_materno],
 					rut: row_hash[:rut].to_i.to_s.strip,
 					dv: row_hash[:dv].to_s.strip,
-					fecha_ingreso: formatPeriodoAcademico(row_hash[:periodo_academico].to_i.to_s),
+					# fecha_ingreso: formatPeriodoAcademico(row_hash[:periodo_academico].to_i.to_s),
+					fecha_ingreso: row_hash[:fecha_matricula],
 					carrera_id: carrera_obj.nil? ? nil : carrera_obj.id,
 					estado_desercion_id: estado_desercion_obj.id # Todos los estudiantes se inicializan con estado de desercion "ninguno".
 				}
@@ -458,53 +459,60 @@ class LogCargaMasiva < ActiveRecord::Base
 
 				# Se tiene que encontrar la carrera primero
 				if !carrera_obj.nil?
-					# Verificar si el estudiante ya esta en la bd.
-					estudiante_obj = Estudiante.where(rut: est_hash[:rut]).where(dv: est_hash[:dv]).where(carrera_id: est_hash[:carrera_id]).first
+					# Intentar capturar cualquier tipo de excepcion con el manejo de la informacion del estudiante para evitar detener el proceso.
+					begin
+						# Verificar si el estudiante ya esta en la bd.
+						estudiante_obj = Estudiante.where(rut: est_hash[:rut]).where(dv: est_hash[:dv]).where(carrera_id: est_hash[:carrera_id]).first
 
-					if !estudiante_obj.nil?
-						# Esta en la BD, se pasa a actualizar los datos basicos del estudiante.
-						# Luego se actualiza los datos extra del estudiante.
-						if !estudiante_obj.info_estudiante.nil?
-							estudiante_obj.info_estudiante.update_attributes(info_est_hash)
+						if !estudiante_obj.nil?
+							# Esta en la BD, se pasa a actualizar los datos basicos del estudiante.
+							# Luego se actualiza los datos extra del estudiante.
+							if !estudiante_obj.info_estudiante.nil?
+								estudiante_obj.info_estudiante.update_attributes(info_est_hash)
+							else
+								info_estudiante_obj = InfoEstudiante.new(info_est_hash)
+								estudiante_obj.info_estudiante = info_estudiante_obj
+							end
+
+
+							if estudiante_obj.valid?
+								puts "Estudiante encontrado valido"
+								est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								estudiante_obj.save
+
+							else
+								puts "Estudiante encontrado no valido"
+								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								
+							end
+
 						else
+							# No esta en la BD, se agrega como nuevo.
+							estudiante_obj = Estudiante.new(est_hash)
 							info_estudiante_obj = InfoEstudiante.new(info_est_hash)
 							estudiante_obj.info_estudiante = info_estudiante_obj
+
+							if estudiante_obj.valid?
+								# Cumple con todas las validaciones.
+								puts "Estudiante nuevo valido"
+								estudiante_obj.save
+								est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
+
+							else
+								# No cumple.
+								puts "Estudiante nuevo no valido"
+								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								
+							end
 						end
 
+					rescue StandardError => e
+						# Hubo un problema inesperado con este estudiante.
+						est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
 
-						if estudiante_obj.valid?
-							puts "Estudiante encontrado valido"
-							est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
-							estudiante_obj.save
-
-						else
-							puts "Estudiante encontrado no valido"
-							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
-							
-						end
-
-					else
-						# No esta en la BD, se agrega como nuevo.
-						estudiante_obj = Estudiante.new(est_hash)
-						info_estudiante_obj = InfoEstudiante.new(info_est_hash)
-						estudiante_obj.info_estudiante = info_estudiante_obj
-
-						if estudiante_obj.valid?
-							# Cumple con todas las validaciones.
-							puts "Estudiante nuevo valido"
-							estudiante_obj.save
-							est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
-
-						else
-							# No cumple.
-							puts "Estudiante nuevo no valido"
-							est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
-							
-						end
 					end
 				else
 					# No se encontro la carrera.
-					puts "No se encontro la carrera."
 					est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
 
 				end

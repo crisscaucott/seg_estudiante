@@ -65,7 +65,20 @@ module ApplicationHelper
 		end
 	end
 
-	def getFormattedRut(rut)
-		return RUT::formatear(rut)
+	def getFormattedRut(raw_rut)
+		rut = raw_rut.to_s.delete '.-'
+    if rut.nil? || rut.empty?
+      return rut
+    end
+    rut_end = rut[rut.length - 1, rut.length]
+    rut_init_temp = rut[0, rut.length - 1]
+    rut_init = ''
+    while rut_init_temp.length > 3 do
+      rut_init = '.' + rut_init_temp[rut_init_temp.length - 3, rut_init_temp.length] + rut_init
+      rut_init_temp = rut_init_temp[0, rut_init_temp.length - 3]
+    end
+    rut = rut_init_temp+rut_init+'-'+rut_end
+    return rut.upcase
 	end
+
 end

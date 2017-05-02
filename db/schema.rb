@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170324185515) do
+ActiveRecord::Schema.define(version: 20170501172020) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,6 +89,14 @@ ActiveRecord::Schema.define(version: 20170324185515) do
     t.string  "nombre_estado",                 null: false
     t.boolean "notificar",     default: false
     t.boolean "riesgoso",      default: false, null: false
+  end
+
+  create_table "estado_desercion_historial", force: :cascade do |t|
+    t.integer  "estudiante_id",       null: false
+    t.integer  "estado_desercion_id", null: false
+    t.integer  "usuario_id",          null: false
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
   end
 
   create_table "estados_asistencia", force: :cascade do |t|
@@ -247,6 +255,9 @@ ActiveRecord::Schema.define(version: 20170324185515) do
   add_foreign_key "calificacion", "asignatura"
   add_foreign_key "calificacion", "estudiante"
   add_foreign_key "carrera", "escuela"
+  add_foreign_key "estado_desercion_historial", "estado_desercion"
+  add_foreign_key "estado_desercion_historial", "estudiante"
+  add_foreign_key "estado_desercion_historial", "users", column: "usuario_id"
   add_foreign_key "estilos_aprendizaje", "estudiante"
   add_foreign_key "estudiante", "carrera"
   add_foreign_key "estudiante", "estado_desercion"

@@ -391,7 +391,7 @@ class LogCargaMasiva < ActiveRecord::Base
 		return response
 	end
 
-	def uploadEstudiantes
+	def uploadEstudiantes(usr_id)
 		spreadsheet = openSpreadsheet(Rails.root.join(self.url_archivo))
 		response = {error: false, msg: nil}
 		header = spreadsheet.row(1).map{|h| h.gsub(/ñ/i, 'n').downcase.to_sym }
@@ -479,14 +479,12 @@ class LogCargaMasiva < ActiveRecord::Base
 								estudiante_obj.info_estudiante = info_estudiante_obj
 							end
 
-
 							if estudiante_obj.valid?
-								puts "Estudiante encontrado valido"
-								est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								# Cumple con todas las validaciones del estudiante.
 								estudiante_obj.save
+								est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
 
 							else
-								puts "Estudiante encontrado no valido"
 								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 								estudiante_log.error("Error 'estudiante encontrado no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
 								
@@ -499,18 +497,31 @@ class LogCargaMasiva < ActiveRecord::Base
 							estudiante_obj.info_estudiante = info_estudiante_obj
 
 							if estudiante_obj.valid?
-								# Cumple con todas las validaciones.
-								puts "Estudiante nuevo valido"
+								# Cumple con todas las validaciones del estudiante.
 								estudiante_obj.save
-								est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
+
+								# Ingresar el estado de desercion del estudiante al historial.
+								edh_obj = EstadoDesercionHistorial.new(
+									estudiante_id: estudiante_obj.id,
+									estado_desercion_id: estudiante_obj.estado_desercion_id,
+									usuario_id: usr_id
+								)
+
+								if edh_obj.save
+									# Todo OK.
+									est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								else
+									# Fallo el ingreso del estado de desercion del estudiante al historial. Se borra el estudiante ingresado de la BD.
+									est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+									estudiante_log.error("Error 'Fallo el guardado del historial del estado de desercion' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
+									estudiante_obj.destroy
+								end
 
 							else
-								# No cumple.
-								puts "Estudiante nuevo no valido"
 								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
 								estudiante_log.error("Error 'estudiante nuevo no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
-								
 							end
+
 						end
 
 					rescue StandardError => e

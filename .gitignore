@@ -15,8 +15,6 @@
 /log/*
 !/log/.keep
 /tmp
-# Ignorar archivo de configuracion de BD
-/config/database.yml
 # Ignorar archivo de byebug
 /.byebug_history
 # Ignorar achivos excel subidos.
@@ -24,3 +22,5 @@
 /tmp/uploaded/*
 # Ignore application configuration
 /config/application.yml
+# Ignorar archivo de configuracion de BD
+/config/database.yml

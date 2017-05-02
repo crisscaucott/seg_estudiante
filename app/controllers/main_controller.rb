@@ -37,8 +37,10 @@ class MainController < ApplicationController
 				if !est_obj.nil?
 					update_fields = estudiantes_permitted_fields(estudiante)
 					est_obj.assign_attributes(update_fields)
+					historial_res = est_obj.add_historial_estado_desercion(current_user.id)
+
 					# est_obj.estado_desercion_id = estudiante[:estado_desercion_id].blank? ? nil : estudiante[:estado_desercion_id].to_i
-					if est_obj.save
+					if est_obj.save && historial_res
 						estudiantes_updated += 1
 					end
 				end

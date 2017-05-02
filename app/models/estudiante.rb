@@ -9,6 +9,7 @@ class Estudiante < ActiveRecord::Base
 
 	validates_presence_of :nombre, :apellido, :rut, :dv, :fecha_ingreso, :carrera_id, :estado_desercion_id
 	validate :validarRut
+
 	self.table_name = 'estudiante'
 
 	def self.getIdEstudianteByCarreraAndRut(rut, carrera_id, fields = [:id])
@@ -134,5 +135,25 @@ class Estudiante < ActiveRecord::Base
 
 	def dv=(new_dv)
 		self[:dv] = new_dv.strip
+	end
+
+	# Funcion que agrega el estado de desercion cambiado del estudiante a la tabla de historial de estados de desercion. 
+	def add_historial_estado_desercion(usr_id)
+		if estado_desercion_id_changed?
+			# Solamente si el atributo de 'estado de desercion' ha cambiado.
+			edh_obj = EstadoDesercionHistorial.new(
+				estudiante_id: self.id,
+				estado_desercion_id: self.estado_desercion_id,
+				usuario_id: usr_id
+			)
+
+			if edh_obj.save
+				return true
+			else
+				return false
+			end
+		else
+			return true
+		end
 	end
 end

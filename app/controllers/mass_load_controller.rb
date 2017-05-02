@@ -176,7 +176,7 @@ class MassLoadController < ApplicationController
 		if !uploaded_file[:file_path].nil?
 			mass_load_obj = LogCargaMasiva.new(usuario_id: current_user.id, url_archivo: uploaded_file[:file_path])
 
-			res = mass_load_obj.uploadEstudiantes()
+			res = mass_load_obj.uploadEstudiantes(current_user.id)
 
 			if !res[:error]
 				render json: {resumen_url: url_for(resumen_subida_path(mass_load_obj.id)),msg: render_to_string(partial: 'detalle_subida_estudiante', formats: [:html], layout: false, locals: {detail: res[:msg]}), type: "success"}

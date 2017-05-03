@@ -122,7 +122,7 @@ class Estudiante < ActiveRecord::Base
 	end
 
 	def nombre=(new_nombre)
-		self[:nombre] = new_nombre.strip.mb_chars.titleize.to_s
+		self[:nombre] = new_nombre.strip.mb_chars.titleize.to_s if new_nombre.present?
 	end
 
 	def apellido=(new_apellido)

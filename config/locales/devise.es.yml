@@ -14,6 +14,22 @@ es:
           id_permission: "Tipo de Usuario"
     errors:
       models:
+        estudiante:
+          attributes:
+            nombre: 
+              blank: "No puede estar en blanco"
+            apellido:
+              blank: "No puede estar en blanco"
+            rut:
+              blank: "No puede estar en blanco"
+            dv:
+              blank: "No puede estar en blanco"
+            fecha_ingreso:
+              blank: "No puede estar en blanco"
+            carrera_id:
+              blank: "No puede estar en blanco"
+            estado_desercion_id:
+              blank: "No puede estar en blanco"
         ficha_estudiante:
           attributes:
             estado_desercion_id:

@@ -223,7 +223,9 @@ class MassLoadController < ApplicationController
 			file.puts("Nº de estudiantes que no se subieron: #{carga_masiva_obj.detalle['failed'].size}")
 
 			if carga_masiva_obj.detalle['failed'].size != 0
-				file.puts("#{carga_masiva_obj.detalle["failed"].join(", ")}\n")
+				carga_masiva_obj.detalle['failed'].each do |e|
+					file.puts("#{e["rut"]} -> #{e["error"]}\n")
+				end
 			end
 
 			file.close()

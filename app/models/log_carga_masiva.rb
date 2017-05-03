@@ -418,7 +418,7 @@ class LogCargaMasiva < ActiveRecord::Base
 
 				est_hash = {
 					nombre: row_hash[:nombres],
-					apellido: row_hash[:a_paterno] + " " + row_hash[:a_materno],
+					apellido: "#{row_hash[:a_paterno]} #{row_hash[:a_materno]}",
 					rut: row_hash[:rut].to_i.to_s.strip,
 					dv: row_hash[:dv].to_s.strip,
 					# fecha_ingreso: formatPeriodoAcademico(row_hash[:periodo_academico].to_i.to_s),
@@ -461,6 +461,7 @@ class LogCargaMasiva < ActiveRecord::Base
 					jornada: row_hash[:jornada],
 				}
 
+				estudiante_error_data = {rut: est_hash[:rut] + '-' + est_hash[:dv], error: nil} 
 
 				# Se tiene que encontrar la carrera primero
 				if !carrera_obj.nil?
@@ -485,9 +486,9 @@ class LogCargaMasiva < ActiveRecord::Base
 								est_detail[:upd] << estudiante_obj.rut + "-" + estudiante_obj.dv
 
 							else
-								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								estudiante_error_data[:error] = "Error con los datos del estudiante."
+								est_detail[:failed] << estudiante_error_data
 								estudiante_log.error("Error 'estudiante encontrado no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
-								
 							end
 
 						else
@@ -511,14 +512,24 @@ class LogCargaMasiva < ActiveRecord::Base
 									# Todo OK.
 									est_detail[:new] << estudiante_obj.rut + "-" + estudiante_obj.dv
 								else
-									# Fallo el ingreso del estado de desercion del estudiante al historial. Se borra el estudiante ingresado de la BD.
-									est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+									# Fallo el ingreso del estado de desercion del estudiante al historial.
+									estudiante_error_data[:error] = "Problemas con el estado de desercion."
+									est_detail[:failed] << estudiante_error_data
 									estudiante_log.error("Error 'Fallo el guardado del historial del estado de desercion' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
+									# Se borra el estudiante ingresado de la BD.
 									estudiante_obj.destroy
 								end
 
 							else
-								est_detail[:failed] << estudiante_obj.rut + "-" + estudiante_obj.dv
+								estudiante_error_data[:error] = "Error con los datos del estudiante ("
+
+								estudiante_obj.errors.messages.each do |attr_obj, error|
+									estudiante_error_data[:error] += "#{Estudiante.human_attribute_name(attr_obj)}: #{error.join(',')} | "
+								end
+
+								estudiante_error_data[:error] = estudiante_error_data[:error][0...-3] + ")"
+
+								est_detail[:failed] << estudiante_error_data
 								estudiante_log.error("Error 'estudiante nuevo no valido' estudiante-> #{estudiante_obj.rut}-#{estudiante_obj.dv}")
 							end
 
@@ -526,13 +537,15 @@ class LogCargaMasiva < ActiveRecord::Base
 
 					rescue StandardError => e
 						# Hubo un problema inesperado con este estudiante.
-						est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
+						estudiante_error_data[:error] = "Error inesperado."
+						est_detail[:failed] << estudiante_error_data
 						estudiante_log.error("Error 'inesperado' estudiante-> #{est_hash[:rut]}-#{est_hash[:dv]}: '#{e}' | '#{e.backtrace[0]}'")
 
 					end
 				else
 					# No se encontro la carrera.
-					est_detail[:failed] << est_hash[:rut] + "-" + est_hash[:dv]
+					estudiante_error_data[:error] = "No se encontro la carrera (#{row_hash[:codigo_carrera_sig21]})"
+					est_detail[:failed] << estudiante_error_data
 					estudiante_log.error("Error 'no se encontro carrera' estudiante-> #{est_hash[:rut]}-#{est_hash[:dv]}")
 
 				end

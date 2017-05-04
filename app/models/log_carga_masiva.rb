@@ -540,7 +540,8 @@ class LogCargaMasiva < ActiveRecord::Base
 						estudiante_error_data[:error] = "Error inesperado."
 						est_detail[:failed] << estudiante_error_data
 						estudiante_log.error("Error 'inesperado' estudiante-> #{est_hash[:rut]}-#{est_hash[:dv]}: '#{e}' | '#{e.backtrace[0]}'")
-
+						puts e
+						puts e.backtrace[0]
 					end
 				else
 					# No se encontro la carrera.

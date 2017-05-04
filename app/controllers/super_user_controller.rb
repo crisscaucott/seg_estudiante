@@ -335,7 +335,7 @@ class SuperUserController < ApplicationController
 
 				if carrera_obj.save
 					# Cumplio con las validaciones y se actualiza los datos de la carrera.
-					carreras = Carrera.where(escuela_id: carrera_data[:escuela_id])
+					carreras = Carrera.getCarreras(escuela_id: carrera_data[:escuela_id])
 
 					render json: {msg: "Datos de carrera actualizadas exitosamente.", type: :success, table: render_to_string(partial: 'carreras_table', formats: [:html], layout: false, locals: {carreras: carreras})}
 

@@ -118,7 +118,7 @@ class ReportePdf < Prawn::Document
 
       @num_title += 1
       @num_subtitle = 1
-      puts "Cursor: #{cursor}".green
+      # puts "Cursor: #{cursor}".green
     end
   end
 

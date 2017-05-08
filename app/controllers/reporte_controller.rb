@@ -16,14 +16,14 @@ class ReporteController < ApplicationController
 		pdf_params = generate_pdf_params()
 		pdf = ReportePdf.new(pdf_params)
 
-    file_path = Rails.root.join('public', 'pdfs', 'prueba.pdf')
+    file_path = Rails.root.join('tmp', 'prueba.pdf')
     pdf.render_file(file_path)
 
 		render json: {msg: "Reporte generado exitosamente.", type: :success, pdf_url: '/reportes/download_pdf?file=prueba'}
 	end
 
 	def download_pdf
-		file = Rails.root.join('public', 'pdfs', params[:file] + '.pdf')
+		file = Rails.root.join('tmp', params[:file] + '.pdf')
 		File.open(file, 'r') do |f|
 		  send_data f.read, :type => "application/pdf", :disposition => "attachment"
 		end

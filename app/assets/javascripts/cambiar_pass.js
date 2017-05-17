@@ -11,9 +11,9 @@ $( "form#change_pass" ).submit(function(event) {
 		method: event.target.method,
 		beforeSend: function()
 		{
-			btn.val('Agregando...');
+			btn.val('Actualizando...');
 			btn.toggleClass('disabled');
-      showNotification({msg: "Agregando nuevo estado...", type: 'info', closeAll: true});
+      showNotification({msg: "Actualizando contraseña...", type: 'info', closeAll: true});
 		}
 	}).done(function(data, textStatus, jqXHR) {
       noti_params.msg = data.msg;

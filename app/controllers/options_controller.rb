@@ -19,8 +19,10 @@ class OptionsController < ApplicationController
 
 		if current_user.valid?
 			# Contrasena correcta
-
 			current_user.save
+
+			# Realizar el login del usuario por el cambio de contrasena.
+			sign_in(current_user, bypass: true)
 
 			render json: {msg: "Contraseña actualizada exitosamente.", type: :success}
 		else

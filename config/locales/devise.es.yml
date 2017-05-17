@@ -49,8 +49,11 @@ es:
               invalid: "El formato del correo ingresado es inválido."
             password:
               blank: "No puede estar en blanco."
+              too_short: "Contraseña muy corta (mínimo %{count} caracteres)."
             last_name:
               blank: "No puede estar en blanco."
+            password_confirmation:
+              confirmation: "Contraseñas no coinciden."
       messages:
         record_invalid: "La validación falló: %{errors}"
         restrict_dependent_destroy:

@@ -87,7 +87,7 @@ function showNotification(options)
 		timer: 1000,
 		animate: {
 			enter: 'animated fadeInRight',
-			exit: 'animated fadeOutRight'
+			exit: 'animated fadeOut'
 		},
 		icon_type: 'class',
 	});

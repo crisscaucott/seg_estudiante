@@ -29,6 +29,7 @@
         <div class="nav pull-right" style="margin-top: 20px; display: flex;">
           <p>Hola, 
           <%= current_user.name %> | 
+          <%= link_to("Opciones", options_path, class: 'navbar-link') %> |
           <% if current_user.user_permission.name == "Decano" %>
             <%= link_to "Admin", admini_path, class: 'navbar-link' %>
           | 

@@ -1,0 +1,17 @@
+<div class="col-sm-3 list-group">
+  <div id="MainMenu">
+  	<div class="list-group panel" id="option-list">
+
+      <% options = setActive(context, 'pass') %>
+  
+      <%= link_to("Cambiar contraseña",change_pass_index_path, class: options[:a_class]) %>
+
+  	</div>
+  </div>
+</div>
+
+<div class="col-sm-9">
+	<% if !local_assigns[:partial].nil? %>
+		<%= render partial: partial, locals: local_assigns %>
+	<% end %>
+</div>

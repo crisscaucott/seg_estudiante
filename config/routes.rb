@@ -6,6 +6,13 @@ Rails.application.routes.draw do
   namespace :admin do resources :users, only: :show do post :generate_new_password_email end 
   end
 
+  scope :opciones do 
+    get '/', to: 'options#index', as: 'options'
+    get 'cambiar_pass', to: 'options#change_pass_index', as: 'change_pass_index'
+    patch 'change_pass', to: 'options#change_pass', as: 'change_pass'
+  end
+
+
   devise_scope :user do
     root to: "main#index"
   end

@@ -46,3 +46,9 @@ $( "form#sign_in_user" ).submit(function( event ) {
 	}
 
 });
+
+// Formatear el campo del rut al escribir o pegar en el input.
+$("input#user_rut").rut({
+	formatOn: 'keyup change',
+	validateOn: null // si no se quiere validar, pasar null
+});

@@ -15,7 +15,7 @@
     <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: {class: 'login-form', id: 'sign_in_user'}) do |f| %>
       <div class="form-group">
         <%= f.label :rut, class: 'sr-only' %><br />
-        <%= f.text_field :rut, autofocus: true, class: 'form-username form-control', placeholder: 'Rut' %>
+        <%= f.text_field :rut, autofocus: true, class: 'form-username form-control', placeholder: 'Rut', maxlength: 12 %>
       </div>
     
       <div class="form-group">

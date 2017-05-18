@@ -60,3 +60,9 @@ $("select#user_id_permission").on('change', function(event){
     $('div#escuela_field').empty();
   }
 });
+
+// Formatear el campo del rut al escribir o pegar en el input.
+$("input#user_rut").rut({
+	formatOn: 'keyup change',
+	validateOn: null // si no se quiere validar, pasar null
+});

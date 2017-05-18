@@ -22,6 +22,7 @@
 //= require bootbox.min
 //= require moment
 //= require bootstrap-datetimepicker
+//= require jquery.rut.min
 
 var notifications = [];
 var notifications_limit = 3;

@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -58,9 +58,9 @@ gem 'mailgun_rails'
 gem 'prawn'
 gem 'prawn-table'
 
-#gem 'gruff'
-#gem 'rmagick'
-#gem 'magic'
+gem 'gruff'
+gem 'rmagick'
+gem 'magic'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

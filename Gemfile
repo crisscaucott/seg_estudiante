@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source 'http://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -26,7 +26,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 gem 'sprockets-rails', :require => 'sprockets/railtie'
 # Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
+gem 'bcrypt', '~> 3.1.11'
 
 # Use Unicorn as the app server
 # gem 'unicorn'
@@ -45,6 +45,7 @@ gem 'roo-xls'
 gem 'rut_chileno'
 
 gem 'devise-i18n'
+gem 'tzinfo-data'
 
 # Para libreria de calendario JS
 gem 'momentjs-rails'
@@ -57,9 +58,9 @@ gem 'mailgun_rails'
 gem 'prawn'
 gem 'prawn-table'
 
-gem 'gruff'
-gem 'rmagick'
-gem 'magic'
+#gem 'gruff'
+#gem 'rmagick'
+#gem 'magic'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

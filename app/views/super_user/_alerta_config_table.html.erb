@@ -1,0 +1,23 @@
+<table id="alerta_config_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th>Frecuencia</th>
+      <th>Próxima fecha de envío</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <% if !frec_alerta.nil?  %>
+        <td><%= frec_alerta.mensaje %></td>
+      <% else %>
+        <td>Ninguno</td>
+      <% end -%>
+
+      <% if !alerta_config.atributos_config["prox_envio"].nil? %>
+        <td><%= alerta_config.atributos_config["prox_envio"].to_date.strftime %></td>
+      <% else %>
+        <td>Ninguno</td>
+      <% end -%>
+    </tr>
+  </tbody>
+</table>

@@ -204,47 +204,62 @@ class SuperUserController < ApplicationController
 	# --- METODOS ALERTAS ---
 
 	def config_alertas
-		render action: :index, locals: {partial: 'config_alertas' ,context: CONTEXTS[:alertas], user: User.new, frecuencia_alertas: FrecAlerta.all.order(dias: :asc)}
+		alerta_config = ConfiguracionApp.getAlertaConfig
+		frec_alerta_obj = FrecAlerta.find_by(id: alerta_config.atributos_config["frec_alerta_id"])
+
+		render action: :index, locals: {partial: 'config_alertas' ,context: CONTEXTS[:alertas], user: User.new, frecuencia_alertas: FrecAlerta.all.order(dias: :asc), alerta_config: alerta_config, frec_alerta: frec_alerta_obj}
 	end
 
 	def set_config_alertas
 		config_params = frec_alerta_params
-
 		frec_alerta_obj = FrecAlerta.find_by(id: config_params[:frec_alerta_id])
-		if !frec_alerta_obj.nil?
-			if config_params[:fecha_comienzo].present?
 
-				if frec_alerta_obj.dias != 0
+		if !frec_alerta_obj.nil?
+			alerta_config = ConfiguracionApp.getAlertaConfig
+
+			if frec_alerta_obj.dias != 0
+				if config_params[:fecha_comienzo].present?
 					# Revisar que la fecha de envio calculada (fecha comienza + frecuencia de dias) sea al menos 1 dia mas que el dia de hoy.
 					hoydia = DateTime.now.to_date
 					fecha_envio = DateTime.parse(config_params[:fecha_comienzo]) + frec_alerta_obj.dias.days
 
 					if (fecha_envio - hoydia).to_i > 0
-						# Fecha de envio validada.
-						# Setear la frencuencia de alertas de todos los usuarios, menos el usuario actual osea el decano.
-						User.setFrecAlertaId(current_user.id, frec_alerta_obj.id)
-						users = User.getTutoresAndDirectores()
+						# Setear la frecuencia de alertas (id de la tabla FrecAlerta), la fecha de envio de las alertas, fecha en que se realizo esta configuracion.
 
-						# Generar las alertas para todos los usuarios.
-						Alerta.setAlertaToUsers(users, fecha_envio)
+						if !alerta_config.nil?
+							alerta_config.atributos_config["frec_alerta_id"] = frec_alerta_obj.id
+							alerta_config.atributos_config["prox_envio"] = fecha_envio
+							alerta_config.atributos_config["fecha_config"] = hoydia
 
-						render json: {msg: "Configuración de alertas hecha exitosamente.", type: "success"}
+							if alerta_config.save
+								render json: {msg: "Configuración de alertas realizada exitosamente.", type: "success", config_table: render_to_string(partial: 'alerta_config_table', formats: [:html], layout: false, locals: {alerta_config: alerta_config, frec_alerta: frec_alerta_obj})}
+							else
+								render json: {msg: "Hubo un problema en guardar la nueva configuracion en el sistema.", type: "danger"}, status: :unprocessable_entity				
+							end
+						else
+							# No existe la fila de configuracion de alertas (no se corrio o fallo el rake app:init_config)
+							render json: {msg: "Hubo un problema con la configuracion de las alertas del sistema.", type: "danger"}, status: :unprocessable_entity				
+						end
+
 					else
 						# La fecha de envio es menor que la fecha de hoydia
 						render json: {msg: "La fecha de envio calculada es menor que hoy dia. Por favor seleciona una fecha de comienzo mas tardía.", type: "warning"}, status: :unprocessable_entity
-						
 					end
-
 				else
-					# Si tiene marcado la opcion de 'desactivado', se borraran todas las alertas pendientes.
-					alertas_deleted = Alerta.deleteAlertasPendientes
-					render json: {msg: "Configuración de alertas hecha exitosamente. Se han detenido <b>#{alertas_deleted}</b> alertas que ya estaban pendientes.".html_safe, type: "success"}
-
+					render json: {msg: "La fecha de comienzo no está definida.", type: "danger"}, status: :unprocessable_entity
+								
 				end
+
 			else
-				render json: {msg: "La fecha de comienzo no está definida.", type: "danger"}, status: :unprocessable_entity
-							
+				# Si tiene marcado la opcion de 'desactivado'.
+				alerta_config.atributos_config["frec_alerta_id"] = nil
+				alerta_config.atributos_config["prox_envio"] = nil
+				alerta_config.atributos_config["fecha_config"] = hoydia
+				alerta_config.save
+
+				render json: {msg: "Configuración de alertas realizada exitosamente. <b>El proceso de envío de alertas ahora está desactivado.</b>".html_safe, type: "success", config_table: render_to_string(partial: 'alerta_config_table', formats: [:html], layout: false, locals: {alerta_config: alerta_config, frec_alerta: frec_alerta_obj})}
 			end
+		
 		else
 			render json: {msg: "Ha ocurrido un error en configurar la frecuencia de alertas a los usuarios.", type: "danger"}, status: :unprocessable_entity
 		end

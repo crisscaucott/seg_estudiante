@@ -2,6 +2,7 @@
   <thead>
     <tr>
       <th>Frecuencia</th>
+      <th>Fecha de envío</th>
       <th>Próxima fecha de envío</th>
     </tr>
   </thead>
@@ -15,7 +16,9 @@
 
       <% if !alerta_config.atributos_config["prox_envio"].nil? %>
         <td><%= alerta_config.atributos_config["prox_envio"].to_date.strftime %></td>
+        <td><%= (alerta_config.atributos_config["prox_envio"].to_date + frec_alerta.dias.days).strftime %></td>
       <% else %>
+        <td>Ninguno</td>
         <td>Ninguno</td>
       <% end -%>
     </tr>

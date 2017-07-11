@@ -221,7 +221,7 @@ class SuperUserController < ApplicationController
 				if config_params[:fecha_comienzo].present?
 					# Revisar que la fecha de envio calculada (fecha comienza + frecuencia de dias) sea al menos 1 dia mas que el dia de hoy.
 					hoydia = DateTime.now.to_date
-					fecha_envio = DateTime.parse(config_params[:fecha_comienzo]) + frec_alerta_obj.dias.days
+					fecha_envio = DateTime.parse(config_params[:fecha_comienzo])
 
 					if (fecha_envio - hoydia).to_i > 0
 						# Setear la frecuencia de alertas (id de la tabla FrecAlerta), la fecha de envio de las alertas, fecha en que se realizo esta configuracion.

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170501172020) do
+ActiveRecord::Schema.define(version: 20170709020200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,11 @@ ActiveRecord::Schema.define(version: 20170501172020) do
     t.datetime "updated_at",        null: false
     t.integer  "escuela_id",        null: false
     t.string   "nombre_formateado", null: false
+  end
+
+  create_table "configuracion_app", force: :cascade do |t|
+    t.string "nombre_config",    null: false
+    t.json   "atributos_config", null: false
   end
 
   create_table "destinos", force: :cascade do |t|
@@ -241,7 +246,6 @@ ActiveRecord::Schema.define(version: 20170501172020) do
     t.integer  "id_permission",                       null: false
     t.string   "rut",                                 null: false
     t.datetime "deleted_at"
-    t.integer  "frec_alerta_id"
     t.integer  "escuela_id"
   end
 
@@ -268,6 +272,5 @@ ActiveRecord::Schema.define(version: 20170501172020) do
   add_foreign_key "log_carga_masiva", "users", column: "usuario_id"
   add_foreign_key "reportes", "users", column: "usuario_id"
   add_foreign_key "users", "escuela"
-  add_foreign_key "users", "frec_alerta", column: "frec_alerta_id"
   add_foreign_key "users", "user_permissions", column: "id_permission"
 end

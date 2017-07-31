@@ -54,6 +54,10 @@ class User < ActiveRecord::Base
     return users
   end
 
+  def self.getNoDecanoUsers
+    return self.joins(:user_permission).where("#{UserPermission.table_name}.name != ?", 'Decano')
+  end
+
   def self.getTutoresUsers
     return self.includes(:user_permission).joins(:user_permission).merge(UserPermission.where(name: 'Tutor'))
   end

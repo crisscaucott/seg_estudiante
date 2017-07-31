@@ -19,6 +19,7 @@ $( "form#config_alertas_form" ).submit(function( event ) {
 	}).done(function(data, textStatus, jqXHR) {
       noti_params.msg = data.msg;
       noti_params.type = data.type;
+      document.getElementById('config_table').innerHTML = data.config_table;
 
   }).fail(function(jqXHR, textStatus, errorThrown) {
       noti_params.msg = errorThrown;

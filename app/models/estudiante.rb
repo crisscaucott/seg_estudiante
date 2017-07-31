@@ -85,7 +85,11 @@ class Estudiante < ActiveRecord::Base
 				estudiantes = getEstudiantes(filters)
 		end
 
-		return estudiantes.includes(:estado_desercion, :carrera)
+		# if getEstudiantes.size != 0
+		# 	estudiantes = estudiantes.includes(:estado_desercion, :carrera)
+		# end
+
+		return estudiantes
 	end
 
 	def self.getEstudiantes(filters = {})
